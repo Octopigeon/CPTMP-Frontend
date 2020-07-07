@@ -1,0 +1,75 @@
+mat-toolbar.app-toolbar
+  position: fixed
+  top 0
+  right 0
+  left 0
+  z-index 10
+  box-shadow 0 2px 5px 0 rgba(0,0,0,.3)
+  margin 0
+
+  mat-toolbar-row
+    padding 0
+    display flex
+    flex-direction row
+
+    button.hamburger
+      height 100%
+
+    .nav-link
+      height 40px
+      line-height 40px
+      color white
+      text-decoration none
+      margin 0 5px 0
+
+    .home
+      img
+        vertical-align top
+
+      .brand-name
+        display inline-block
+        margin-left 5px
+
+    .search-container
+      display flex
+      justify-content flex-end
+      align-items center
+      width 100%
+      height 100%
+      margin-right 5px
+      margin-left 15px
+
+    .user-container
+      height 64px
+      width 64px
+      transition background 0.3s
+      flex-shrink 0
+      -webkit-tap-highlight-color transparent
+
+      .user-page
+        display inline-block
+        text-decoration none
+        color inherit
+        height 100%
+
+        .user-avatar
+          border-radius 50%
+          height 50px
+          width 50px
+          padding 7px
+          background transparent
+
+
+      @media (max-width 599px)
+        height 56px
+        width 56px
+
+        .user-page .user-avatar
+          height 44px
+          width 44px
+          padding 6px
+
+      &:hover
+        background rgba(0, 0, 0, 0.05)
+
+
