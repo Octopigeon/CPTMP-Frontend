@@ -1,0 +1,56 @@
+$blue = #1976D2
+$accentblue = #1E88E5
+
+.footer-container
+  height 200px
+  background $accentblue
+  display flex
+  flex-direction row
+
+  @media (max-width 599px)
+    height 400px
+    flex-direction column
+
+  .footer-logo,
+  .footer-info
+    display flex
+    justify-content center
+    align-items center
+    width 50%
+    height 200px
+
+    @media (max-width 599px)
+      width 100%
+
+  .footer-logo .logo-container
+      display flex
+
+      #footer-logo-img
+        height 120px
+        width 120px
+        vertical-align top
+
+      #footer-logo-text
+        font-weight bold
+        color white
+        font-size 40px
+        line-height 120px
+
+  .footer-info-inner-container
+    color white
+    text-align center
+
+    a
+      color white
+      text-decoration none
+
+      &:hover
+        text-decoration underline
+
+    #footer-github-icon
+      margin-right 2px
+      vertical-align top
+
+      & + a
+        display inline-block
+        line-height 24px

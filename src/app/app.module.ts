@@ -18,6 +18,7 @@ import { SidebarModePipe } from './sidebar-mode.pipe';
 import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
 import { NavItemComponent } from './components/nav-item/nav-item.component';
 import {MatRippleModule} from "@angular/material/core";
+import { FooterComponent } from './components/footer/footer.component';
 
 // These are the hardcoded inline svg sources to be used by the `<mat-icon>` component.
 // tslint:disable: max-line-length
@@ -96,7 +97,8 @@ export const svgIconProviders = [
     SearchBoxComponent,
     SidebarModePipe,
     NavMenuComponent,
-    NavItemComponent
+    NavItemComponent,
+    FooterComponent
   ],
     imports: [
         BrowserModule,
