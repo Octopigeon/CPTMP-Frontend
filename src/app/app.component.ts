@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {EnvService} from "../services/env.service";
+import {EnvService} from "./services/env.service";
 import {AdminNodes} from "./constants/sidebar";
 
 @Component({
@@ -11,6 +11,7 @@ export class AppComponent {
   title = 'CPTMP';
   isFetching = false;
   isTransitioning = false;
+  isStartPage = true;
 
   windowType = this.env.size$;
 

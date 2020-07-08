@@ -1,4 +1,4 @@
-import {NavigationNode} from "./nav.model";
+import {NavigationNode} from "../types/nav.model";
 
 export type SidebarEntries = Map<string, string>
 

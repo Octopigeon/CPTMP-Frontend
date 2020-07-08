@@ -1,5 +1,5 @@
 import {Component, Input, OnChanges, ViewEncapsulation} from '@angular/core';
-import {NavigationNode} from "../../constants/nav.model";
+import {NavigationNode} from "../../types/nav.model";
 
 @Component({
   selector: 'nav-item',

@@ -1,12 +1,10 @@
-<div id="top-of-page"></div>
-
 <div *ngIf="isFetching" class="progress-bar-container">
   <mat-progress-bar mode="indeterminate" color="warn"></mat-progress-bar>
 </div>
 
-<mat-toolbar color="primary" class="app-toolbar no-print" [class.transitioning]="isTransitioning">
+<mat-toolbar color="primary" class="app-toolbar no-print" [class.transitioning]="isTransitioning" [class.start]="isStartPage">
   <mat-toolbar-row>
-    <button mat-button class="hamburger" title="Menu" (click)="sidenav.toggle()">
+    <button mat-button class="hamburger" title="Menu" (click)="sidenav.toggle()" [class.start]="isStartPage">
       <mat-icon svgIcon="menu"></mat-icon>
     </button>
     <a class="nav-link home" href="/" [ngSwitch]="windowType | async">
@@ -26,15 +24,17 @@
   </mat-toolbar-row>
 </mat-toolbar>
 
-<mat-sidenav-container class="main-container">
+<mat-sidenav-container class="main-container" [class.start]="isStartPage">
   <mat-sidenav #sidenav [mode]="windowType | async | sidebarMode" class="main-sidenav">
     <nav-menu [nodes]="sidenavNodes" [isWide]="true"></nav-menu>
   </mat-sidenav>
-
   <mat-sidenav-content>
+    <div id="top-of-page"></div>
+    <div class="start-background" [class.start]="isStartPage" ></div>
     <div class="content-container">
       <div>Content here</div>
       <div style="height:100px"></div>
+      <button mat-button color="secondary" (click)="isStartPage = !isStartPage; sidenav.toggle(false)">toggle-start</button>
       <div>another content</div>
       <div style="height:1000px"></div>
       <div>page bottom</div>

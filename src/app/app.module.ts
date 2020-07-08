@@ -5,13 +5,13 @@ import { ErrorHandler, NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {windowProvider, WINDOW} from "../services/window";
+import {windowProvider, WINDOW} from "./services/window";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatIconModule, MatIconRegistry} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
 
-import { CustomIconRegistry, SVG_ICONS } from "../shared/custom-icon-registry";
+import { CustomIconRegistry, SVG_ICONS } from "./shared/custom-icon-registry";
 import { SearchBoxComponent } from './components/search-box/search-box.component';
 import {MatSidenavModule} from "@angular/material/sidenav";
 import { SidebarModePipe } from './sidebar-mode.pipe';
