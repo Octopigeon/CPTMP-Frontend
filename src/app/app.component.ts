@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import {EnvService} from "../services/env.service";
+import {AdminNodes} from "./constants/sidebar";
 
 @Component({
   selector: 'cptmp-root',
@@ -12,6 +13,8 @@ export class AppComponent {
   isTransitioning = false;
 
   windowType = this.env.size$;
+
+  sidenavNodes = AdminNodes;
 
   constructor(private env: EnvService) {
 

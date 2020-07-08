@@ -1,0 +1,214 @@
+.starting.mat-drawer-transition .mat-drawer-content
+  transition none
+
+$blue = #1976D2
+$accentblue = #1E88E5
+$brightred = #DD0031
+$darkred = #C3002F
+$white = #FFFFFF
+$offwhite = #FAFAFA
+$backgroundgray = #F1F1F1
+$lightgray = #DBDBDB
+$lightboxgray = #EBEBEB
+$mist = #ECEFF1
+$mediumgray = #6E6E6E
+$darkgray = #444444
+$deepgray = #333333
+$black = #0A1014
+$orange = #FF9800
+$darkorange = #940
+$anti-pattern = $brightred
+
+$focus-outline-onlight = $accentblue
+
+mixin-rotate(degrees)
+  -moz-transform rotate(degrees)
+  -webkit-transform rotate(degrees)
+  -o-transform rotate(degrees)
+  -ms-transform rotate(degrees)
+  transform rotate(degrees)
+  transition transform 150ms
+  transition-timing-function ease-in-out
+
+.main-sidenav
+  position fixed
+  top 64px
+  bottom 0
+  left 0
+  padding 0
+  min-width 260px
+  background-color $white
+  box-shadow 6px 0 6px rgba(0,0,0,0.10)
+
+  &.collapsed
+    top 56px
+
+  @media (max-width 599px)
+    top 56px
+
+    &.collapsed
+      top 48px
+
+  nav-menu
+    display block
+    margin 0 auto
+    max-width 260px
+    font-size 13px
+
+    ul, a
+      margin 0
+
+    &:first-child
+      margin-top 16px
+
+    nav-item div a
+      padding-left 6px
+
+  mat-sidenav-container.sidenav-container
+    min-height 100%
+    height auto !important
+    max-width 100%
+    margin 0
+    transform none
+
+    &.has-floating-toc
+      max-width 82%
+
+  mat-sidenav-container.sidenav-container.mat-drawer-container.mat-sidenav-container,
+  mat-sidenav-container .sidenav-content
+    background-color $white
+
+  mat-sidenav-container div.mat-sidenav-content
+    height auto
+
+  .vertical-menu-item
+    box-sizing border-box
+    color $darkgray
+    cursor pointer
+    display flex
+    align-items center
+    justify-content space-between
+    overflow-wrap break-word
+    padding 8px
+    text-decoration none
+    text-align left
+    width 100%
+    word-wrap break-word
+
+    &:hover
+      background-color $lightgray
+      color $blue
+      text-shadow 0 0 5px #ffffff
+
+    &:focus
+      outline $focus-outline-onlight auto 2px
+
+    &.selected
+      color $blue
+
+    &.level-2
+      padding-top 4px
+      padding-bottom 4px
+
+    span
+      padding-right 32px
+
+    .mat-icon
+      height 24px
+      width 24px
+
+  button.vertical-menu-item
+    border none
+    background-color transparent
+    padding-top 10px
+    padding-bottom 10px
+    margin 0
+    width 100%
+
+  .heading
+    color $darkgray
+    cursor pointer
+    position relative
+    text-transform uppercase
+
+  .heading-children
+    &.expanded
+      visibility visible
+      opacity 1
+      padding-left 0
+      max-height 4000px // Arbitrary max-height. Can increase if needed. Must have measurement to transition height.
+      transition visibility 500ms, opacity 500ms, max-height 500ms
+      -webkit-transition-timing-function ease-in-out
+      transition-timing-function ease-in-out
+
+    &.collapsed
+      overflow hidden  // Needed to prevent unnecessary sidenav scrollbar.
+      visibility hidden
+      padding-left 0
+      opacity 0
+      max-height 1px // Must have measurement to transition height.
+      transition visibility 275ms, opacity 275ms, max-height 280ms
+      -webkit-transition-timing-function ease-out
+      transition-timing-function ease-out
+
+  .no-animations
+    .heading-children.expanded,
+    .heading-children.collapsed
+      transition none !important
+
+  .level-1
+    font-size 14px
+    font-weight 400
+    padding-left 20px
+    margin 0
+    transition background-color 0.2s
+    text-transform uppercase
+
+    &.expanded .mat-icon,
+    .level-2.expanded .mat-icon
+      mixin-rotate 90deg
+
+    &:not(.expanded) .mat-icon,
+    .level-2:not(.expanded) .mat-icon
+      mixin-rotate 0deg
+
+  .level-2
+    color $mediumgray
+    font-size 14px
+    font-weight 400
+    margin 0
+    padding-left 32px
+    text-transform none
+
+    &.expanded .mat-icon,
+    .level-3.expanded .mat-icon
+      mixin-rotate 90deg
+
+    &:not(.expanded) .mat-icon,
+    .level-3:not(.expanded) .mat-icon
+      mixin-rotate 0deg
+
+  .level-3
+    color $mediumgray
+    font-size 14px
+    margin 0
+    padding-left 40px
+    text-transform none
+
+  .level-4
+    color $mediumgray
+    font-size 14px
+    margin 0
+    padding-left 48px
+    text-transform none
+
+  nav-menu.top-menu
+    padding 24px 0 0
+
+    nav-item:last-child div
+      border-bottom 1px solid rgba($mediumgray, 0.5)
+
+    nav-item:first-child div
+      border-top 1px solid rgba($mediumgray, 0.5)
+
+

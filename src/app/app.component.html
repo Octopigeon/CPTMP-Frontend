@@ -6,20 +6,19 @@
 
 <mat-toolbar color="primary" class="app-toolbar no-print" [class.transitioning]="isTransitioning">
   <mat-toolbar-row>
-    <button mat-button class="hamburger" title="Menu">
+    <button mat-button class="hamburger" title="Menu" (click)="sidenav.toggle()">
       <mat-icon svgIcon="menu"></mat-icon>
     </button>
     <a class="nav-link home" href="/" [ngSwitch]="windowType | async">
-      <img *ngSwitchCase="'phone'" src="assets/logo-tmp.png" width="40" height="40" title="Home" alt="Home">
+      <img *ngSwitchCase="'phone'" src="assets/logo5.png" width="40" height="40" title="Home" alt="Home">
       <div *ngSwitchDefault>
-        <img src="assets/logo-tmp.png" width="40" height="40" title="Home" alt="O">
+        <img src="assets/logo5.png" width="40" height="40" title="Home" alt="O">
         <span class="brand-name">ctopigeon</span>
       </div>
-
     </a>
 <!--    <aio-top-menu *ngIf="isSideBySide" [nodes]="topMenuNodes" [currentNode]="currentNodes?.TopBar"></aio-top-menu>-->
     <search-box class="search-container" #searchBox ></search-box>
-    <div class="user-container" title="User">
+    <div matRipple class="user-container" title="User" matRippleColor="rgba(255, 255, 255, 0.1)">
       <a href="#" class="user-page">
         <img src="assets/avatar.jpg" alt="user" class="user-avatar">
       </a>
@@ -27,4 +26,17 @@
   </mat-toolbar-row>
 </mat-toolbar>
 
-<router-outlet></router-outlet>
+<mat-sidenav-container class="main-container">
+  <mat-sidenav #sidenav [mode]="windowType | async | sidebarMode" class="main-sidenav">
+    <nav-menu [nodes]="sidenavNodes" [isWide]="true"></nav-menu>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <div class="content-container">
+      <div>Content here</div>
+      <div style="height:1000px"></div>
+      <div>another content</div>
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

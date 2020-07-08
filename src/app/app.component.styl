@@ -1,3 +1,12 @@
+.progress-bar-container
+  height 2px
+  overflow hidden
+  position fixed
+  top 0
+  width 100vw
+  z-index 11
+
+
 mat-toolbar.app-toolbar
   position: fixed
   top 0
@@ -25,10 +34,11 @@ mat-toolbar.app-toolbar
     .home
       img
         vertical-align top
+        margin-right -2px
 
       .brand-name
         display inline-block
-        margin-left 5px
+        font-size 24px
 
     .search-container
       display flex
@@ -42,7 +52,6 @@ mat-toolbar.app-toolbar
     .user-container
       height 64px
       width 64px
-      transition background 0.3s
       flex-shrink 0
       -webkit-tap-highlight-color transparent
 
@@ -54,9 +63,9 @@ mat-toolbar.app-toolbar
 
         .user-avatar
           border-radius 50%
-          height 50px
-          width 50px
-          padding 7px
+          height 46px
+          width 46px
+          padding 9px
           background transparent
 
 
@@ -65,11 +74,16 @@ mat-toolbar.app-toolbar
         width 56px
 
         .user-page .user-avatar
-          height 44px
-          width 44px
-          padding 6px
+          height 40px
+          width 40px
+          padding 8px
 
-      &:hover
-        background rgba(0, 0, 0, 0.05)
+.main-container
+  box-sizing content-box
+  padding-top 64px
+  height calc(100vh - 64px)
 
+  @media (max-width 599px)
+    padding-top 56px
+    height calc(100vh - 56px)
 

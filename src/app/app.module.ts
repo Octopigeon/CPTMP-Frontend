@@ -13,6 +13,11 @@ import {MatButtonModule} from "@angular/material/button";
 
 import { CustomIconRegistry, SVG_ICONS } from "../shared/custom-icon-registry";
 import { SearchBoxComponent } from './components/search-box/search-box.component';
+import {MatSidenavModule} from "@angular/material/sidenav";
+import { SidebarModePipe } from './sidebar-mode.pipe';
+import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
+import { NavItemComponent } from './components/nav-item/nav-item.component';
+import {MatRippleModule} from "@angular/material/core";
 
 // These are the hardcoded inline svg sources to be used by the `<mat-icon>` component.
 // tslint:disable: max-line-length
@@ -88,18 +93,23 @@ export const svgIconProviders = [
 @NgModule({
   declarations: [
     AppComponent,
-    SearchBoxComponent
+    SearchBoxComponent,
+    SidebarModePipe,
+    NavMenuComponent,
+    NavItemComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    HttpClientModule,
-    MatProgressBarModule,
-    MatToolbarModule,
-    MatIconModule,
-    MatButtonModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        HttpClientModule,
+        MatProgressBarModule,
+        MatToolbarModule,
+        MatIconModule,
+        MatButtonModule,
+        MatSidenavModule,
+        MatRippleModule
+    ],
   providers: [
     ErrorHandler,
     svgIconProviders,
