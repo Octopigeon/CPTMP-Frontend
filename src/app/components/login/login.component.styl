@@ -1,0 +1,84 @@
+.top-padding
+  height 64px
+
+  @media (max-width 599px)
+    height 56px
+
+.login-container
+  display flex
+  flex-direction row
+
+  @media (max-width 1023px)
+    flex-direction column
+
+.login-introduce
+  width 50%
+  text-align center
+  margin-bottom 100px
+
+  @media (max-width 1023px)
+    width 100%
+
+  .introduce-logo
+    padding-top 75px
+    width 300px
+
+    @media (max-width 1023px)
+      padding-top 0
+
+  .introduce-word
+    color white
+    font-weight 900
+    font-size 3em
+    line-height 1.2em
+    word-break keep-all
+
+.login-panel-wrapper
+  width 50%
+
+  @media (max-width 1023px)
+    width 100%
+
+  .login-panel-container
+    margin 50px auto 100px
+    width 350px
+    background-color #fcfcfc
+    border 1px solid #dadce0
+    border-radius 10px
+    min-height 400px
+    padding 48px 40px 36px
+    text-align center
+
+    @media (max-width 599px)
+      margin 0
+      width calc(100% - 40px)
+      border none
+      border-radius 0
+      padding 48px 20px 36px
+
+.logo-inline
+  height 2em
+  vertical-align -0.75em
+
+.login-form
+  width 100%
+  margin 50px 0 0
+
+  .login-field
+    width 100%
+
+    @media (max-width 599px)
+      width 100%
+
+  .login-form-hint
+    margin 10px 0
+    text-align left
+
+  .login-form-button
+    text-align right
+
+    .login-form-submit
+      margin-top 30px
+      transition filter 0.3s
+      &:hover
+        filter brightness(1.1)

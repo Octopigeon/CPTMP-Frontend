@@ -19,6 +19,12 @@ import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
 import { NavItemComponent } from './components/nav-item/nav-item.component';
 import {MatRippleModule} from "@angular/material/core";
 import { FooterComponent } from './components/footer/footer.component';
+import { LoginComponent } from './components/login/login.component';
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatInputModule} from "@angular/material/input";
+import { RegisterComponent } from './components/register/register.component';
+import {MatStepperModule} from "@angular/material/stepper";
 
 // These are the hardcoded inline svg sources to be used by the `<mat-icon>` component.
 // tslint:disable: max-line-length
@@ -98,20 +104,27 @@ export const svgIconProviders = [
     SidebarModePipe,
     NavMenuComponent,
     NavItemComponent,
-    FooterComponent
+    FooterComponent,
+    LoginComponent,
+    RegisterComponent
   ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        BrowserAnimationsModule,
-        HttpClientModule,
-        MatProgressBarModule,
-        MatToolbarModule,
-        MatIconModule,
-        MatButtonModule,
-        MatSidenavModule,
-        MatRippleModule
-    ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    HttpClientModule,
+    MatProgressBarModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatButtonModule,
+    MatSidenavModule,
+    MatRippleModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatStepperModule
+  ],
   providers: [
     ErrorHandler,
     svgIconProviders,

@@ -1,0 +1,91 @@
+<div class="top-padding"></div>
+<div class="register-container">
+  <mat-horizontal-stepper labelPosition="bottom" #stepper class="register-stepper" linear>
+    <mat-step completed="true">
+      <ng-template matStepLabel>确认组织</ng-template>
+<!--      <div class="register-bad-invite-code">-->
+<!--        <p><mat-icon class="register-bad-invite-code-icon">error</mat-icon></p>-->
+<!--        <h2>此注册链接无效。请联系您的组织获取正确链接。</h2>-->
+<!--      </div>-->
+      <div class="register-invite-verify">
+        <p class="register-hint">
+          欢迎使用Octopigeon高校实训实习云平台！您将以下述身份注册新帐号。
+        </p>
+        <form class="noop-form">
+          <mat-form-field class="full-width">
+            <input matInput placeholder="组织名称" value="章鱼鸽大学" disabled>
+          </mat-form-field>
+          <mat-form-field class="full-width">
+            <input matInput placeholder="角色" value="学生" disabled>
+          </mat-form-field>
+          <p class="register-hint">
+            请确认上述信息正确无误，然后点击下一步。
+          </p>
+        </form>
+      </div>
+      <div class="bottom-switcher">
+        <button mat-flat-button matStepperNext class="register-next" color="primary">下一步</button>
+      </div>
+    </mat-step>
+    <mat-step [stepControl]="registerForm">
+      <ng-template matStepLabel>填写信息</ng-template>
+      <p class="register-hint">
+        请提供一些信息，以便我们创建您的帐号。
+      </p>
+      <form [formGroup]="registerForm">
+        <div class="form-input-container">
+          <mat-form-field appearance="outline" class="form-input">
+            <mat-label>姓名</mat-label>
+            <input matInput placeholder="在此输入姓名" formControlName="name" required>
+            <mat-icon matSuffix>person</mat-icon>
+            <mat-hint>请使用真实姓名，以便他人认识你</mat-hint>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="form-input">
+            <mat-label>电子邮件地址</mat-label>
+            <input matInput placeholder="在此输入电子邮件地址" formControlName="email" type="email">
+            <mat-icon matSuffix>email</mat-icon>
+            <mat-hint>此地址将用于发送通知，以及作为可选的登录凭证</mat-hint>
+            <mat-error *ngIf="registerForm.controls.email.hasError('email')">电子邮件地址不正确</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="form-input">
+            <mat-label>学号</mat-label>
+            <input matInput placeholder="在此输入学号" formControlName="id" required>
+            <span matPrefix style="vertical-align: 0.25em">OPU</span>
+            <mat-icon matSuffix>assignment_ind</mat-icon>
+            <mat-hint>我们使用学号识别你的身份。使用学号登录时请携带组织前缀</mat-hint>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="form-input">
+            <mat-label>密码</mat-label>
+            <input matInput placeholder="在此输入密码" formControlName="password" required type="password">
+            <mat-icon matSuffix>vpn_key</mat-icon>
+            <mat-hint>密码至少需要8位</mat-hint>
+            <mat-error *ngIf="registerForm.controls.password.hasError('minlength')">密码至少需要8位</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="form-input">
+            <mat-label>重复密码</mat-label>
+            <input matInput placeholder="在此重复输入密码" formControlName="passwordConfirm" required type="password"
+            [errorStateMatcher]="passwordErrorStateMatcher">
+            <mat-icon matSuffix>vpn_key</mat-icon>
+            <mat-hint>确保你输入了正确的密码</mat-hint>
+            <mat-error *ngIf="registerForm.hasError('passwordMismatch')">两次输入的密码不匹配</mat-error>
+          </mat-form-field>
+        </div>
+      </form>
+      <div class="bottom-switcher">
+        <button mat-flat-button matStepperPrevious class="register-previous" color="primary">上一步</button>
+        <button mat-flat-button matStepperNext class="register-next" color="primary">下一步</button>
+      </div>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>注册完毕</ng-template>
+      <p class="register-hint">
+        最后一步！我们需要确定你不是自动程序。请完成下面的人机验证。
+      </p>
+      <p>reCaptcha or something like that here.</p>
+      <div class="bottom-switcher">
+        <button mat-flat-button matStepperPrevious class="register-previous" color="primary">上一步</button>
+        <button mat-flat-button class="register-next" color="accent">注册</button>
+      </div>
+    </mat-step>
+  </mat-horizontal-stepper>
+</div>
