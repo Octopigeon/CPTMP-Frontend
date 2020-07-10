@@ -35,66 +35,9 @@
       </div>
 
       <div class="mdui-col-xs-6 item-body">
-        <div class="info-top-padding"></div>
         <div class="mdui-container">
-          <div class="mdui-row mdui-row-gapless">
-
-            <div class="mdui-col-xs-2">
-              <div class="mdui-text-right info-padding"> <h4>昵称:</h4></div>
-            </div>
-            <div class="mdui-col-xs-10">
-                <mat-form-field appearance="outline" class = "input-padding">
-                  <mat-label>创建你的昵称</mat-label>
-                  <input matInput placeholder="" class = “inputbox”>
-                </mat-form-field>
-            </div>
-
-          </div>
-          <div class="mdui-row mdui-row-gapless">
-
-            <div class="mdui-col-xs-2">
-              <div class="mdui-text-right info-padding"> <h4>我的签名:</h4></div>
-            </div>
-            <div class="mdui-col-xs-10">
-              <mat-form-field appearance="outline" class = "input-padding">
-                <mat-label>设置你的签名</mat-label>
-                <input matInput placeholder="" style="OVERFLOW:hidden">
-              </mat-form-field>
-            </div>
-
-          </div>
-          <div class="mdui-row mdui-row-gapless">
-
-            <div class="mdui-col-xs-2">
-              <div class="mdui-text-right info-padding" > <h4>Email:</h4></div>
-            </div>
-            <div class="mdui-col-xs-10">
-              <mat-form-field appearance="outline" class = "input-padding">
-                <mat-label>修改你的Email</mat-label>
-                <input matInput placeholder="">
-              </mat-form-field>
-            </div>
-
-          </div>
-          <div class="mdui-row mdui-row-gapless">
-
-            <div class="mdui-col-xs-2">
-              <div class="mdui-text-right info-padding"> <h4>电话:</h4></div>
-            </div>
-            <div class="mdui-col-xs-10">
-              <mat-form-field appearance="outline" class = "input-padding">
-                <mat-label>修改你的电话</mat-label>
-                <input matInput placeholder="">
-              </mat-form-field>
-            </div>
-          </div>
-
-          <mat-divider></mat-divider>
-          <div class="mdui-container">
-            <button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent savebutton mdui-center">保存</button>
-          </div>
-      </div>
-
+          <app-user-info-page></app-user-info-page>
+        </div>
       <div class="mdui-col-xs-2"></div>
     </div>
   </div>

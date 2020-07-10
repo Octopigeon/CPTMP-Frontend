@@ -31,6 +31,7 @@ import {MatExpansionModule} from "@angular/material/expansion";
 import {MatListModule} from "@angular/material/list";
 import {MatTreeModule} from "@angular/material/tree";
 import {MatGridListModule} from "@angular/material/grid-list";
+import { UserInfoPageComponent } from './components/user-info-page/user-info-page.component';
 
 // These are the hardcoded inline svg sources to be used by the `<mat-icon>` component.
 // tslint:disable: max-line-length
@@ -113,7 +114,8 @@ export const svgIconProviders = [
     FooterComponent,
     LoginComponent,
     RegisterComponent,
-    UsercenterComponent
+    UsercenterComponent,
+    UserInfoPageComponent
   ],
     imports: [
         BrowserModule,
