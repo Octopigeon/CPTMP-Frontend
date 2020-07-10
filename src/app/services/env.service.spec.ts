@@ -16,7 +16,11 @@ describe('EnvService', () => {
       providers: [ { provide: WINDOW, useValue: mockWindow } ],
     });
     env = TestBed.inject(EnvService);
+    jasmine.clock().install();
   });
+  afterEach(() => {
+    jasmine.clock().uninstall();
+  })
 
   it('should be created', () => {
     expect(env).toBeTruthy();
@@ -30,21 +34,17 @@ describe('EnvService', () => {
       expect(size).toBe("desktop");
     });
 
-    it('should get updated size upon resize', (done) => {
+    it('should get updated size upon resize', () => {
       let size: Size;
       env.size$.subscribe(s => size = s);
 
-      setTimeout(done, 2000);
-
       mockWindow.callEvent(800);
-      setTimeout(() => {
-        expect(size).toBe("tablet");
-        mockWindow.callEvent(400);
-        setTimeout(() => {
-          expect(size).toBe("phone");
-          done();
-        }, 600)
-      }, 600)
+      jasmine.clock().tick(600);
+      expect(size).toBe("tablet");
+
+      mockWindow.callEvent(400);
+      jasmine.clock().tick(600);
+      expect(size).toBe("phone");
     })
   })
 });
