@@ -11,6 +11,7 @@ import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatIconModule, MatIconRegistry} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
 
+
 import { CustomIconRegistry, SVG_ICONS } from "./shared/custom-icon-registry";
 import { SearchBoxComponent } from './components/search-box/search-box.component';
 import {MatSidenavModule} from "@angular/material/sidenav";
@@ -25,6 +26,11 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import { RegisterComponent } from './components/register/register.component';
 import {MatStepperModule} from "@angular/material/stepper";
+import { UsercenterComponent } from './components/usercenter/usercenter.component';
+import {MatExpansionModule} from "@angular/material/expansion";
+import {MatListModule} from "@angular/material/list";
+import {MatTreeModule} from "@angular/material/tree";
+import {MatGridListModule} from "@angular/material/grid-list";
 
 // These are the hardcoded inline svg sources to be used by the `<mat-icon>` component.
 // tslint:disable: max-line-length
@@ -106,25 +112,30 @@ export const svgIconProviders = [
     NavItemComponent,
     FooterComponent,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    UsercenterComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    HttpClientModule,
-    MatProgressBarModule,
-    MatToolbarModule,
-    MatIconModule,
-    MatButtonModule,
-    MatSidenavModule,
-    MatRippleModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatStepperModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        HttpClientModule,
+        MatProgressBarModule,
+        MatToolbarModule,
+        MatIconModule,
+        MatButtonModule,
+        MatSidenavModule,
+        MatRippleModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatStepperModule,
+        MatExpansionModule,
+        MatListModule,
+        MatTreeModule,
+        MatGridListModule,
+    ],
   providers: [
     ErrorHandler,
     svgIconProviders,
