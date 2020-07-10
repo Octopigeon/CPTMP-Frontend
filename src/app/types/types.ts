@@ -9,6 +9,11 @@ export interface UserInfo {
   avatar: string;
 }
 
+export interface UserInfoL {
+  login: boolean;
+  info?: UserInfo;
+}
+
 export interface LoginP {
   status_code: number;
   token?: string;

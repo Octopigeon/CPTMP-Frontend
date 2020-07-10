@@ -4,7 +4,7 @@ import {debounceTime, distinctUntilChanged, map, takeUntil, tap} from "rxjs/oper
 import {Logger} from "./logger.service";
 import {WINDOW} from "./window";
 
-export type Size = "desktop" | "phone" | "laptop";
+export type Size = "desktop" | "phone" | "tablet";
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +20,7 @@ export class EnvService implements OnDestroy {
     } else if (this.window.innerWidth < 600) {
       return "phone";
     } else {
-      return "laptop";
+      return "tablet";
     }
   }
 

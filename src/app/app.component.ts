@@ -11,7 +11,7 @@ export class AppComponent {
   title = 'CPTMP';
   isFetching = false;
   isTransitioning = false;
-  isStartPage = true;
+  isStartPage = false;
 
   windowType = this.env.size$;
 

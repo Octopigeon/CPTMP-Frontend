@@ -25,6 +25,8 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import { RegisterComponent } from './components/register/register.component';
 import {MatStepperModule} from "@angular/material/stepper";
+import { NotFoundComponent } from './components/not-found/not-found.component';
+import { PersonalDataComponent } from './contents/personal-data/personal-data.component';
 
 // These are the hardcoded inline svg sources to be used by the `<mat-icon>` component.
 // tslint:disable: max-line-length
@@ -106,7 +108,9 @@ export const svgIconProviders = [
     NavItemComponent,
     FooterComponent,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    NotFoundComponent,
+    PersonalDataComponent
   ],
   imports: [
     BrowserModule,
