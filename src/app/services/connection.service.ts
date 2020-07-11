@@ -39,7 +39,7 @@ export class ConnectionService implements OnInit {
   }
 
   public Login(loginInfo: LoginQ): Observable<LoginP> {
-    if (!loginInfo.id || !loginInfo.password) {
+    if (!loginInfo.username || !loginInfo.password) {
       return this.failed<LoginP>('Login field missing.');
     }
     this.client.get(LoginU, )

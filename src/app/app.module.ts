@@ -27,6 +27,7 @@ import { RegisterComponent } from './components/register/register.component';
 import {MatStepperModule} from "@angular/material/stepper";
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { PersonalDataComponent } from './contents/personal-data/personal-data.component';
+import { TrainingAdminComponent } from './contents/training-admin/training-admin.component';
 
 // These are the hardcoded inline svg sources to be used by the `<mat-icon>` component.
 // tslint:disable: max-line-length
@@ -110,7 +111,8 @@ export const svgIconProviders = [
     LoginComponent,
     RegisterComponent,
     NotFoundComponent,
-    PersonalDataComponent
+    PersonalDataComponent,
+    TrainingAdminComponent
   ],
   imports: [
     BrowserModule,

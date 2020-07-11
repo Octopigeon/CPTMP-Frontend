@@ -1,6 +1,12 @@
 export interface LoginQ {
-  id: string;
+  username: string;
   password: string;
+}
+
+export interface LoginP {
+  status_code: number;
+  date: number | string;
+  msg: string;
 }
 
 export interface UserInfo {
@@ -14,11 +20,7 @@ export interface UserInfoL {
   info?: UserInfo;
 }
 
-export interface LoginP {
-  status_code: number;
-  token?: string;
-  user_info?: UserInfo;
-}
+
 
 export interface RegisterQ {
   name: string;

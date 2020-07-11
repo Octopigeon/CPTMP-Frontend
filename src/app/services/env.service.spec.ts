@@ -46,6 +46,19 @@ describe('EnvService', () => {
       jasmine.clock().tick(600);
       expect(size).toBe("phone");
     })
+
+    it('should ignore rapid change', () => {
+      let size: Size;
+      env.size$.subscribe(s => size = s);
+
+      mockWindow.callEvent(800);
+      jasmine.clock().tick(100);
+      expect(size).toBe("desktop");
+
+      mockWindow.callEvent(400);
+      jasmine.clock().tick(600);
+      expect(size).toBe("phone");
+    })
   })
 });
 
