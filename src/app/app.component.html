@@ -14,7 +14,7 @@
         <span class="brand-name">ctopigeon</span>
       </div>
     </a>
-<!--    <aio-top-menu *ngIf="isSideBySide" [nodes]="topMenuNodes" [currentNode]="currentNodes?.TopBar"></aio-top-menu>-->
+    <!--    <aio-top-menu *ngIf="isSideBySide" [nodes]="topMenuNodes" [currentNode]="currentNodes?.TopBar"></aio-top-menu>-->
     <search-box *ngIf="!isStartPage" class="search-container" #searchBox></search-box>
     <div *ngIf="!isStartPage" matRipple class="user-container" title="User" matRippleColor="rgba(255, 255, 255, 0.1)">
       <a href="#" class="user-page">
@@ -34,7 +34,7 @@
     <div id="top-of-page"></div>
     <div class="start-background" [class.start]="isStartPage" ></div>
     <div class="content-container">
-      <app-personal-data></app-personal-data>
+      <app-usercenter></app-usercenter>
       <router-outlet></router-outlet>
     </div>
     <app-footer></app-footer>

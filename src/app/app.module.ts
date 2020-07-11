@@ -10,6 +10,8 @@ import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatIconModule, MatIconRegistry} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
+import { ImageCropperModule } from 'ngx-image-cropper';
+
 
 import { CustomIconRegistry, SVG_ICONS } from "./shared/custom-icon-registry";
 import { SearchBoxComponent } from './components/search-box/search-box.component';
@@ -28,6 +30,13 @@ import {MatStepperModule} from "@angular/material/stepper";
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { PersonalDataComponent } from './contents/personal-data/personal-data.component';
 import { TrainingAdminComponent } from './contents/training-admin/training-admin.component';
+import { UsercenterComponent } from './components/usercenter/usercenter.component';
+import {MatExpansionModule} from "@angular/material/expansion";
+import {MatListModule} from "@angular/material/list";
+import {MatTreeModule} from "@angular/material/tree";
+import {MatGridListModule} from "@angular/material/grid-list";
+import { UserInfoPageComponent } from './components/user-info-page/user-info-page.component';
+import { ChangeAvatarPageComponent } from './components/change-avatar-page/change-avatar-page.component';
 
 // These are the hardcoded inline svg sources to be used by the `<mat-icon>` component.
 // tslint:disable: max-line-length
@@ -113,6 +122,10 @@ export const svgIconProviders = [
     NotFoundComponent,
     PersonalDataComponent,
     TrainingAdminComponent
+    RegisterComponent,
+    UsercenterComponent,
+    UserInfoPageComponent,
+    ChangeAvatarPageComponent
   ],
   imports: [
     BrowserModule,
@@ -129,8 +142,13 @@ export const svgIconProviders = [
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatStepperModule
-  ],
+    MatStepperModule,
+    MatExpansionModule,
+    MatListModule,
+    MatTreeModule,
+    MatGridListModule,
+    ImageCropperModule,
+    ],
   providers: [
     ErrorHandler,
     svgIconProviders,
