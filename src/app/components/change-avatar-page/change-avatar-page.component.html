@@ -46,12 +46,12 @@
   <div class="mdui-row">
     <div class="mdui-col-xs-12">
       <div *ngIf="!isImgChosen">
-        <button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent save-button mdui-center">
+        <button class="mdui-btn mdui-btn-raised mdui-ripple button mdui-center">
           选择图片<input type="file" (change)="fileChangeEvent($event)"/>
         </button>
       </div>
       <div *ngIf="isImgChosen">
-        <button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent save-button mdui-center">
+        <button class="mdui-btn mdui-btn-raised mdui-ripple button mdui-center">
           保存头像
         </button>
       </div>

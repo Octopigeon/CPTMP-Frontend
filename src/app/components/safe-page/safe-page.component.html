@@ -1,15 +1,46 @@
-<link rel="stylesheet" href="//cdnjs.loli.net/ajax/libs/mdui/0.4.3/css/mdui.min.css">
-<script src="//cdnjs.loli.net/ajax/libs/mdui/0.4.3/js/mdui.min.js"></script>
-<div class="mdui-container-fluid mdui-theme-accent-blue">
-
-  <div class="mdui-container">
-    <div class="mdui-tab" mdui-tab>
-      <a href="#example1-tab1" class="mdui-ripple">web</a>
-      <a href="#example1-tab2" class="mdui-ripple">shopping</a>
-      <a href="#example1-tab3" class="mdui-ripple">images</a>
+<div class="mdui-container-fluid">
+  <div class="mdui-row">
+    <div class="mdui-col-xs-3 top-block">
     </div>
-    <div id="example1-tab1" class="mdui-p-a-2">web content</div>
-    <div id="example1-tab2" class="mdui-p-a-2">shopping content</div>
-    <div id="example1-tab3" class="mdui-p-a-2">images content</div>
+  </div>
+  <div class="mdui-row" *ngIf="isMainPage">
+    <div class="mdui-col-xs-2 "></div>
+    <div class="mdui-col-xs-3">
+      <button mat-button class = "block" (click)="jumpToChangePasswordPage()">
+        <div class="icon-padding"></div>
+        <i class="mdui-icon material-icons mdui-center">&#xe0da;</i>
+        <h4>修改密码</h4>
+      </button>
+    </div>
+    <div class="mdui-col-xs-2 ">
+    </div>
+    <div class="mdui-col-xs-3">
+      <button mat-button class = "block" (click)="jumpToChangeEmailPage()">
+        <div class="icon-padding"></div>
+        <i class="mdui-icon material-icons mdui-center">&#xe151;</i>
+        <h4>修改邮箱</h4>
+      </button>
+    </div>
+    <div class="mdui-col-xs-2 "></div>
+  </div>
+  <div class="mdui-row" *ngIf="!isMainPage">
+    <div class="mdui-col-xs-12">
+      <div *ngIf="isPasswordPage">
+        修改密码
+      </div>
+      <div *ngIf="isEmailPage">
+        修改邮箱
+      </div>
+    </div>
+  </div>
+  <div class="mdui-row">
+    <div class="bottom-padding"></div>
+    <div class="mdui-col-xs-12">
+      <mat-divider></mat-divider>
+      <div *ngIf="!isMainPage">
+        <button class="mdui-btn mdui-btn-raised mdui-ripple button mdui-center" (click)="backToMainPage()" >返回</button>
+      </div>
+    </div>
+
   </div>
 </div>
