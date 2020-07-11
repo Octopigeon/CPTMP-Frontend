@@ -10,6 +10,7 @@ import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatIconModule, MatIconRegistry} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
+import { ImageCropperModule } from 'ngx-image-cropper';
 
 
 import { CustomIconRegistry, SVG_ICONS } from "./shared/custom-icon-registry";
@@ -32,6 +33,7 @@ import {MatListModule} from "@angular/material/list";
 import {MatTreeModule} from "@angular/material/tree";
 import {MatGridListModule} from "@angular/material/grid-list";
 import { UserInfoPageComponent } from './components/user-info-page/user-info-page.component';
+import { ChangeAvatarPageComponent } from './components/change-avatar-page/change-avatar-page.component';
 
 // These are the hardcoded inline svg sources to be used by the `<mat-icon>` component.
 // tslint:disable: max-line-length
@@ -115,7 +117,8 @@ export const svgIconProviders = [
     LoginComponent,
     RegisterComponent,
     UsercenterComponent,
-    UserInfoPageComponent
+    UserInfoPageComponent,
+    ChangeAvatarPageComponent
   ],
     imports: [
         BrowserModule,
@@ -137,6 +140,7 @@ export const svgIconProviders = [
         MatListModule,
         MatTreeModule,
         MatGridListModule,
+        ImageCropperModule,
     ],
   providers: [
     ErrorHandler,

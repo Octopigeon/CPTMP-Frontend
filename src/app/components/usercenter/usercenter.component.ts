@@ -11,6 +11,10 @@ export class UsercenterComponent implements OnInit {
 
   isUserInfoPage = false;
 
+  isChangeAvatarPage = false;
+
+  itemTitle = '丨首页';
+
   userinfo: any = {
     id : 0,
     username: '',
@@ -27,7 +31,14 @@ export class UsercenterComponent implements OnInit {
 
   public jumpToInfoPage(): void{
     this.isUserInfoPage = true;
+    this.isChangeAvatarPage = false;
+    this.itemTitle = '丨我的信息';
+  }
 
+  public jumpToAvatarPage(): void{
+    this.isUserInfoPage = false;
+    this.isChangeAvatarPage = true;
+    this.itemTitle = '丨我的头像';
   }
 
 }
