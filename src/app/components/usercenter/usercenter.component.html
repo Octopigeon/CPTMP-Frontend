@@ -29,14 +29,14 @@
       <div class="mdui-col-xs-2 menu-body">
 
         <button mat-button><i class="mdui-icon material-icons">&#xe84f;</i><h2>首&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;页</h2></button>
-        <button mat-button><i class="mdui-icon material-icons">&#xe851;</i><h2>我的信息</h2></button>
+        <button mat-button (click)="jumpToInfoPage()"><i class="mdui-icon material-icons" >&#xe851;</i><h2>我的信息</h2></button>
         <button mat-button><i class="mdui-icon material-icons">&#xe853;</i><h2>我的头像</h2></button>
 
       </div>
 
       <div class="mdui-col-xs-6 item-body">
         <div class="mdui-container">
-          <app-user-info-page></app-user-info-page>
+          <app-user-info-page *ngIf="isUserInfoPage"></app-user-info-page>
         </div>
       <div class="mdui-col-xs-2"></div>
     </div>

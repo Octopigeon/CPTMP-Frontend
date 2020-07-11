@@ -9,6 +9,8 @@ export class UsercenterComponent implements OnInit {
 
   constructor() { }
 
+  isUserInfoPage = false;
+
   userinfo: any = {
     id : 0,
     username: '',
@@ -21,6 +23,11 @@ export class UsercenterComponent implements OnInit {
   };
 
   ngOnInit(): void {
+  }
+
+  public jumpToInfoPage(): void{
+    this.isUserInfoPage = true;
+
   }
 
 }
