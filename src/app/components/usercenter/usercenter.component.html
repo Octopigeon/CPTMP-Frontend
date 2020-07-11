@@ -29,8 +29,18 @@
       <div class="mdui-col-xs-2 menu-body">
 
         <button mat-button><i class="mdui-icon material-icons">&#xe84f;</i><h2>首&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;页</h2></button>
-        <button mat-button (click)="jumpToInfoPage()"><i class="mdui-icon material-icons" >&#xe851;</i><h2>我的信息</h2></button>
-        <button mat-button (click)="jumpToAvatarPage()"><i class="mdui-icon material-icons">&#xe853;</i><h2>我的头像</h2></button>
+        <button mat-button id="infoPage" (click)="jumpToInfoPage()">
+          <div *ngIf="isUserInfoPage"><i class="mdui-icon material-icons btn-down" >&#xe851;</i><h2 class="btn-down">我的信息</h2></div>
+          <div *ngIf="!isUserInfoPage"><i class="mdui-icon material-icons" >&#xe851;</i><h2>我的信息</h2></div>
+        </button>
+        <button mat-button id="avatarPage" (click)="jumpToAvatarPage()" >
+          <div *ngIf="isChangeAvatarPage"><i class="mdui-icon material-icons btn-down">&#xe853;</i><h2 class="btn-down">我的头像</h2></div>
+          <div *ngIf="!isChangeAvatarPage"><i class="mdui-icon material-icons ">&#xe853;</i><h2>我的头像</h2></div>
+        </button>
+        <button mat-button id="safePage" (click)="jumpToSafePage()" >
+          <div *ngIf="isSafePage"><i class="mdui-icon material-icons btn-down">&#xe32a;</i><h2 class="btn-down">安全中心</h2></div>
+          <div *ngIf="!isSafePage"><i class="mdui-icon material-icons">&#xe32a;</i><h2>安全中心</h2></div>
+        </button>
 
       </div>
 
@@ -38,6 +48,7 @@
         <div class="mdui-container">
           <app-user-info-page *ngIf="isUserInfoPage"></app-user-info-page>
           <app-change-avatar-page *ngIf="isChangeAvatarPage"></app-change-avatar-page>
+          <app-safe-page *ngIf="isSafePage"></app-safe-page>
         </div>
       <div class="mdui-col-xs-2"></div>
     </div>

@@ -9,7 +9,9 @@ import { ImageCroppedEvent } from 'ngx-image-cropper';
 export class ChangeAvatarPageComponent implements OnInit {
 
   imageChangedEvent: any = '';
-  croppedImage: any = '';
+  croppedImage: any = 'assets/avatar.jpg';
+
+  isImgChosen = false;
 
   constructor() { }
 
@@ -19,6 +21,7 @@ export class ChangeAvatarPageComponent implements OnInit {
 
   fileChangeEvent(event: any): void {
     this.imageChangedEvent = event;
+    this.isImgChosen=true;
   }
   imageCropped(event: ImageCroppedEvent): void {
     this.croppedImage = event.base64;

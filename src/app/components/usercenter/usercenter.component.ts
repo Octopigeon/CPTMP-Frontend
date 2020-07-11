@@ -13,6 +13,8 @@ export class UsercenterComponent implements OnInit {
 
   isChangeAvatarPage = false;
 
+  isSafePage = false;
+
   itemTitle = '丨首页';
 
   userinfo: any = {
@@ -32,13 +34,21 @@ export class UsercenterComponent implements OnInit {
   public jumpToInfoPage(): void{
     this.isUserInfoPage = true;
     this.isChangeAvatarPage = false;
+    this.isSafePage = false;
     this.itemTitle = '丨我的信息';
   }
 
   public jumpToAvatarPage(): void{
     this.isUserInfoPage = false;
     this.isChangeAvatarPage = true;
+    this.isSafePage = false;
     this.itemTitle = '丨我的头像';
+  }
+  public jumpToSafePage(): void{
+    this.isUserInfoPage = false;
+    this.isChangeAvatarPage = false;
+    this.isSafePage = true;
+    this.itemTitle = '丨安全中心';
   }
 
 }

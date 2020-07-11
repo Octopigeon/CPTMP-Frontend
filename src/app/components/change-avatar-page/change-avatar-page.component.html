@@ -1,14 +1,61 @@
-<input type="file" (change)="fileChangeEvent($event)" />
+<div class="top-padding"></div>
+<div class="mdui-container">
+  <div class="mdui-row">
+    <div class="mdui-col-xs-6">
+      <div class = "source-block">
+        <image-cropper
+          [imageChangedEvent]="imageChangedEvent"
+          [maintainAspectRatio]="true"
+          [aspectRatio]="1 / 1"
+          imageFile="assets/avatar"
+          format="png"
+          (imageCropped)="imageCropped($event)"
+          (imageLoaded)="imageLoaded()"
+          (cropperReady)="cropperReady()"
+          (loadImageFailed)="loadImageFailed()"
+          class = "sourceImage"
+          *ngIf="isImgChosen"
+        ></image-cropper>
+        <div *ngIf="!isImgChosen" class = "source-Image-empty">
+          <div class="icon-padding"></div>
+          <i class="mdui-icon material-icons mdui-center">&#xe3f4;</i>
+          <h4 class="mdui-center">选择图片</h4>
+        </div>
+        <div *ngIf="!isImgChosen">
+          <br>
+        </div>
+        <div *ngIf="isImgChosen">
+            <a href="javascript:;" class="choose-again mdui-center ">重新选择
+              <input type="file" (change)="fileChangeEvent($event)"/>
+            </a>
+        </div>
 
-<image-cropper
-  [imageChangedEvent]="imageChangedEvent"
-  [maintainAspectRatio]="true"
-  [aspectRatio]="1 / 1"
-  format="png"
-  (imageCropped)="imageCropped($event)"
-  (imageLoaded)="imageLoaded()"
-  (cropperReady)="cropperReady()"
-  (loadImageFailed)="loadImageFailed()"
-></image-cropper>
 
-<img [src]="croppedImage" />
+      </div>
+    </div>
+    <div class="mdui-col-xs-6">
+      <span class="fenge"></span>
+      <img [src]="croppedImage" class="croppedImage"/>
+    </div>
+  </div>
+  <div class="center-padding"></div>
+  <div class="mdui-row">
+    <div class="mdui-col-xs-12 center-info mdui-center">请选择图片上传：大小180 * 180像素支持JPG、PNG等格式，图片需小于2M</div>
+  </div>
+
+  <div class="mdui-row">
+    <div class="mdui-col-xs-12">
+      <div *ngIf="!isImgChosen">
+        <button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent save-button mdui-center">
+          选择图片<input type="file" (change)="fileChangeEvent($event)"/>
+        </button>
+      </div>
+      <div *ngIf="isImgChosen">
+        <button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent save-button mdui-center">
+          保存头像
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
