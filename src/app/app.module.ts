@@ -11,7 +11,7 @@ import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatIconModule, MatIconRegistry} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
 import { ImageCropperModule } from 'ngx-image-cropper';
-
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 import { CustomIconRegistry, SVG_ICONS } from "./shared/custom-icon-registry";
 import { SearchBoxComponent } from './components/search-box/search-box.component';
@@ -30,13 +30,15 @@ import {MatStepperModule} from "@angular/material/stepper";
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { PersonalDataComponent } from './contents/personal-data/personal-data.component';
 import { TrainingAdminComponent } from './contents/training-admin/training-admin.component';
-import { UsercenterComponent } from './components/usercenter/usercenter.component';
 import {MatExpansionModule} from "@angular/material/expansion";
 import {MatListModule} from "@angular/material/list";
 import {MatTreeModule} from "@angular/material/tree";
 import {MatGridListModule} from "@angular/material/grid-list";
-import { UserInfoPageComponent } from './components/user-info-page/user-info-page.component';
+import { UserInfoComponent } from './components/user-info/user-info.component';
 import { ChangeAvatarPageComponent } from './components/change-avatar-page/change-avatar-page.component';
+import {Overlay} from "@angular/cdk/overlay";
+import {MatRadioModule} from "@angular/material/radio";
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 // These are the hardcoded inline svg sources to be used by the `<mat-icon>` component.
 // tslint:disable: max-line-length
@@ -121,10 +123,9 @@ export const svgIconProviders = [
     RegisterComponent,
     NotFoundComponent,
     PersonalDataComponent,
-    TrainingAdminComponent
+    TrainingAdminComponent,
     RegisterComponent,
-    UsercenterComponent,
-    UserInfoPageComponent,
+    UserInfoComponent,
     ChangeAvatarPageComponent
   ],
   imports: [
@@ -148,10 +149,14 @@ export const svgIconProviders = [
     MatTreeModule,
     MatGridListModule,
     ImageCropperModule,
-    ],
+    MatRadioModule,
+    MatTooltipModule,
+  ],
   providers: [
     ErrorHandler,
     svgIconProviders,
+    MatSnackBar,
+    Overlay,
     { provide: MatIconRegistry, useClass: CustomIconRegistry },
     { provide: WINDOW, useFactory: windowProvider }
   ],

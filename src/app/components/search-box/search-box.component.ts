@@ -1,7 +1,6 @@
-import { AfterViewInit, Component, ViewChild, ElementRef, EventEmitter, Output } from '@angular/core';
+import { Component, ViewChild, ElementRef, EventEmitter, Output } from '@angular/core';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import {LocationService} from "../../services/location.service";
 
 /**
  * This component provides a text box to type a search query that will be sent to the SearchService.
@@ -25,7 +24,7 @@ import {LocationService} from "../../services/location.service";
     (click)="doSearch()">`,
   styleUrls: ['./search-box.component.styl']
 })
-export class SearchBoxComponent implements AfterViewInit {
+export class SearchBoxComponent {
 
   private searchDebounce = 300;
   private search$ = new Subject<string>();
@@ -36,18 +35,7 @@ export class SearchBoxComponent implements AfterViewInit {
   // tslint:disable-next-line: no-output-on-prefix
   @Output() onFocus = new EventEmitter<string>();
 
-  constructor(private locationService: LocationService) { }
-
-  /**
-   * When we first show this search box we trigger a search if there is a search query in the URL
-   */
-  ngAfterViewInit() {
-    const query = this.locationService.search()['search'];
-    if (query) {
-      this.query = SearchBoxComponent.decodeQuery(query);
-      this.doSearch();
-    }
-  }
+  constructor() { }
 
   doSearch() {
     this.search$.next(this.query);

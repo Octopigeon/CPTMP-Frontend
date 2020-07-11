@@ -92,9 +92,6 @@ mat-toolbar.app-toolbar
   box-sizing content-box
   padding-top 64px
   height calc(100vh - 64px)
-  transition-property padding
-  transition-duration 0.3s
-  transition-timing-function step-end
 
   .content-container
     min-height calc(100vh - 264px)
@@ -109,17 +106,18 @@ mat-toolbar.app-toolbar
   &.start
     padding-top 0
     height 100vh
-    transition-timing-function step-start
+    transition padding 0s
 
     .content-container
       min-height calc(100vh - 200px)
 
 .start-background
-  position absolute
+  position fixed
+  top 0
+  left 0
   z-index -1
   width 100%
   height 90vh
-  top 0
   background-color #1976d2
   background linear-gradient(45deg, #0d48a1, #42cbf5)
   transform-origin 0

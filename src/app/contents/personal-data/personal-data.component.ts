@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import {FormControl, FormGroup} from "@angular/forms";
+import {ConnectionService} from "../../services/connection.service";
+import {LocationService} from "../../services/location.service";
 
 /** This component will finish following operations:
  * Check personal info
@@ -13,9 +16,29 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PersonalDataComponent implements OnInit {
 
-  constructor() { }
+  constructor(private conn: ConnectionService, private loc: LocationService) { }
+
+  basicDataForm = new FormGroup({
+    realName: new FormControl(''),
+    male: new FormControl(false),
+    introduction: new FormControl(''),
+  });
 
   ngOnInit(): void {
+    this.fillForm();
   }
 
+  private fillForm() {
+    this.conn.loadInfo().subscribe(result => {
+      if (result) {
+        this.basicDataForm.controls.realName.setValue(this.conn.user.info.name);
+        this.basicDataForm.controls.male.setValue(
+          this.conn.user.info.male === null ? 'null' :
+            this.conn.user.info.male ? 'true' : 'false');
+        this.basicDataForm.controls.introduction.setValue(this.conn.user.info.introduction);
+      } else {
+        this.loc.go(['/'])
+      }
+    })
+  }
 }

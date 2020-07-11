@@ -42,9 +42,6 @@
   .login-panel-container
     margin 50px auto 100px
     width 350px
-    background-color #fcfcfc
-    border 1px solid #dadce0
-    border-radius 10px
     min-height 400px
     padding 48px 40px 36px
     text-align center
@@ -70,9 +67,12 @@
     @media (max-width 599px)
       width 100%
 
-  .login-form-hint
+  .login-form-hint, .login-form-warn
     margin 10px 0
     text-align left
+
+  .login-form-warn
+    color red
 
   .login-form-button
     text-align right

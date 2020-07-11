@@ -1,62 +1,39 @@
-/**
- * Following code brought from angular documentation.
- *
- * The MIT License
- * Copyright (c) 2010-2020 Google LLC. http://angular.io/license
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
- * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
- * to permit persons to whom the Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice
- * shall be included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
- * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
- * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
- * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
-
-import { Injectable } from '@angular/core';
+import {Injectable, OnInit} from '@angular/core';
 import { Location, PlatformLocation } from '@angular/common';
 
 import { ReplaySubject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import {filter, map} from 'rxjs/operators';
+import {ActivatedRoute, NavigationEnd, NavigationExtras, NavigationStart, Router, UrlSegment} from "@angular/router";
+import {Logger} from "./logger.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class LocationService {
 
+  public url$: ReplaySubject<string>;
+  swUpdateActivated = false;
   private readonly urlParser = document.createElement('a');
-  private urlSubject = new ReplaySubject<string>(1);
-  private swUpdateActivated = false;
-
-  currentUrl = this.urlSubject
-    .pipe(map(url => LocationService.stripSlashes(url)));
-
-  currentPath = this.currentUrl.pipe(
-    map(url => (url.match(/[^?#]*/) || [])[0])  // strip query and hash
-  );
 
   constructor(
-    private location: Location,
-    private platformLocation: PlatformLocation,
+    public route: ActivatedRoute,
+    public router: Router,
+    private logger: Logger
     /* swUpdates: SwUpdatesService */) {
-
-    this.urlSubject.next(location.path(true));
-
-    this.location.subscribe(state => {
-      return this.urlSubject.next(state.url || '');
-    });
-
+    this.url$ = new ReplaySubject<string>(1);
+    this.url$.next(this.router.url);
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(event => this.url$.next((event as NavigationEnd).urlAfterRedirects));
     // swUpdates.updateActivated.subscribe(() => this.swUpdateActivated = true);
   }
 
+  go(commands: any[], extras?: NavigationExtras) {
+    this.router.navigate(commands, extras).then();
+  }
+
   // Original TO_DO ignore if url-without-hash-or-search matches current location?
-  go(url: string|null|undefined) {
+  goUrl(url: string|null|undefined) {
     if (!url) { return; }
     url = LocationService.stripSlashes(url);
     if (/^http/.test(url)) {
@@ -66,8 +43,7 @@ export class LocationService {
       // (Do a "full page navigation" if a ServiceWorker update has been activated)
       this.goExternal(url);
     } else {
-      this.location.go(url);
-      this.urlSubject.next(url);
+      this.router.navigateByUrl(url).then();
     }
   }
 
@@ -81,34 +57,6 @@ export class LocationService {
 
   private static stripSlashes(url: string) {
     return url.replace(/^\/+/, '').replace(/\/+(\?|#|$)/, '$1');
-  }
-
-  search() {
-    const search: { [index: string]: string|undefined; } = {};
-    const path = this.location.path();
-    const q = path.indexOf('?');
-    if (q > -1) {
-      try {
-        const params = path.substr(q + 1).split('&');
-        params.forEach(p => {
-          const pair = p.split('=');
-          if (pair[0]) {
-            search[decodeURIComponent(pair[0])] = pair[1] && decodeURIComponent(pair[1]);
-          }
-        });
-      } catch (e) { /* don't care */ }
-    }
-    return search;
-  }
-
-  setSearch(label: string, params: { [key: string]: string|undefined}) {
-    const search = Object.keys(params).reduce((acc, key) => {
-      const value = params[key];
-      return (value === undefined) ? acc :
-        acc += (acc ? '&' : '?') + `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
-    }, '');
-
-    this.platformLocation.replaceState({}, label, this.platformLocation.pathname + search);
   }
 
   /**
@@ -163,7 +111,7 @@ export class LocationService {
     }
 
     // approved for navigation
-    this.go(relativeUrl);
+    this.goUrl(relativeUrl);
     return false;
   }
 }

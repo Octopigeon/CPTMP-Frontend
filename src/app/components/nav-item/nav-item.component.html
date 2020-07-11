@@ -1,12 +1,12 @@
 <div *ngIf="!node.children">
-  <a mat-ripple href="{{node.url}}" [ngClass]="classes" title="{{node.tooltip}}"
+  <a mat-ripple [routerLink]="node.url" [ngClass]="classes" title="{{node.tooltip}}"
      class="vertical-menu-item">
     <span>{{node.title}}</span>
   </a>
 </div>
 
 <div *ngIf="node.children">
-  <a mat-ripple *ngIf="node.url != null" href="{{node.url}}" [ngClass]="classes" title="{{node.tooltip}}"
+  <a mat-ripple *ngIf="node.url != null" [routerLink]="node.url" [ngClass]="classes" title="{{node.tooltip}}"
      (click)="headerClicked()" class="vertical-menu-item heading">
     <span>{{node.title}}</span>
     <mat-icon class="rotating-icon" svgIcon="keyboard_arrow_right"></mat-icon>

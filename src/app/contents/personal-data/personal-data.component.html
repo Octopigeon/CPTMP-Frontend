@@ -1,1 +1,37 @@
-<p>personal-data works!</p>
+<div class="info-header">
+  <h1 class="header-title">个人信息</h1>
+  <p class="header-note">在此，您可以查看和修改您的个人信息</p>
+</div>
+<div class="intro-info round-panel">
+  <h2 class="desc-title">公开资料</h2>
+  <p class="desc-note">他人可以查看这些资料，以便更好地了解您</p>
+  <form class="intro-info-form" [formGroup]="basicDataForm">
+    <mat-form-field appearance="standard" class="form-input">
+      <mat-label>姓名</mat-label>
+      <input matInput placeholder="您的真实姓名" formControlName="realName" required>
+      <mat-icon matSuffix>person</mat-icon>
+      <mat-hint>请使用真实姓名，以便他人认识你</mat-hint>
+    </mat-form-field>
+    <mat-divider></mat-divider>
+    <div class="form-input form-input-gender">
+      <label>性别</label>
+      <mat-radio-group formControlName="male" required>
+        <mat-radio-button value="true">男</mat-radio-button>
+        <mat-radio-button value="false">女</mat-radio-button>
+        <mat-radio-button value="null">保密</mat-radio-button>
+      </mat-radio-group>
+    </div>
+    <mat-divider></mat-divider>
+    <mat-form-field appearance="standard" class="form-input">
+      <mat-label>个人简介</mat-label>
+      <textarea matInput placeholder="填写一段个人简介" formControlName="introduction" required></textarea>
+      <mat-hint>个人简介让他人更好地了解你</mat-hint>
+    </mat-form-field>
+    <p class="submit-container">
+      <button mat-fab color="primary" aria-label="submit modification" type="submit"
+      matTooltip="保存更改" matTooltipPosition="left">
+        <mat-icon>check</mat-icon>
+      </button>
+    </p>
+  </form>
+</div>

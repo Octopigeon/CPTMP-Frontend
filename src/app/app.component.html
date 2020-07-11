@@ -2,9 +2,9 @@
   <mat-progress-bar mode="indeterminate" color="warn"></mat-progress-bar>
 </div>
 
-<mat-toolbar color="primary" class="app-toolbar no-print" [class.transitioning]="isTransitioning" [class.start]="isStartPage">
+<mat-toolbar color="primary" class="app-toolbar no-print" [class.transitioning]="isTransitioning" [class.start]="isStartPage | async">
   <mat-toolbar-row>
-    <button mat-button class="hamburger" title="Menu" (click)="sidenav.toggle()" [class.start]="isStartPage">
+    <button mat-button class="hamburger" title="Menu" (click)="sidenav.toggle()" [class.start]="isStartPage | async">
       <mat-icon svgIcon="menu"></mat-icon>
     </button>
     <a class="nav-link home" href="/" [ngSwitch]="windowType | async">
@@ -15,26 +15,27 @@
       </div>
     </a>
     <!--    <aio-top-menu *ngIf="isSideBySide" [nodes]="topMenuNodes" [currentNode]="currentNodes?.TopBar"></aio-top-menu>-->
-    <search-box *ngIf="!isStartPage" class="search-container" #searchBox></search-box>
-    <div *ngIf="!isStartPage" matRipple class="user-container" title="User" matRippleColor="rgba(255, 255, 255, 0.1)">
+    <search-box *ngIf="!(isStartPage  | async)" class="search-container" #searchBox></search-box>
+    <div *ngIf="!(isStartPage | async)" matRipple class="user-container" title="User" matRippleColor="rgba(255, 255, 255, 0.1)">
       <a href="#" class="user-page">
         <img src="assets/avatar.jpg" alt="user" class="user-avatar">
       </a>
     </div>
-    <div *ngIf="isStartPage" class="search-container dummy"></div>
-    <div *ngIf="isStartPage" class="user-container dummy"></div>
+    <div *ngIf="isStartPage | async" class="search-container dummy"></div>
+    <div *ngIf="isStartPage | async" class="user-container dummy"></div>
   </mat-toolbar-row>
 </mat-toolbar>
 
-<mat-sidenav-container class="main-container" [class.start]="isStartPage">
-  <mat-sidenav #sidenav [mode]="windowType | async | sidebarMode" class="main-sidenav">
+<mat-sidenav-container class="main-container" [class.start]="isStartPage | async">
+  <mat-sidenav #sidenav class="main-sidenav"
+               [opened]="!(isStartPage  | async) && (windowType | async) === 'desktop'"
+               [mode]="windowType | async | sidebarMode">
     <nav-menu [nodes]="sidenavNodes" [isWide]="true"></nav-menu>
   </mat-sidenav>
   <mat-sidenav-content>
     <div id="top-of-page"></div>
-    <div class="start-background" [class.start]="isStartPage" ></div>
+    <div class="start-background" [class.start]="isStartPage | async" ></div>
     <div class="content-container">
-      <app-usercenter></app-usercenter>
       <router-outlet></router-outlet>
     </div>
     <app-footer></app-footer>

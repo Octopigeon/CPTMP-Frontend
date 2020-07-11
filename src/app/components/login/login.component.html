@@ -7,13 +7,13 @@
     </h1>
   </div>
   <div class="login-panel-wrapper">
-    <div class="login-panel-container">
+    <div class="login-panel-container round-panel">
       <h2>登录</h2>
       <p>使用您的&nbsp;<img src="assets/logo-black.png" class="logo-inline" alt="O">ctopigeon&nbsp;帐号</p>
-      <form class="login-form" [formGroup]="loginForm">
+      <form class="login-form" [formGroup]="loginForm" (ngSubmit)="login(loginFormDirective)" #loginFormDirective="ngForm">
         <mat-form-field appearance="outline" class="login-field">
           <mat-label>电子邮件地址或学号</mat-label>
-          <input matInput placeholder="" formControlName="emailOrID" required>
+          <input matInput placeholder="" type="text" formControlName="username" required>
           <mat-icon matSuffix>account_box</mat-icon>
         </mat-form-field>
         <mat-form-field appearance="outline" class="login-field">
@@ -21,11 +21,14 @@
           <input matInput placeholder="" type="password" formControlName="password" required>
           <mat-icon matSuffix>vpn_key</mat-icon>
         </mat-form-field>
-        <p class="login-form-hint">
+        <p class="login-form-hint" *ngIf="!errorInfo">
           正在使用公用设备？请使用无痕模式登录。
         </p>
+        <p class="login-form-warn" *ngIf="errorInfo">
+          {{errorInfo}}
+        </p>
         <p class="login-form-button">
-          <button mat-flat-button color="primary" class="login-form-submit">登录</button>
+          <button mat-flat-button color="primary" class="login-form-submit" type="submit">登录</button>
         </p>
       </form>
     </div>

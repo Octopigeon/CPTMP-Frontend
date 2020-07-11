@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-user-info-page',
-  templateUrl: './user-info-page.component.html',
-  styleUrls: ['./user-info-page.component.styl']
+  selector: 'app-user-info',
+  templateUrl: './user-info.component.html',
+  styleUrls: ['./user-info.component.styl']
 })
-export class UserInfoPageComponent implements OnInit {
+export class UserInfoComponent implements OnInit {
 
   constructor() { }
 
