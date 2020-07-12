@@ -1,4 +1,4 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, HammerModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { ErrorHandler, NgModule } from '@angular/core';
 
@@ -39,6 +39,8 @@ import { ChangeAvatarPageComponent } from './components/change-avatar-page/chang
 import {Overlay} from "@angular/cdk/overlay";
 import {MatRadioModule} from "@angular/material/radio";
 import {MatTooltipModule} from "@angular/material/tooltip";
+import { ChangeAvatarComponent } from './contents/change-avatar/change-avatar.component';
+import {MatDialogModule} from "@angular/material/dialog";
 
 // These are the hardcoded inline svg sources to be used by the `<mat-icon>` component.
 // tslint:disable: max-line-length
@@ -126,10 +128,12 @@ export const svgIconProviders = [
     TrainingAdminComponent,
     RegisterComponent,
     UserInfoComponent,
-    ChangeAvatarPageComponent
+    ChangeAvatarPageComponent,
+    ChangeAvatarComponent
   ],
   imports: [
     BrowserModule,
+    HammerModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
@@ -151,6 +155,7 @@ export const svgIconProviders = [
     ImageCropperModule,
     MatRadioModule,
     MatTooltipModule,
+    MatDialogModule,
   ],
   providers: [
     ErrorHandler,

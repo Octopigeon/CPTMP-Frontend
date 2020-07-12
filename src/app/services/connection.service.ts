@@ -1,42 +1,45 @@
 import {Injectable, OnInit} from '@angular/core';
 import {StorageMap} from "@ngx-pwa/local-storage";
 import {HttpClient} from "@angular/common/http";
-import {LoginQ, Resp, UserInfo, UserInfoL} from "../types/types";
+import {ChangePasswordQ, LoginQ, Resp, UserInfo, UserInfoL} from "../types/types";
 import {Logger} from "./logger.service";
-import {Observable, Subscriber} from "rxjs";
-import {API} from "../types/api";
+import {Observable, ReplaySubject, Subscriber} from "rxjs";
+import {API} from "../constants/api";
+import {LocationService} from "./location.service";
 
 @Injectable({
   providedIn: 'root'
 })
-export class ConnectionService {
+export class ConnectionService{
 
   private _user: UserInfoL = {login: false};
-  public get user() { return this._user; };
+  public user: ReplaySubject<UserInfoL>;
 
   constructor(
     private storage: StorageMap,
     private client: HttpClient,
     private logger: Logger,
-  ) {}
+    private loc: LocationService,
+  ) {
+    this.user = new ReplaySubject<UserInfoL>(1);
+    this.loadInfo()
+    this.GetUserInfo().subscribe()
+  }
 
-  public loadInfo(): Observable<boolean> {
-    let subscribe: Subscriber<boolean>;
-    const o = new Observable<boolean>(s => subscribe = s);
+  public loadInfo() {
     this.storage.get('user').subscribe(u => {
       const user = u as UserInfoL;
       if (typeof user === 'undefined') {
         this.storage.set('user', {login: false}).subscribe()
         this._user = {login: false}
-        subscribe.next(false);
+        this.user.next(this._user);
         this.logger.log('User info not found in storage. Set with default.')
         return;
       }
       this._user = user
-      subscribe.next(true);
+      this.user.next(this._user);
       this.logger.log(`Load User info: ${user}`)
     });
-    return o;
   }
 
   private failed<T>(err?: any): Observable<T> {
@@ -49,6 +52,10 @@ export class ConnectionService {
 
   private post(url: string, body: any): Observable<Resp> {
     return this.client.post<Resp>(url, body);
+  }
+
+  private put(url: string, body: any): Observable<Resp> {
+    return this.client.put<Resp>(url, body);
   }
 
   public Login(loginInfo: LoginQ): Observable<UserInfo> {
@@ -81,7 +88,7 @@ export class ConnectionService {
         })
       },
       error: error => {
-        this.logger.log(`Login failed with network error: ${error}.`);
+        this.logger.log(`Login failed with network error: `, error);
         observer.error(error)
       }
     })
@@ -98,16 +105,49 @@ export class ConnectionService {
         if (response.status !== 0) {
           this.logger.log(`Get user info failed with status code ${response.status}: ${response.msg}.`)
           observer.error(response);
+          this._user = {login: false}
+          this.storage.set('user', {login: false}).subscribe()
+          this.user.next(this._user);
+          if (this.loc.url.startsWith('/plat')) {
+            this.loc.go(['/'])
+          }
           return;
         }
         const info = response.data as UserInfo;
         this.storage.set('user', {login: true, info}).subscribe()
         this._user = {login: true, info}
+        this.user.next(this._user);
         observer.next(info);
+        observer.complete();
+        if (!this.loc.url.startsWith('/plat')) {
+          this.loc.go(['/', 'plat', 'user', 'me'])
+        }
+      },
+      error: error => {
+        this.logger.log(`Get user info failed with network error: `, error);
+        observer.error(error)
+      }
+    })
+
+    return result;
+  }
+
+  public ChangePassword(changeRequest: ChangePasswordQ): Observable<Resp> {
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+
+    this.put(API.change_password, changeRequest).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Change password failed with status code ${response.status}: ${response.msg}.`)
+          observer.error(response);
+          return;
+        }
+        observer.next(response);
         observer.complete();
       },
       error: error => {
-        this.logger.log(`Get user info failed with network error: ${error}.`);
+        this.logger.log(`Change password failed with network error: `, error);
         observer.error(error)
       }
     })

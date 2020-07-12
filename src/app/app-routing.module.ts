@@ -4,11 +4,12 @@ import {environment} from "../environments/environment";
 import {PersonalDataComponent} from "./contents/personal-data/personal-data.component";
 import {LoginComponent} from "./components/login/login.component";
 import {NotFoundComponent} from "./components/not-found/not-found.component";
+import {ChangeAvatarComponent} from "./contents/change-avatar/change-avatar.component";
 
 
 const routes: Routes = [
   { path: 'plat/user/me', component: PersonalDataComponent },
-
+  // { path: 'plat/test', component: ChangeAvatarComponent },
   // { path: 'activate/:token'},
   { path: '', component: LoginComponent, pathMatch: 'full' },
   { path: '**', component: NotFoundComponent }

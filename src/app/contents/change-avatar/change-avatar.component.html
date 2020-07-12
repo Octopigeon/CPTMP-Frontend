@@ -1,0 +1,36 @@
+<h2 class="title">更改头像</h2>
+<p class="note">1. 首先，选择一张图片</p>
+<div class="file-picker">
+  <button mat-flat-button color="primary" id="file-picker" cdkFocusInitial>选择图片</button>
+  <input type="file" id="real-file-picker" accept="image/png, image/jpeg" (change)="fileChangeEvent($event)">
+</div>
+<p class="note">2. 然后，请调整裁剪尺寸</p>
+<div class="image-cropper" (pointerup)="cropperUp()">
+  <div class="cropper-container">
+    <image-cropper
+      class="cropper"
+      [imageChangedEvent]="imageChangedEvent"
+      maintainAspectRatio="true"
+      aspectRatio="1"
+      resizeToWidth="256"
+      format="png"
+      (imageCropped)="imageCropped($event)"
+      (imageLoaded)="imageLoaded()"
+      (cropperReady)="cropperReady()"
+      (loadImageFailed)="loadImageFailed()"
+    ></image-cropper>
+  </div>
+
+  <div class="cropped" *ngIf="!croppedImage">
+    请先选择一张图片
+  </div>
+
+  <div class="cropped" *ngIf="croppedImage">
+    <img [src]="croppedImage" class="cropped-image" alt="cropped image"/>
+    <div class="cropped-overlay"></div>
+  </div>
+</div>
+<div mat-dialog-actions class="dialog-actions">
+  <button mat-button (click)="cancelClose()">取消</button>
+  <button mat-flat-button [mat-dialog-close]="getCroppedBlob()" color="primary" [disabled]="!croppedImage">确定</button>
+</div>

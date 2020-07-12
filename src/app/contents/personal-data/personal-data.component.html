@@ -5,31 +5,102 @@
 <div class="intro-info round-panel">
   <h2 class="desc-title">公开资料</h2>
   <p class="desc-note">他人可以查看这些资料，以便更好地了解您</p>
+  <div class="form-input-wrapper avatar-wrapper">
+    <div class="form-label">
+      <label>头像</label>
+    </div>
+    <div class="form-input">
+      <button mat-flat-button color="primary" class="avatar-change-button" (click)="changeAvatar()">更改头像</button>
+      <img src="assets/avatar.jpg" alt="avatar" class="avatar-right">
+    </div>
+  </div>
   <form class="intro-info-form" [formGroup]="basicDataForm">
-    <mat-form-field appearance="standard" class="form-input">
-      <mat-label>姓名</mat-label>
-      <input matInput placeholder="您的真实姓名" formControlName="realName" required>
-      <mat-icon matSuffix>person</mat-icon>
-      <mat-hint>请使用真实姓名，以便他人认识你</mat-hint>
-    </mat-form-field>
-    <mat-divider></mat-divider>
-    <div class="form-input form-input-gender">
-      <label>性别</label>
-      <mat-radio-group formControlName="male" required>
-        <mat-radio-button value="true">男</mat-radio-button>
-        <mat-radio-button value="false">女</mat-radio-button>
-        <mat-radio-button value="null">保密</mat-radio-button>
-      </mat-radio-group>
+    <div class="form-input-wrapper">
+      <div class="form-label">
+        <label>姓名</label>
+      </div>
+      <mat-form-field appearance="standard" class="form-input">
+        <mat-label>姓名</mat-label>
+        <input matInput placeholder="您的真实姓名" formControlName="realName" required>
+        <mat-icon matSuffix>person</mat-icon>
+        <mat-hint>请使用真实姓名，以便他人认识你</mat-hint>
+      </mat-form-field>
     </div>
     <mat-divider></mat-divider>
-    <mat-form-field appearance="standard" class="form-input">
-      <mat-label>个人简介</mat-label>
-      <textarea matInput placeholder="填写一段个人简介" formControlName="introduction" required></textarea>
-      <mat-hint>个人简介让他人更好地了解你</mat-hint>
-    </mat-form-field>
+    <div class="form-input-wrapper">
+      <div class="form-label">
+        <label>性别</label>
+      </div>
+      <div class="form-input form-input-gender">
+        <mat-radio-group formControlName="gender" required>
+          <mat-radio-button value="true">男</mat-radio-button>
+          <mat-radio-button value="false">女</mat-radio-button>
+          <mat-radio-button value="null">保密</mat-radio-button>
+        </mat-radio-group>
+      </div>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="form-input-wrapper">
+      <div class="form-label">
+        <label>个人简介</label>
+      </div>
+      <mat-form-field appearance="standard" class="form-input">
+        <mat-label>个人简介</mat-label>
+        <textarea matInput placeholder="填写一段个人简介" formControlName="introduction" required></textarea>
+        <mat-hint>个人简介让他人更好地了解你</mat-hint>
+      </mat-form-field>
+    </div>
     <p class="submit-container">
       <button mat-fab color="primary" aria-label="submit modification" type="submit"
       matTooltip="保存更改" matTooltipPosition="left">
+        <mat-icon>check</mat-icon>
+      </button>
+    </p>
+  </form>
+</div>
+<div class="credential-info round-panel">
+  <h2 class="desc-title">修改密码</h2>
+  <p class="desc-note">使用强密码、定期修改密码有助于保护您的账户安全</p>
+  <form class="intro-info-form" [formGroup]="passwordChangeForm"
+        #passwordChangeFormDirective="ngForm" (ngSubmit)="submitPasswordChangeForm(passwordChangeFormDirective)">
+    <div class="form-input-wrapper">
+      <div class="form-label">
+        <label>当前密码</label>
+      </div>
+      <mat-form-field appearance="standard" class="form-input">
+        <mat-label>当前密码</mat-label>
+        <input matInput placeholder="当前密码" formControlName="passwordCurrent" type="password" required>
+        <mat-hint>为了保护您的账户安全，我们需要验证当前密码</mat-hint>
+      </mat-form-field>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="form-input-wrapper">
+      <div class="form-label">
+        <label>新密码</label>
+      </div>
+      <mat-form-field appearance="standard" class="form-input">
+        <mat-label>新密码</mat-label>
+        <input matInput placeholder="新密码" formControlName="passwordNew" type="password" required>
+        <mat-hint>请输入您的新密码</mat-hint>
+        <mat-error *ngIf="passwordChangeForm.controls.passwordNew.hasError('minlength')">密码至少需要8位</mat-error>
+      </mat-form-field>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="form-input-wrapper">
+      <div class="form-label">
+        <label>再次输入新密码</label>
+      </div>
+      <mat-form-field appearance="standard" class="form-input">
+        <mat-label>确认新密码</mat-label>
+        <input matInput placeholder="新密码" formControlName="passwordConfirm" type="password" required
+               [errorStateMatcher]="passwordErrorStateMatcher">
+        <mat-hint>请再次输入新密码，以确认您键入了正确的密码</mat-hint>
+        <mat-error *ngIf="passwordChangeForm.hasError('passwordMismatch')">两次输入的密码不匹配</mat-error>
+      </mat-form-field>
+    </div>
+    <p class="submit-container">
+      <button mat-fab color="primary" aria-label="submit modification" type="submit"
+              matTooltip="保存更改" matTooltipPosition="left">
         <mat-icon>check</mat-icon>
       </button>
     </p>

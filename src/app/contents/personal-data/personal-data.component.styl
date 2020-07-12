@@ -2,18 +2,46 @@
   margin 30px 0 20px
   text-align center
 
-.intro-info
+.avatar-wrapper
+  height 100px
+
+.avatar-change-button
+  margin-top 22px
+
+.avatar-right
+  float right
+  height 80px
+  margin-right 10px
+  border-radius 50%
+
+.intro-info,
+.credential-info
   box-sizing border-box
   padding 20px
   max-width 800px
-  margin 10px auto
+  margin 10px auto 50px
 
-.form-input
-  width 100%
-  margin 10px 0
+  @media (max-width 800px)
+    margin 10px 10px 50px
 
-.form-input-gender
-  margin 30px 0
+.form-input-wrapper
+  display flex
+
+  .form-label
+    display flex
+    width 20%
+    min-width 60px
+    justify-content left
+    font-weight 500
+    align-items center
+
+  .form-input
+    flex-grow 1
+    width 100%
+    margin 10px 0
+
+  .form-input-gender
+    margin 30px 0
 
 mat-radio-button
   margin 0 10px

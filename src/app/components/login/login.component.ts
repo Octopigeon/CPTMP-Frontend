@@ -4,11 +4,9 @@ import {LoginQ} from "../../types/types";
 import {ConnectionService} from "../../services/connection.service";
 import {Logger} from "../../services/logger.service";
 import {ErrorCode} from "../../constants/error-code";
-import {MatSnackBar} from "@angular/material/snack-bar";
 import {EnvService} from "../../services/env.service";
-import {first} from "rxjs/operators";
-import {MatSnackBarConfig} from "@angular/material/snack-bar/snack-bar-config";
 import {LocationService} from "../../services/location.service";
+import {MessageService} from "../../services/message.service";
 
 @Component({
   selector: 'app-login',
@@ -19,7 +17,7 @@ export class LoginComponent implements OnInit {
 
   constructor(private conn: ConnectionService,
               private logger: Logger,
-              public snackBar: MatSnackBar,
+              private msg: MessageService,
               private env: EnvService,
               private loc: LocationService) { }
 
@@ -32,6 +30,7 @@ export class LoginComponent implements OnInit {
   previousDirty: boolean = false;
 
   public login(directive: FormGroupDirective) {
+    this.msg.SendMessage(`正在登录，请稍候...`).subscribe();
     const req: LoginQ = {
       password: this.loginForm.value.password,
       username: this.loginForm.value.username
@@ -41,16 +40,7 @@ export class LoginComponent implements OnInit {
       next: info => {
         this.logger.log("Login successful as " + info)
         this.loc.go(['plat', 'user', 'me'])
-        this.env.size$.pipe(
-          first()
-        ).subscribe(size => {
-          const config: MatSnackBarConfig = {
-            duration: 5000,
-            horizontalPosition: size === 'phone' ? 'center' : 'right',
-            verticalPosition: size === 'phone' ? 'bottom' : 'top'
-          }
-          this.snackBar.open(`${info.name}，欢迎使用本系统。`, null, config);
-        })
+        this.msg.SendMessage(`登录成功。欢迎回来，${info.name}`).subscribe();
       },
       error: err => {
         this.logger.log("Login failed: " + err)

@@ -32,7 +32,7 @@ export interface UserInfo {
   avatar: string;
 
   phone_number?: string;
-  male?: boolean;
+  gender?: boolean;
   introduction?: string;
 
   common_id?: string; // deprecated stuff
@@ -55,14 +55,9 @@ export interface RegisterP {
   user_info?: UserInfo;
 }
 
-export interface ModifyPasswordQ {
-  id: string;
-  old_password: string;
+export interface ChangePasswordQ {
+  origin_password: string;
   new_password: string;
-}
-
-export interface ModifyPasswordP {
-  status_code: number;
 }
 
 export interface ModifyUserInfoQ {

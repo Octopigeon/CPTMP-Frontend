@@ -1,0 +1,57 @@
+.file-picker
+  position relative
+  margin-bottom 20px
+
+  #real-file-picker
+    position absolute
+    height 36px
+    top 0
+    left 0
+    opacity 0
+
+.image-cropper
+  display flex
+  padding-bottom 50px
+
+  @media (max-width 599px)
+    flex-direction column
+
+  .cropper-container
+    margin-right 20px
+    width 256px
+    max-height 256px
+
+    @media (max-width 380px)
+      width calc(80vw - 48px)
+      max-height calc(80vw - 48px)
+
+    .cropper
+      max-width 256px
+      max-height 256px
+      margin 0 auto
+      padding 0
+
+      @media (max-width 380px)
+        max-width calc(80vw - 48px)
+        max-height calc(80vw - 48px)
+
+  .cropped
+    position relative
+    width 128px
+    height 128px
+    overflow hidden
+
+    .cropped-image
+      width 128px
+      height 128px
+
+    .cropped-overlay
+      position absolute
+      top 0
+      left 0
+      width 128px
+      height 128px
+      background radial-gradient(transparent 69%, rgba(0,0,0,0.5) 71%)
+
+.dialog-actions
+  justify-content flex-end

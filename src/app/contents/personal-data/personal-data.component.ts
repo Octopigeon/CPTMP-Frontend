@@ -1,7 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import {FormControl, FormGroup} from "@angular/forms";
+import {FormControl, FormGroup, FormGroupDirective, NgForm, ValidationErrors, Validators} from "@angular/forms";
 import {ConnectionService} from "../../services/connection.service";
 import {LocationService} from "../../services/location.service";
+import {ErrorStateMatcher} from "@angular/material/core";
+import {ChangePasswordQ} from "../../types/types";
+import {MessageService} from "../../services/message.service";
+import {MatDialog} from "@angular/material/dialog";
+import {ChangeAvatarComponent} from "../change-avatar/change-avatar.component";
+import {Logger} from "../../services/logger.service";
 
 /** This component will finish following operations:
  * Check personal info
@@ -16,29 +22,92 @@ import {LocationService} from "../../services/location.service";
 })
 export class PersonalDataComponent implements OnInit {
 
-  constructor(private conn: ConnectionService, private loc: LocationService) { }
+  constructor(private conn: ConnectionService,
+              private loc: LocationService,
+              private msg: MessageService,
+              public dialog: MatDialog,
+              private logger: Logger) { }
 
   basicDataForm = new FormGroup({
     realName: new FormControl(''),
-    male: new FormControl(false),
+    gender: new FormControl(false),
     introduction: new FormControl(''),
   });
 
-  ngOnInit(): void {
-    this.fillForm();
+  passwordConfirm = (control: FormGroup): ValidationErrors | null => {
+    const password = control.value.passwordNew;
+    const passwordConfirm = control.value.passwordConfirm;
+    this.logger.log(`checked with ${password} ${passwordConfirm}`)
+    return password && passwordConfirm && password === passwordConfirm ? null : {passwordMismatch: true};
   }
 
-  private fillForm() {
-    this.conn.loadInfo().subscribe(result => {
-      if (result) {
-        this.basicDataForm.controls.realName.setValue(this.conn.user.info.name);
-        this.basicDataForm.controls.male.setValue(
-          this.conn.user.info.male === null ? 'null' :
-            this.conn.user.info.male ? 'true' : 'false');
-        this.basicDataForm.controls.introduction.setValue(this.conn.user.info.introduction);
-      } else {
-        this.loc.go(['/'])
+  passwordErrorStateMatcher = new RepeatedErrorStateMatcher();
+
+  passwordChangeForm = new FormGroup({
+    passwordCurrent: new FormControl(''),
+    passwordNew: new FormControl('', [
+      Validators.minLength(8)
+    ]),
+    passwordConfirm: new FormControl('')
+  }, [
+    this.passwordConfirm
+  ])
+
+  submitBasicDataForm() {
+
+
+  }
+
+  submitPasswordChangeForm(directive: FormGroupDirective) {
+    this.msg.SendMessage('正在修改密码').subscribe()
+
+    const req: ChangePasswordQ = {
+      origin_password: this.passwordChangeForm.value.passwordCurrent,
+      new_password: this.passwordChangeForm.value.passwordNew
+    }
+
+    this.conn.ChangePassword(req).subscribe({
+      next: resp => {
+        if (resp.status === 0) {
+          this.msg.SendMessage('密码修改成功').subscribe()
+        } else {
+          this.msg.SendMessage('密码修改失败。当前密码错误').subscribe()
+        }
+        this.conn.GetUserInfo().subscribe()
+      },
+      error: () => {
+        this.msg.SendMessage('密码修改失败。未知错误').subscribe()
+        this.conn.GetUserInfo().subscribe()
       }
     })
+
+    this.passwordChangeForm.reset()
+    directive.resetForm()
+  }
+
+  changeAvatar() {
+    const dialogRef = this.dialog.open(ChangeAvatarComponent, {
+      // width: '250px',
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.logger.log('The dialog was closed');
+      this.logger.log(result);
+    });
+  }
+
+  ngOnInit(): void {
+    this.conn.user.subscribe(user => {
+      this.basicDataForm.controls.realName.setValue(user.info.name);
+      this.basicDataForm.controls.gender.setValue(
+        user.info.gender === null ? 'null' : user.info.gender ? 'true' : 'false');
+      this.basicDataForm.controls.introduction.setValue(user.info.introduction);
+    })
+  }
+}
+
+export class RepeatedErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    return !!(control.value && form.hasError('passwordMismatch'));
   }
 }

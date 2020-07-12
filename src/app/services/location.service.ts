@@ -12,6 +12,8 @@ import {Logger} from "./logger.service";
 export class LocationService {
 
   public url$: ReplaySubject<string>;
+  private _url: string;
+  public get url() { return this._url; };
   swUpdateActivated = false;
   private readonly urlParser = document.createElement('a');
 
@@ -21,6 +23,7 @@ export class LocationService {
     private logger: Logger
     /* swUpdates: SwUpdatesService */) {
     this.url$ = new ReplaySubject<string>(1);
+    this.url$.subscribe(url => this._url = url);
     this.url$.next(this.router.url);
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
