@@ -1,6 +1,14 @@
 <div class="mdui-container-fluid">
-  <div class="mdui-row">
-    <div class="mdui-col-xs-3 top-block">
+  <div class="mdui-row" *ngIf="isMainPage">
+    <div class="mdui-col-xs- top-block">
+    </div>
+  </div>
+  <div class="mdui-row" *ngIf="!isMainPage">
+    <div class="mdui-col-xs-1">
+      <button class="mdui-btn mdui-btn-raised mdui-ripple back-button " (click)="backToMainPage()" >
+        <i class="mdui-icon material-icons">&#xe5c4;</i>
+        &nbsp;&nbsp;&nbsp;返回
+      </button>
     </div>
   </div>
   <div class="mdui-row" *ngIf="isMainPage">
@@ -26,7 +34,52 @@
   <div class="mdui-row" *ngIf="!isMainPage">
     <div class="mdui-col-xs-12">
       <div *ngIf="isPasswordPage">
-        修改密码
+        <div class="mdui-container-fluid clang-password">
+          <div class="mdui-row">
+            <div class="mdui-col-xs-12">
+              <div class="mdui-center">
+                <h2 class = ""><b>修改密码</b></h2>
+              </div>
+            </div>
+          </div>
+          <div class="mdui-row">
+            <div class = "center-padding"></div>
+            <div class="mdui-col-xs-3">
+              <h4>原始密码:</h4>
+            </div>
+            <div class="mdui-col-xs-7">
+              <mat-form-field appearance="outline"  class="mdui-center">
+                <mat-label>输入旧密码</mat-label>
+                <input matInput placeholder="">
+              </mat-form-field>
+            </div>
+            <div class="mdui-col-xs-2"></div>
+          </div>
+          <div class="mdui-row">
+            <div class="mdui-col-xs-3">
+              <h4>新 &nbsp;密 &nbsp;码:</h4>
+            </div>
+            <div class="mdui-col-xs-7">
+              <mat-form-field appearance="outline" class="mdui-center">
+                <mat-label>输入新密码</mat-label>
+                <input matInput placeholder="6-12个字符">
+              </mat-form-field>
+            </div>
+            <div class="mdui-col-xs-2"></div>
+          </div>
+          <div class="mdui-row">
+            <div class="mdui-col-xs-3">
+              <h4>确认密码:</h4>
+            </div>
+            <div class="mdui-col-xs-7">
+              <mat-form-field appearance="outline" class="mdui-center">
+                <mat-label>再次输入新密码</mat-label>
+                <input matInput placeholder="">
+              </mat-form-field>
+            </div>
+            <div class="mdui-col-xs-2"></div>
+          </div>
+        </div>
       </div>
       <div *ngIf="isEmailPage">
         修改邮箱
@@ -34,12 +87,12 @@
     </div>
   </div>
   <div class="mdui-row">
-    <div class="bottom-padding"></div>
+    <div class="main-bottom-padding" *ngIf="isMainPage"></div>
+    <div class="bottom-padding" *ngIf="!isMainPage"></div>
     <div class="mdui-col-xs-12">
       <mat-divider></mat-divider>
-      <div *ngIf="!isMainPage">
-        <button class="mdui-btn mdui-btn-raised mdui-ripple button mdui-center" (click)="backToMainPage()" >返回</button>
-      </div>
+      <div *ngIf="!isMainPage"></div>
+      <button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent button mdui-center" *ngIf="isPasswordPage">提交</button>
     </div>
 
   </div>

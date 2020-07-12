@@ -37,3 +37,5 @@ export class SafePageComponent implements OnInit {
     this.isPasswordPage = false;
   }
 }
+
+
