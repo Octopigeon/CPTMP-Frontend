@@ -18,7 +18,7 @@
     <search-box *ngIf="!(isStartPage  | async)" class="search-container" #searchBox></search-box>
     <div *ngIf="!(isStartPage | async)" matRipple class="user-container" title="User" matRippleColor="rgba(255, 255, 255, 0.1)">
       <a href="#" class="user-page">
-        <img src="assets/avatar.jpg" alt="user" class="user-avatar">
+        <img [src]="conn.avatar | async" alt="user" class="user-avatar">
       </a>
     </div>
     <div *ngIf="isStartPage | async" class="search-container dummy"></div>

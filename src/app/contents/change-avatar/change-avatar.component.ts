@@ -62,8 +62,7 @@ export class ChangeAvatarComponent implements OnInit {
 
   constructor(private msg: MessageService,
               private logger: Logger,
-              public dialogRef: MatDialogRef<ChangeAvatarComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: Observable<Blob>) { }
+              public dialogRef: MatDialogRef<ChangeAvatarComponent>) { }
 
   ngOnInit(): void {
   }

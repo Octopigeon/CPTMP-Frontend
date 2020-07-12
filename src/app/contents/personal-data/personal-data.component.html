@@ -11,9 +11,10 @@
     </div>
     <div class="form-input">
       <button mat-flat-button color="primary" class="avatar-change-button" (click)="changeAvatar()">更改头像</button>
-      <img src="assets/avatar.jpg" alt="avatar" class="avatar-right">
+      <img [src]="conn.avatar | async" alt="avatar" class="avatar-right">
     </div>
   </div>
+  <mat-divider></mat-divider>
   <form class="intro-info-form" [formGroup]="basicDataForm">
     <div class="form-input-wrapper">
       <div class="form-label">

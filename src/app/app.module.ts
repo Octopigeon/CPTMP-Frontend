@@ -34,8 +34,6 @@ import {MatExpansionModule} from "@angular/material/expansion";
 import {MatListModule} from "@angular/material/list";
 import {MatTreeModule} from "@angular/material/tree";
 import {MatGridListModule} from "@angular/material/grid-list";
-import { UserInfoComponent } from './components/user-info/user-info.component';
-import { ChangeAvatarPageComponent } from './components/change-avatar-page/change-avatar-page.component';
 import {Overlay} from "@angular/cdk/overlay";
 import {MatRadioModule} from "@angular/material/radio";
 import {MatTooltipModule} from "@angular/material/tooltip";
@@ -127,8 +125,6 @@ export const svgIconProviders = [
     PersonalDataComponent,
     TrainingAdminComponent,
     RegisterComponent,
-    UserInfoComponent,
-    ChangeAvatarPageComponent,
     ChangeAvatarComponent
   ],
   imports: [

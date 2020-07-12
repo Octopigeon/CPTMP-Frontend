@@ -8,6 +8,7 @@ import {MessageService} from "../../services/message.service";
 import {MatDialog} from "@angular/material/dialog";
 import {ChangeAvatarComponent} from "../change-avatar/change-avatar.component";
 import {Logger} from "../../services/logger.service";
+import {Observable} from "rxjs";
 
 /** This component will finish following operations:
  * Check personal info
@@ -22,7 +23,7 @@ import {Logger} from "../../services/logger.service";
 })
 export class PersonalDataComponent implements OnInit {
 
-  constructor(private conn: ConnectionService,
+  constructor(public conn: ConnectionService,
               private loc: LocationService,
               private msg: MessageService,
               public dialog: MatDialog,
@@ -86,13 +87,23 @@ export class PersonalDataComponent implements OnInit {
   }
 
   changeAvatar() {
-    const dialogRef = this.dialog.open(ChangeAvatarComponent, {
-      // width: '250px',
-    });
+    const dialogRef = this.dialog.open(ChangeAvatarComponent);
 
     dialogRef.afterClosed().subscribe(result => {
       this.logger.log('The dialog was closed');
-      this.logger.log(result);
+      if (result) {
+        const observable = result as Observable<Blob>;
+        this.conn.UploadAvatar(observable).subscribe({
+          next: result => {
+            this.logger.log(result)
+            this.msg.SendMessage('头像上传成功').subscribe()
+          },
+          error: error => {
+            this.logger.log(error)
+            this.msg.SendMessage('头像上传失败').subscribe()
+          }
+        });
+      }
     });
   }
 

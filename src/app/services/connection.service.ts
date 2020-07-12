@@ -6,14 +6,16 @@ import {Logger} from "./logger.service";
 import {Observable, ReplaySubject, Subscriber} from "rxjs";
 import {API} from "../constants/api";
 import {LocationService} from "./location.service";
+import {distinctUntilChanged, map} from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
 })
-export class ConnectionService{
+export class ConnectionService {
 
   private _user: UserInfoL = {login: false};
   public user: ReplaySubject<UserInfoL>;
+  public avatar: ReplaySubject<string>;
 
   constructor(
     private storage: StorageMap,
@@ -24,8 +26,17 @@ export class ConnectionService{
     this.user = new ReplaySubject<UserInfoL>(1);
     this.loadInfo()
     this.GetUserInfo().subscribe()
+    this.avatar = new ReplaySubject<string>(1);
+    this.user.pipe(
+      map(info => (!info.login ||
+      !info.info.avatar ||
+      (!info.info.avatar.startsWith('http') && !info.info.avatar.startsWith('/')))
+        ? '/assets/avatar.png' : info.info.avatar),
+      distinctUntilChanged()
+    ).subscribe(link => this.avatar.next(link));
   }
 
+  // Load UserInfo from IndexedDB to boost page loading.
   public loadInfo() {
     this.storage.get('user').subscribe(u => {
       const user = u as UserInfoL;
@@ -150,6 +161,37 @@ export class ConnectionService{
         this.logger.log(`Change password failed with network error: `, error);
         observer.error(error)
       }
+    })
+
+    return result;
+  }
+
+  public UploadAvatar(avatar: Observable<Blob>): Observable<Resp> {
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+
+    avatar.subscribe(blob => {
+      let formData = new FormData();
+      formData.append('file', blob, 'avatar.png');
+      this.put(API.upload_avatar, formData).subscribe({
+        next: response => {
+          if (response.status !== 0) {
+            this.logger.log(`Upload avatar failed with status code ${response.status}: ${response.msg}.`)
+            observer.error(response);
+            return;
+          }
+          observer.next(response);
+          observer.complete();
+          const info = response.data as UserInfo;
+          this.storage.set('user', {login: true, info}).subscribe()
+          this._user = {login: true, info}
+          this.user.next(this._user);
+        },
+        error: error => {
+          this.logger.log(`Upload avatar failed with network error: `, error);
+          observer.error(error)
+        }
+      })
     })
 
     return result;

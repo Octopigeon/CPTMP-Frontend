@@ -3,58 +3,21 @@ import {NavigationNode} from "../types/nav.model";
 export type SidebarEntries = Map<string, string>
 
 export const AdminNodes: NavigationNode[] = [{
-  title: "Module1",
-  url: "#",
-  tooltip: "Note for module1",
-  hidden: false
-}, {
-  title: "Module2",
-  tooltip: "Note for module2",
+  title: "账户设置",
+  tooltip: "控制当前账户的设置",
   hidden: false,
   children: [{
-    title: "SubModule1",
-    url: "#",
-    tooltip: "Note for module1",
+    title: "个人信息",
+    url: "/plat/user/me",
+    tooltip: "查看和修改您的个人信息",
     hidden: false
   }, {
-    title: "SubModule2",
-    url: "#",
-    tooltip: "Note for module2",
-    hidden: false
-  }, {
-    title: "SubModule3",
-    tooltip: "Note for module3",
+    title: "占位",
+    tooltip: "占位",
     hidden: false,
-    children: [{
-      title: "SubSubModule1",
-      url: "#",
-      tooltip: "Note for module1",
-      hidden: false
-    }, {
-      title: "SubSubModule2",
-      url: "#",
-      tooltip: "Note for module1",
-      hidden: false
-    }]
   }]
 }, {
-  title: "Module3",
-  url: "#",
-  tooltip: "Note for module3",
-  hidden: false
-}, {
-  title: "Module4",
-  url: "#",
-  tooltip: "Note for module4",
-  hidden: false
-}, {
-  title: "Module5",
-  url: "#",
-  tooltip: "Note for module5",
-  hidden: false
-}, {
-  title: "Module6",
-  url: "#",
-  tooltip: "Note for module6",
-  hidden: false
+  title: "占位",
+  tooltip: "占位",
+  hidden: false,
 }]
