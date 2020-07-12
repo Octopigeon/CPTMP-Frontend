@@ -117,6 +117,8 @@ export class PersonalDataComponent implements OnInit {
   }
 }
 
+// We need this to make password repeat field marked as invalid immediately after input
+// when value is different from password field.
 export class RepeatedErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
     return !!(control.value && form.hasError('passwordMismatch'));

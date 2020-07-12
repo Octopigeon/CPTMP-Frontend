@@ -15,6 +15,8 @@ export class AppComponent {
   title = 'CPTMP';
   isFetching = false;
   isTransitioning = false;
+
+  // start page has different style and elements
   isStartPage = this.loc.url$.pipe(
     tap(path => this.logger.log('got path ' + path)),
     map(path => !path.startsWith('/plat')),
@@ -22,6 +24,7 @@ export class AppComponent {
 
   windowType = this.env.size$;
 
+  // TODO change according to user type
   sidenavNodes = AdminNodes;
 
   constructor(private env: EnvService,

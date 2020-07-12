@@ -119,6 +119,8 @@ export class ConnectionService {
           this._user = {login: false}
           this.storage.set('user', {login: false}).subscribe()
           this.user.next(this._user);
+
+          // take user to login page when user is not login
           if (this.loc.url.startsWith('/plat')) {
             this.loc.go(['/'])
           }
@@ -131,6 +133,8 @@ export class ConnectionService {
         observer.next(info);
         observer.complete();
         if (!this.loc.url.startsWith('/plat')) {
+          // take user to panel when user has login
+          // TODO change to status panel in the future
           this.loc.go(['/', 'plat', 'user', 'me'])
         }
       },
@@ -182,6 +186,8 @@ export class ConnectionService {
           }
           observer.next(response);
           observer.complete();
+
+          // refresh user info when succeed.
           const info = response.data as UserInfo;
           this.storage.set('user', {login: true, info}).subscribe()
           this._user = {login: true, info}

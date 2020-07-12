@@ -1,9 +1,9 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ImageCroppedEvent} from "ngx-image-cropper";
 import {MessageService} from "../../services/message.service";
 import {Observable} from "rxjs";
 import {Logger} from "../../services/logger.service";
-import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
+import {MatDialogRef} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-change-avatar',
@@ -27,6 +27,7 @@ export class ChangeAvatarComponent implements OnInit {
     this.cropDirty = true;
   }
 
+  // Workaround to make preview refresh correctly
   cropperUp() {
     setTimeout(() => {
       if (this.cropDirty) {
@@ -36,12 +37,6 @@ export class ChangeAvatarComponent implements OnInit {
     }, 100)
   }
 
-  imageLoaded() {
-    // show cropper
-  }
-  cropperReady() {
-    // cropper ready
-  }
   loadImageFailed() {
     this.msg.SendMessage('图片加载失败')
   }

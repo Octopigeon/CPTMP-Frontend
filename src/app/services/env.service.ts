@@ -29,6 +29,7 @@ export class EnvService implements OnDestroy {
     private logger: Logger) {
     this.size$.next(this.getSize());
 
+    // send new size 500ms after resize
     fromEvent(window, 'resize').pipe(
       takeUntil(this.onDestroy),
       map(_ => this.getSize()),

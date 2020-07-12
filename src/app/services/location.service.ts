@@ -14,6 +14,7 @@ export class LocationService {
   public url$: ReplaySubject<string>;
   private _url: string;
   public get url() { return this._url; };
+  // service worker is not present now.
   swUpdateActivated = false;
   private readonly urlParser = document.createElement('a');
 
@@ -71,17 +72,7 @@ export class LocationService {
    * @param metaKey True if command or window key held down
    * @return false if service navigated with `go()`; true if browser should handle it.
    *
-   * Since we are using `LocationService` to navigate between docs, without the browser
-   * reloading the page, we must intercept clicks on links.
-   * If the link is to a document that we will render, then we navigate using `Location.go()`
-   * and tell the browser not to handle the event.
-   *
-   * In most apps you might do this in a `LinkDirective` attached to anchors but in this app
-   * we have a special situation where the `DocViewerComponent` is displaying semi-static
-   * content that cannot contain directives. So all the links in that content would not be
-   * able to use such a `LinkDirective`. Instead we are adding a click handler to the
-   * `AppComponent`, whose element contains all the of the application and so captures all
-   * link clicks both inside and outside the `DocViewerComponent`.
+   * This is used to handle link in non-static content (UGC)
    */
 
   handleAnchorClick(anchor: HTMLAnchorElement, button = 0, ctrlKey = false, metaKey = false) {
