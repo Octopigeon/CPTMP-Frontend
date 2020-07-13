@@ -6,7 +6,7 @@ import {ErrorStateMatcher} from "@angular/material/core";
 import {ChangePasswordQ} from "../../types/types";
 import {MessageService} from "../../services/message.service";
 import {MatDialog} from "@angular/material/dialog";
-import {ChangeAvatarComponent} from "../change-avatar/change-avatar.component";
+import {ChangeAvatarComponent} from "../../popups/change-avatar/change-avatar.component";
 import {Logger} from "../../services/logger.service";
 import {Observable} from "rxjs";
 
@@ -54,9 +54,11 @@ export class PersonalDataComponent implements OnInit {
     this.passwordConfirm
   ])
 
-  submitBasicDataForm() {
+  submitBasicDataForm(directive: FormGroupDirective) {
+    // TODO save changes to basic user data
 
-
+    this.basicDataForm.reset()
+    directive.resetForm()
   }
 
   submitPasswordChangeForm(directive: FormGroupDirective) {

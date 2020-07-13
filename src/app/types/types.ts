@@ -15,9 +15,6 @@ export type Role =
   'ROLE_ENTERPRISE_ADMIN' |
   'ROLE_SCHOOL_ADMIN' |
   'ROLE_SCHOOL_TEACHER' |
-  'ROLE_STUDENT_MASTER' |
-  'ROLE_STUDENT_PM' |
-  'ROLE_STUDENT_PO' |
   'ROLE_STUDENT_MEMBER';
 
 export interface UserInfo {
@@ -69,13 +66,12 @@ export interface ModifyUserInfoP {
   status_code: number;
 }
 
-export interface GetUserInfoQ {
-  id: string;
+export interface Organization {
+  id?: number;
+  name: string;
+  code: string;
+  description?: string;
+  url?: string;
+  invitation_code?: string;
+  created?: number | string;
 }
-
-export interface GetUserInfoP {
-  status_code: number;
-  user_info: UserInfo;
-}
-
-

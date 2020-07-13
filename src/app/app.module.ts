@@ -29,7 +29,6 @@ import { RegisterComponent } from './components/register/register.component';
 import {MatStepperModule} from "@angular/material/stepper";
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { PersonalDataComponent } from './contents/personal-data/personal-data.component';
-import { TrainingAdminComponent } from './contents/training-admin/training-admin.component';
 import {MatExpansionModule} from "@angular/material/expansion";
 import {MatListModule} from "@angular/material/list";
 import {MatTreeModule} from "@angular/material/tree";
@@ -37,8 +36,14 @@ import {MatGridListModule} from "@angular/material/grid-list";
 import {Overlay} from "@angular/cdk/overlay";
 import {MatRadioModule} from "@angular/material/radio";
 import {MatTooltipModule} from "@angular/material/tooltip";
-import { ChangeAvatarComponent } from './contents/change-avatar/change-avatar.component';
+import { ChangeAvatarComponent } from './popups/change-avatar/change-avatar.component';
 import {MatDialogModule} from "@angular/material/dialog";
+import { SchoolAdminComponent } from './contents/school-admin/school-admin.component';
+import {MatTableModule} from "@angular/material/table";
+import {MatCheckboxModule} from "@angular/material/checkbox";
+import { SchoolEditComponent } from './popups/school-edit/school-edit.component';
+import { AccountAdminComponent } from './contents/account-admin/account-admin.component';
+import {ClipboardModule} from "@angular/cdk/clipboard";
 
 // These are the hardcoded inline svg sources to be used by the `<mat-icon>` component.
 // tslint:disable: max-line-length
@@ -123,9 +128,11 @@ export const svgIconProviders = [
     RegisterComponent,
     NotFoundComponent,
     PersonalDataComponent,
-    TrainingAdminComponent,
     RegisterComponent,
-    ChangeAvatarComponent
+    ChangeAvatarComponent,
+    SchoolAdminComponent,
+    SchoolEditComponent,
+    AccountAdminComponent
   ],
   imports: [
     BrowserModule,
@@ -152,6 +159,9 @@ export const svgIconProviders = [
     MatRadioModule,
     MatTooltipModule,
     MatDialogModule,
+    MatTableModule,
+    MatCheckboxModule,
+    ClipboardModule,
   ],
   providers: [
     ErrorHandler,

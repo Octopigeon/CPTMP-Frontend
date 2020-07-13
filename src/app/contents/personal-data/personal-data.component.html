@@ -15,7 +15,8 @@
     </div>
   </div>
   <mat-divider></mat-divider>
-  <form class="intro-info-form" [formGroup]="basicDataForm">
+  <form class="intro-info-form" [formGroup]="basicDataForm"
+        #basicDataFormDirective="ngForm" (ngSubmit)="submitBasicDataForm(basicDataFormDirective)">
     <div class="form-input-wrapper">
       <div class="form-label">
         <label>姓名</label>
@@ -47,7 +48,7 @@
       </div>
       <mat-form-field appearance="standard" class="form-input">
         <mat-label>个人简介</mat-label>
-        <textarea matInput placeholder="填写一段个人简介" formControlName="introduction" required></textarea>
+        <textarea matInput placeholder="填写一段个人简介" formControlName="introduction" required cdkTextareaAutosize></textarea>
         <mat-hint>个人简介让他人更好地了解你</mat-hint>
       </mat-form-field>
     </div>
