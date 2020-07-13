@@ -17,6 +17,14 @@ export type Role =
   'ROLE_SCHOOL_TEACHER' |
   'ROLE_STUDENT_MEMBER';
 
+export const RoleTable: {[key: string]: string} = {
+  ROLE_SYSTEM_ADMIN: '系统管理员',
+  ROLE_ENTERPRISE_ADMIN: '企业管理员',
+  ROLE_SCHOOL_ADMIN: '组织管理员',
+  ROLE_SCHOOL_TEACHER: '教师',
+  ROLE_STUDENT_MEMBER: '学生'
+}
+
 export interface UserInfo {
   email: string;
   role_name: Role;

@@ -115,6 +115,11 @@ export class SchoolAdminComponent implements OnInit {
 
   }
 
+  // TODO send request to regenerate invitation code
+  regenerateInviteCode() {
+
+  }
+
   // TODO get invite link from invitation code
   getInviteLink(invitation_code: string) {
     return invitation_code;

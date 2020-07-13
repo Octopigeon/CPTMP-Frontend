@@ -44,6 +44,7 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
 import { SchoolEditComponent } from './popups/school-edit/school-edit.component';
 import { AccountAdminComponent } from './contents/account-admin/account-admin.component';
 import {ClipboardModule} from "@angular/cdk/clipboard";
+import {MatPaginatorModule} from "@angular/material/paginator";
 
 // These are the hardcoded inline svg sources to be used by the `<mat-icon>` component.
 // tslint:disable: max-line-length
@@ -162,6 +163,7 @@ export const svgIconProviders = [
     MatTableModule,
     MatCheckboxModule,
     ClipboardModule,
+    MatPaginatorModule,
   ],
   providers: [
     ErrorHandler,

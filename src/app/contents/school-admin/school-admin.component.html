@@ -50,6 +50,12 @@
           <p class="school-invitation">
             <code class="invitation-code round-panel">{{element.invitation_code}}</code>
             <button mat-stroked-button class="school-action"
+                    (click)="regenerateInviteCode()"
+                    matTooltip="重新生成邀请码，之前的邀请码将作废">
+              重新生成
+              <mat-icon>refresh</mat-icon>
+            </button>
+            <button mat-stroked-button class="school-action"
                     [cdkCopyToClipboard]="getInviteLink(element.invitation_code)"
                     matTooltip="此链接可作为注册链接向学生分发">
               复制注册链接
