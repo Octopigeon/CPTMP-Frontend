@@ -70,6 +70,12 @@ export interface ModifyUserInfoQ {
   new_user_info: UserInfo;
 }
 
+export interface  ModifyUserBasicInfoQ {
+  name: string;
+  gender: boolean;
+  introduction: string;
+}
+
 export interface ModifyUserInfoP {
   status_code: number;
 }

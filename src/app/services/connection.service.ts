@@ -1,7 +1,7 @@
 import {Injectable, OnInit} from '@angular/core';
 import {StorageMap} from "@ngx-pwa/local-storage";
 import {HttpClient} from "@angular/common/http";
-import {ChangePasswordQ, LoginQ, Resp, UserInfo, UserInfoL} from "../types/types";
+import {ChangePasswordQ, ModifyUserBasicInfoQ, LoginQ, Resp, UserInfo, UserInfoL} from "../types/types";
 import {Logger} from "./logger.service";
 import {Observable, ReplaySubject, Subscriber} from "rxjs";
 import {API} from "../constants/api";
@@ -163,6 +163,29 @@ export class ConnectionService {
       },
       error: error => {
         this.logger.log(`Change password failed with network error: `, error);
+        observer.error(error)
+      }
+    })
+
+    return result;
+  }
+
+  public UploadUserBasicData(basicDate: ModifyUserBasicInfoQ): Observable<Resp>{
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+
+    this.put(API.user_info, basicDate).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Upload User Basic Data failed with status code ${response.status}: ${response.msg}.`)
+          observer.error(response);
+          return;
+        }
+        observer.next(response);
+        observer.complete();
+      },
+      error: error => {
+        this.logger.log(`Upload User Basic Data failed with network error: `, error);
         observer.error(error)
       }
     })
