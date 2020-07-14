@@ -36,6 +36,7 @@
     <div id="top-of-page"></div>
     <div class="start-background" [class.start]="isStartPage | async" ></div>
     <div class="content-container">
+      <app-personal-data></app-personal-data>
       <router-outlet></router-outlet>
     </div>
     <app-footer></app-footer>

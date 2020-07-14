@@ -3,7 +3,7 @@ import {FormControl, FormGroup, FormGroupDirective, NgForm, ValidationErrors, Va
 import {ConnectionService} from "../../services/connection.service";
 import {LocationService} from "../../services/location.service";
 import {ErrorStateMatcher} from "@angular/material/core";
-import {ChangePasswordQ} from "../../types/types";
+import {ChangePasswordQ, ModifyUserBasicInfoQ} from "../../types/types";
 import {MessageService} from "../../services/message.service";
 import {MatDialog} from "@angular/material/dialog";
 import {ChangeAvatarComponent} from "../../popups/change-avatar/change-avatar.component";
@@ -56,6 +56,29 @@ export class PersonalDataComponent implements OnInit {
 
   submitBasicDataForm(directive: FormGroupDirective) {
     // TODO save changes to basic user data
+
+
+
+    this.msg.SendMessage('正在修改公开信息').subscribe()
+
+
+
+    const req: ModifyUserBasicInfoQ = {
+      name: this.basicDataForm.value.realName,
+      gender: this.basicDataForm.value.gender,
+      introduction: this.basicDataForm.value.introduction
+    }
+    this.conn.UploadUserBasicData(req).subscribe({
+      next: resp => {
+        this.msg.SendMessage('公开信息修改成功').subscribe()
+        this.conn.GetUserInfo().subscribe()
+      },
+      error: () => {
+        this.msg.SendMessage('公开信息修改失败。未知错误').subscribe()
+        this.conn.GetUserInfo().subscribe()
+      }
+    })
+
 
     this.basicDataForm.reset()
     directive.resetForm()
