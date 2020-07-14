@@ -17,6 +17,7 @@ export class SchoolEditComponent implements OnInit {
       Validators.required
     ]),
     // TODO (optional) pre-verify local cache of school list to prevent duplicate code request being sent
+    // TODO hide this field on school edit. Such will
     code: new FormControl('', [
       Validators.required
     ]),

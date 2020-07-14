@@ -8,6 +8,7 @@ import {Observable} from "rxjs";
 import {MatDialog} from "@angular/material/dialog";
 import {SchoolEditComponent} from "../../popups/school-edit/school-edit.component";
 import {MessageService} from "../../services/message.service";
+import {AccountEditComponent} from "../../popups/account-edit/account-edit.component";
 
 const EXAMPLE_ORGANIZATION: Organization[] = [{
   id: 1,
@@ -110,7 +111,7 @@ export class SchoolAdminComponent implements OnInit {
     dialogRef.afterClosed().subscribe()
   }
 
-  // TODO delete scholl according to selection
+  // TODO delete school according to selection
   schoolDelete() {
 
   }

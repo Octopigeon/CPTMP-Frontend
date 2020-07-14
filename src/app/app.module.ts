@@ -45,6 +45,10 @@ import { SchoolEditComponent } from './popups/school-edit/school-edit.component'
 import { AccountAdminComponent } from './contents/account-admin/account-admin.component';
 import {ClipboardModule} from "@angular/cdk/clipboard";
 import {MatPaginatorModule} from "@angular/material/paginator";
+import { AccountEditComponent } from './popups/account-edit/account-edit.component';
+import {MatSelectModule} from "@angular/material/select";
+import { AccountBulkAddComponent } from './popups/account-bulk-add/account-bulk-add.component';
+import { SingleInputComponent } from './popups/single-input/single-input.component';
 
 // These are the hardcoded inline svg sources to be used by the `<mat-icon>` component.
 // tslint:disable: max-line-length
@@ -133,38 +137,42 @@ export const svgIconProviders = [
     ChangeAvatarComponent,
     SchoolAdminComponent,
     SchoolEditComponent,
-    AccountAdminComponent
+    AccountAdminComponent,
+    AccountEditComponent,
+    AccountBulkAddComponent,
+    SingleInputComponent
   ],
-  imports: [
-    BrowserModule,
-    HammerModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    HttpClientModule,
-    MatProgressBarModule,
-    MatToolbarModule,
-    MatIconModule,
-    MatButtonModule,
-    MatSidenavModule,
-    MatRippleModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatStepperModule,
-    MatExpansionModule,
-    MatListModule,
-    MatTreeModule,
-    MatGridListModule,
-    ImageCropperModule,
-    MatRadioModule,
-    MatTooltipModule,
-    MatDialogModule,
-    MatTableModule,
-    MatCheckboxModule,
-    ClipboardModule,
-    MatPaginatorModule,
-  ],
+    imports: [
+        BrowserModule,
+        HammerModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        HttpClientModule,
+        MatProgressBarModule,
+        MatToolbarModule,
+        MatIconModule,
+        MatButtonModule,
+        MatSidenavModule,
+        MatRippleModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatStepperModule,
+        MatExpansionModule,
+        MatListModule,
+        MatTreeModule,
+        MatGridListModule,
+        ImageCropperModule,
+        MatRadioModule,
+        MatTooltipModule,
+        MatDialogModule,
+        MatTableModule,
+        MatCheckboxModule,
+        ClipboardModule,
+        MatPaginatorModule,
+        MatSelectModule,
+    ],
   providers: [
     ErrorHandler,
     svgIconProviders,
