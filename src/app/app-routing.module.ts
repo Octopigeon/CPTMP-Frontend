@@ -6,16 +6,14 @@ import {LoginComponent} from "./components/login/login.component";
 import {NotFoundComponent} from "./components/not-found/not-found.component";
 import {RegisterComponent} from "./components/register/register.component";
 import {SchoolAdminComponent} from "./contents/school-admin/school-admin.component";
-import {SchoolEditComponent} from "./popups/school-edit/school-edit.component";
 import {AccountAdminComponent} from "./contents/account-admin/account-admin.component";
-import {AccountEditComponent} from "./popups/account-edit/account-edit.component";
-import {AccountBulkAddComponent} from "./popups/account-bulk-add/account-bulk-add.component";
+import {TrainAdminComponent} from "./contents/train-admin/train-admin.component";
 
 
 const routes: Routes = [
   { path: 'plat/user/me', component: PersonalDataComponent },
-  // { path: 'plat/test', component: AccountBulkAddComponent },
-  { path: 'plat/test', component: AccountAdminComponent, data: {type: 'enterprise'}  },
+  { path: 'plat/test', component: TrainAdminComponent },
+  // { path: 'plat/test', component: AccountAdminComponent, data: {type: 'enterprise'}  },
   // { path: 'activate/:token'},
   { path: 'register', component: RegisterComponent },
   { path: '', component: LoginComponent, pathMatch: 'full' },

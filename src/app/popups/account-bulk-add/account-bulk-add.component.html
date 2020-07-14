@@ -28,5 +28,6 @@
 </mat-dialog-content>
 <div mat-dialog-actions class="dialog-actions">
   <button mat-button (click)="cancelClose()">取消</button>
-  <button mat-flat-button color="primary" [matDialogClose]="getResult()" [disabled]="dataSource.data.length !== 0">保存</button>
+  <button mat-flat-button color="primary" [matDialogClose]="getResult()"
+          [disabled]="dataSource.data.length !== 0">保存</button>
 </div>

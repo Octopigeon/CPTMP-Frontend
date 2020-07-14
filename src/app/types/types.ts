@@ -89,3 +89,22 @@ export interface Organization {
   invitation_code?: string;
   created?: number | string;
 }
+
+export interface Train {
+  id: number;
+  name: string;
+  organization: string;
+  organization_id: number;
+  start_time?: number | string;
+  end_time?: number | string;
+  // TODO should the following be pure text, or html content?
+  // 实训内容?
+  content?: string;
+  // 验收标准
+  standard?: string;
+  // 实训资源
+  resource_lib?: string;
+  // TODO format? how to display & set it?
+  // 位置信息
+  gps_info?: string;
+}

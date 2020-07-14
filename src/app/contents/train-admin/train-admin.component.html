@@ -1,0 +1,64 @@
+<div class="info-header">
+  <h1 class="header-title">实训管理</h1>
+  <p class="header-note">此处可以管理系统中的实训</p>
+</div>
+<div class="operations">
+  <button mat-fab color="primary" matTooltip="添加实训" aria-label="添加实训"
+          (click)="trainEdit(null)"><mat-icon>add</mat-icon></button>
+  <button mat-fab color="warn" [disabled]="selection.isEmpty()" (click)="trainDelete()"
+          matTooltip="删除已选实训" aria-label="删除已选实训"><mat-icon>delete</mat-icon></button>
+</div>
+<div class="content-wrapper mat-elevation-z8">
+  <table mat-table [dataSource]="dataSource" class="train-table" multiTemplateDataRows>
+
+    <!-- Checkbox Column -->
+    <ng-container matColumnDef="select" sticky>
+      <th mat-header-cell *matHeaderCellDef>
+        <mat-checkbox (change)="$event ? masterToggle() : null"
+                      [checked]="selection.hasValue() && isAllSelected()"
+                      [indeterminate]="selection.hasValue() && !isAllSelected()">
+        </mat-checkbox>
+      </th>
+      <td mat-cell *matCellDef="let row">
+        <mat-checkbox (click)="$event.stopPropagation()"
+                      (change)="$event ? selection.toggle(row) : null"
+                      [checked]="selection.isSelected(row)">
+        </mat-checkbox>
+      </td>
+    </ng-container>
+
+    <ng-container *ngFor="let column of columnPairs" [matColumnDef]="column[0]">
+      <th mat-header-cell *matHeaderCellDef>{{column[1]}}</th>
+      <td mat-cell *matCellDef="let element">
+        {{column[0].endsWith('time') ? toDateString(element[column[0]]) : element[column[0]]}}
+      </td>
+    </ng-container>
+
+    <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+    <ng-container matColumnDef="expandedSelectPlaceholder" sticky>
+      <td mat-cell *matCellDef></td>
+    </ng-container>
+    <ng-container matColumnDef="expandedDetail">
+      <td mat-cell *matCellDef="let element" [attr.colspan]="5">
+        <div class="train-detail"
+             [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+          <h3>实训信息xxx</h3>
+          <p class="train-link-container">
+            <button mat-stroked-button class="train-action" (click)="trainEdit(element)">
+              编辑信息
+              <mat-icon>edit</mat-icon>
+            </button>
+          </p>
+        </div>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnRefs"></tr>
+    <tr class="train-row"
+        mat-row *matRowDef="let element; columns: columnRefs;"
+        [class.train-expanded-row]="expandedElement === element"
+        (click)="expandedElement = expandedElement === element ? null : element">
+    </tr>
+    <tr mat-row *matRowDef="let row; columns: ['expandedSelectPlaceholder', 'expandedDetail']" class="train-detail-row"></tr>
+  </table>
+</div>

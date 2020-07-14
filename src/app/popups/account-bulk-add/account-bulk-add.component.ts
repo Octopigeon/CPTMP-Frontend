@@ -16,7 +16,7 @@ export class AccountBulkAddComponent implements OnInit {
   @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
 
   // change to true when data properly processed
-  dataSource = new MatTableDataSource<UserInfo>();
+  dataSource = new MatTableDataSource<UserInfo>([]);
 
   fileChangeEvent() {
     const filePicker = this.filePicker.nativeElement;
@@ -30,7 +30,7 @@ export class AccountBulkAddComponent implements OnInit {
       reader.onload = () => observer.next(reader.result as string);
       reader.readAsText(file);
     }).subscribe(content => {
-      // TODO process csv into js data
+      // TODO process csv into js data (maybe reusable) (should we support excel format?)
       console.log(content);
       this.dataSource.data = [{
         avatar: "",

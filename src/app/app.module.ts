@@ -49,6 +49,7 @@ import { AccountEditComponent } from './popups/account-edit/account-edit.compone
 import {MatSelectModule} from "@angular/material/select";
 import { AccountBulkAddComponent } from './popups/account-bulk-add/account-bulk-add.component';
 import { SingleInputComponent } from './popups/single-input/single-input.component';
+import { TrainAdminComponent } from './contents/train-admin/train-admin.component';
 
 // These are the hardcoded inline svg sources to be used by the `<mat-icon>` component.
 // tslint:disable: max-line-length
@@ -140,7 +141,8 @@ export const svgIconProviders = [
     AccountAdminComponent,
     AccountEditComponent,
     AccountBulkAddComponent,
-    SingleInputComponent
+    SingleInputComponent,
+    TrainAdminComponent
   ],
     imports: [
         BrowserModule,

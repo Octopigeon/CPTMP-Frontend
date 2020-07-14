@@ -3,13 +3,11 @@ import {Organization} from "../../types/types";
 import {MatTableDataSource} from "@angular/material/table";
 import {SelectionModel} from "@angular/cdk/collections";
 import {animate, state, style, transition, trigger} from "@angular/animations";
-import {ChangeAvatarComponent} from "../../popups/change-avatar/change-avatar.component";
-import {Observable} from "rxjs";
 import {MatDialog} from "@angular/material/dialog";
 import {SchoolEditComponent} from "../../popups/school-edit/school-edit.component";
 import {MessageService} from "../../services/message.service";
-import {AccountEditComponent} from "../../popups/account-edit/account-edit.component";
 
+// these can be removed once real api is implemented
 const EXAMPLE_ORGANIZATION: Organization[] = [{
   id: 1,
   name: 'a',
