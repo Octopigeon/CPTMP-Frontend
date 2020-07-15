@@ -17,7 +17,6 @@ export class SchoolEditComponent implements OnInit {
       Validators.required
     ]),
     // TODO (optional) pre-verify local cache of school list to prevent duplicate code request being sent
-    // TODO hide this field on school edit. Such will
     code: new FormControl('', [
       Validators.required
     ]),
@@ -40,6 +39,7 @@ export class SchoolEditComponent implements OnInit {
               @Inject(MAT_DIALOG_DATA) public data?: Organization) {
     this.isEditing = data !== null;
     // TODO init form according to data
+    this.schoolForm.value.declarations = data.description;
   }
 
   ngOnInit(): void {

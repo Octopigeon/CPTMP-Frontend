@@ -42,14 +42,12 @@
       padding-left 10px
       min-width 20px
 
-    th.mat-header-cell:first-of-type, td.mat-cell:first-of-type
+    th.mat-header-cell:first-of-type, td.mat-cell:first-of-type, th.mat-header-cell:last-of-type, td.mat-cell:last-of-type
       width 26px
       min-width 26px
 
     th.mat-header-cell:last-of-type, td.mat-cell:last-of-type
       padding-right 10px
-      width 86px
-      min-width 86px
 
     .user-list-avatar
       height 40px
@@ -62,20 +60,3 @@
     left 0
     border-bottom 1px solid rgba(0, 0, 0, 0.12)
 
-  .filter-wrapper
-    position sticky
-    left 0
-    padding 20px 20px 10px
-    background white
-    border-bottom 1px solid rgba(0, 0, 0, 0.12)
-
-    .filter
-      display grid
-      grid-template-columns 1fr 1fr 1fr
-      grid-gap 10px
-
-      @media (max-width 1023px)
-        grid-template-columns 1fr 1fr
-
-      @media (max-width 599px)
-        grid-template-columns 1fr

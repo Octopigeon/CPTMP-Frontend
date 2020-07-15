@@ -89,3 +89,7 @@ export interface Organization {
   invitation_code?: string;
   created?: number | string;
 }
+
+export interface DeleteUserQ{
+  selection: number[];
+}

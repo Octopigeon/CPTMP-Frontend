@@ -1,14 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import {Organization} from "../../types/types";
-import {MatTableDataSource} from "@angular/material/table";
-import {SelectionModel} from "@angular/cdk/collections";
-import {animate, state, style, transition, trigger} from "@angular/animations";
-import {ChangeAvatarComponent} from "../../popups/change-avatar/change-avatar.component";
-import {Observable} from "rxjs";
-import {MatDialog} from "@angular/material/dialog";
-import {SchoolEditComponent} from "../../popups/school-edit/school-edit.component";
-import {MessageService} from "../../services/message.service";
-import {AccountEditComponent} from "../../popups/account-edit/account-edit.component";
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {Organization} from '../../types/types';
+import {MatTableDataSource} from '@angular/material/table';
+import {SelectionModel} from '@angular/cdk/collections';
+import {animate, state, style, transition, trigger} from '@angular/animations';
+import {ChangeAvatarComponent} from '../../popups/change-avatar/change-avatar.component';
+import {Observable} from 'rxjs';
+import {MatDialog} from '@angular/material/dialog';
+import {SchoolEditComponent} from '../../popups/school-edit/school-edit.component';
+import {MessageService} from '../../services/message.service';
+import {ConnectionService} from '../../services/connection.service';
+import {LocationService} from '../../services/location.service';
+import {Logger} from '../../services/logger.service';
+import {ActivatedRoute} from "@angular/router";
+import {MatPaginator} from "@angular/material/paginator";
 
 const EXAMPLE_ORGANIZATION: Organization[] = [{
   id: 1,
@@ -16,7 +20,7 @@ const EXAMPLE_ORGANIZATION: Organization[] = [{
   code: 'aau',
   description: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
   url: 'http://aaa.aa.aa/aaaaaaaaaaaaaaaaaaaaaaaa/aaaaa/aaa.html',
-  invitation_code: "asdbfwbiewninepvernobmeowbnebbrsptmbrwrmnt",
+  invitation_code: 'asdbfwbiewninepvernobmeowbnebbrsptmbrwrmnt',
   created: 1594455135343
 }, {
   id: 2,
@@ -24,7 +28,7 @@ const EXAMPLE_ORGANIZATION: Organization[] = [{
   code: 'ssu',
   description: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
   url: 'http://aaa.aa.aa',
-  invitation_code: "asdbfwbiewninepvernobmeowbnebbrsptmbrwrmnt",
+  invitation_code: 'asdbfwbiewninepvernobmeowbnebbrsptmbrwrmnt',
   created: 1594455135343
 }, {
   id: 3,
@@ -32,7 +36,7 @@ const EXAMPLE_ORGANIZATION: Organization[] = [{
   code: 'bbu',
   description: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
   url: 'http://aaa.aa.aa',
-  invitation_code: "asdbfwbiewninepvernobmeowbnebbrsptmbrwrmnt",
+  invitation_code: 'asdbfwbiewninepvernobmeowbnebbrsptmbrwrmnt',
   created: 1594455135343
 }, {
   id: 4,
@@ -40,7 +44,7 @@ const EXAMPLE_ORGANIZATION: Organization[] = [{
   code: 'ccu',
   description: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
   url: 'http://aaa.aa.aa',
-  invitation_code: "asdbfwbiewninepvernobmeowbnebbrsptmbrwrmnt",
+  invitation_code: 'asdbfwbiewninepvernobmeowbnebbrsptmbrwrmnt',
   created: 1594455135343
 }, {
   id: 5,
@@ -48,9 +52,9 @@ const EXAMPLE_ORGANIZATION: Organization[] = [{
   code: 'ddu',
   description: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
   url: 'http://aaa.aa.aa',
-  invitation_code: "asdbfwbiewninepvernobmeowbnebbrsptmbrwrmnt",
+  invitation_code: 'asdbfwbiewninepvernobmeowbnebbrsptmbrwrmnt',
   created: 1594455135343
-}]
+}];
 
 @Component({
   selector: 'app-school-admin',
@@ -66,20 +70,28 @@ const EXAMPLE_ORGANIZATION: Organization[] = [{
 })
 export class SchoolAdminComponent implements OnInit {
 
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+
   columns: {[key: string]: string} = {
     id: '#',
     name: '组织名称',
     code: '组织代号',
     created: '创建日期',
-  }
+  };
+
+  type: string;
 
   get columnRefs() {
-    let keys = Object.keys(this.columns);
+    const keys = Object.keys(this.columns);
     keys.unshift('select');
-    return keys
+    return keys;
   }
 
-  get columnPairs() { return Object.entries(this.columns) }
+  get columnPairs() { return Object.entries(this.columns); }
+
+
+
+  organizationList: Organization[] = [];
   dataSource = new MatTableDataSource<Organization>(EXAMPLE_ORGANIZATION);
   selection = new SelectionModel<Organization>(true, []);
   expandedElement: Organization | null;
@@ -99,20 +111,24 @@ export class SchoolAdminComponent implements OnInit {
   }
 
   toDateString(date: number | string) {
-    return (new Date(date)).toLocaleDateString()
+    return (new Date(date)).toLocaleDateString();
   }
 
   schoolEdit(organization?: Organization) {
     const dialogRef = this.dialog.open(SchoolEditComponent, {
       data: organization
     });
+    this.msg.SendMessage('正在创建组织').subscribe()
 
     // TODO get data & post create/modify request to backend
-    dialogRef.afterClosed().subscribe()
+    dialogRef.afterClosed().subscribe();
   }
 
-  // TODO delete school according to selection
+  // TODO delete scholl according to selection
   schoolDelete() {
+
+    this.msg.SendMessage('正在删除组织').subscribe()
+
 
   }
 
@@ -126,7 +142,12 @@ export class SchoolAdminComponent implements OnInit {
     return invitation_code;
   }
 
-  constructor(public dialog: MatDialog, public msg: MessageService) { }
+  constructor(public dialog: MatDialog,
+              public msg: MessageService,
+              public conn: ConnectionService,
+              private loc: LocationService,
+              private logger: Logger,
+              private route: ActivatedRoute) { }
 
   ngOnInit(): void {
   }

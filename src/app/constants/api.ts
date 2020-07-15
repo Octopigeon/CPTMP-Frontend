@@ -5,4 +5,5 @@ export const API = {
   user_info: `${environment.backend}api/user/me/basic-info`,
   change_password: `${environment.backend}api/user/me/password`,
   upload_avatar: `${environment.backend}api/user/me/avatar`,
+  delete_user: `${environment.backend}api/user`,
 }
