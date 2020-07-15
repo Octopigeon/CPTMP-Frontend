@@ -1,34 +1,34 @@
-import { BrowserModule, HammerModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
-import { ErrorHandler, NgModule } from '@angular/core';
+import {BrowserModule, HammerModule} from '@angular/platform-browser';
+import {HttpClientModule} from '@angular/common/http';
+import {ErrorHandler, NgModule} from '@angular/core';
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {AppRoutingModule} from './app-routing.module';
+import {AppComponent} from './app.component';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {windowProvider, WINDOW} from "./services/window";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatIconModule, MatIconRegistry} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
-import { ImageCropperModule } from 'ngx-image-cropper';
+import {ImageCropperModule} from 'ngx-image-cropper';
 import {MatSnackBar} from "@angular/material/snack-bar";
 
-import { CustomIconRegistry, SVG_ICONS } from "./shared/custom-icon-registry";
-import { SearchBoxComponent } from './components/search-box/search-box.component';
+import {CustomIconRegistry, SVG_ICONS} from "./shared/custom-icon-registry";
+import {SearchBoxComponent} from './components/search-box/search-box.component';
 import {MatSidenavModule} from "@angular/material/sidenav";
-import { SidebarModePipe } from './sidebar-mode.pipe';
-import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
-import { NavItemComponent } from './components/nav-item/nav-item.component';
-import {MatRippleModule} from "@angular/material/core";
-import { FooterComponent } from './components/footer/footer.component';
-import { LoginComponent } from './components/login/login.component';
+import {SidebarModePipe} from './pipes/sidebar-mode.pipe';
+import {NavMenuComponent} from './components/nav-menu/nav-menu.component';
+import {NavItemComponent} from './components/nav-item/nav-item.component';
+import {MatNativeDateModule, MatRippleModule} from "@angular/material/core";
+import {FooterComponent} from './components/footer/footer.component';
+import {LoginComponent} from './components/login/login.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
-import { RegisterComponent } from './components/register/register.component';
+import {RegisterComponent} from './components/register/register.component';
 import {MatStepperModule} from "@angular/material/stepper";
-import { NotFoundComponent } from './components/not-found/not-found.component';
-import { PersonalDataComponent } from './contents/personal-data/personal-data.component';
+import {NotFoundComponent} from './components/not-found/not-found.component';
+import {PersonalDataComponent} from './contents/personal-data/personal-data.component';
 import {MatExpansionModule} from "@angular/material/expansion";
 import {MatListModule} from "@angular/material/list";
 import {MatTreeModule} from "@angular/material/tree";
@@ -36,20 +36,25 @@ import {MatGridListModule} from "@angular/material/grid-list";
 import {Overlay} from "@angular/cdk/overlay";
 import {MatRadioModule} from "@angular/material/radio";
 import {MatTooltipModule} from "@angular/material/tooltip";
-import { ChangeAvatarComponent } from './popups/change-avatar/change-avatar.component';
+import {ChangeAvatarComponent} from './popups/change-avatar/change-avatar.component';
 import {MatDialogModule} from "@angular/material/dialog";
-import { SchoolAdminComponent } from './contents/school-admin/school-admin.component';
+import {SchoolAdminComponent} from './contents/school-admin/school-admin.component';
 import {MatTableModule} from "@angular/material/table";
 import {MatCheckboxModule} from "@angular/material/checkbox";
-import { SchoolEditComponent } from './popups/school-edit/school-edit.component';
-import { AccountAdminComponent } from './contents/account-admin/account-admin.component';
+import {SchoolEditComponent} from './popups/school-edit/school-edit.component';
+import {AccountAdminComponent} from './contents/account-admin/account-admin.component';
 import {ClipboardModule} from "@angular/cdk/clipboard";
 import {MatPaginatorModule} from "@angular/material/paginator";
-import { AccountEditComponent } from './popups/account-edit/account-edit.component';
+import {AccountEditComponent} from './popups/account-edit/account-edit.component';
 import {MatSelectModule} from "@angular/material/select";
-import { AccountBulkAddComponent } from './popups/account-bulk-add/account-bulk-add.component';
-import { SingleInputComponent } from './popups/single-input/single-input.component';
-import { TrainAdminComponent } from './contents/train-admin/train-admin.component';
+import {AccountBulkAddComponent} from './popups/account-bulk-add/account-bulk-add.component';
+import {SingleInputComponent} from './popups/single-input/single-input.component';
+import {TrainAdminComponent} from './contents/train-admin/train-admin.component';
+import {SingleTextareaComponent} from './popups/single-textarea/single-textarea.component';
+import {TrainDetailComponent} from './contents/train-detail/train-detail.component';
+import {MatDatepickerModule} from "@angular/material/datepicker";
+import { FileSizePipe } from './pipes/file-size.pipe';
+import { SelectFileComponent } from './popups/select-file/select-file.component';
 
 // These are the hardcoded inline svg sources to be used by the `<mat-icon>` component.
 // tslint:disable: max-line-length
@@ -120,6 +125,7 @@ export const svgIconProviders = [
     multi: true,
   },
 ];
+
 // tslint:enable: max-line-length
 
 @NgModule({
@@ -142,47 +148,54 @@ export const svgIconProviders = [
     AccountEditComponent,
     AccountBulkAddComponent,
     SingleInputComponent,
-    TrainAdminComponent
+    TrainAdminComponent,
+    SingleTextareaComponent,
+    TrainDetailComponent,
+    FileSizePipe,
+    SelectFileComponent
   ],
-    imports: [
-        BrowserModule,
-        HammerModule,
-        AppRoutingModule,
-        BrowserAnimationsModule,
-        HttpClientModule,
-        MatProgressBarModule,
-        MatToolbarModule,
-        MatIconModule,
-        MatButtonModule,
-        MatSidenavModule,
-        MatRippleModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatStepperModule,
-        MatExpansionModule,
-        MatListModule,
-        MatTreeModule,
-        MatGridListModule,
-        ImageCropperModule,
-        MatRadioModule,
-        MatTooltipModule,
-        MatDialogModule,
-        MatTableModule,
-        MatCheckboxModule,
-        ClipboardModule,
-        MatPaginatorModule,
-        MatSelectModule,
-    ],
+  imports: [
+    BrowserModule,
+    HammerModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    HttpClientModule,
+    MatProgressBarModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatButtonModule,
+    MatSidenavModule,
+    MatRippleModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatStepperModule,
+    MatExpansionModule,
+    MatListModule,
+    MatTreeModule,
+    MatGridListModule,
+    ImageCropperModule,
+    MatRadioModule,
+    MatTooltipModule,
+    MatDialogModule,
+    MatTableModule,
+    MatCheckboxModule,
+    ClipboardModule,
+    MatPaginatorModule,
+    MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+  ],
   providers: [
     ErrorHandler,
     svgIconProviders,
     MatSnackBar,
     Overlay,
-    { provide: MatIconRegistry, useClass: CustomIconRegistry },
-    { provide: WINDOW, useFactory: windowProvider }
+    {provide: MatIconRegistry, useClass: CustomIconRegistry},
+    {provide: WINDOW, useFactory: windowProvider}
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

@@ -76,6 +76,7 @@ export class TrainAdminComponent implements OnInit {
   get columnRefs() {
     let keys = Object.keys(this.columns);
     keys.unshift('select');
+    keys.push('edit');
     return keys
   }
 

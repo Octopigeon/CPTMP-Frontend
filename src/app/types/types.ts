@@ -102,9 +102,18 @@ export interface Train {
   content?: string;
   // 验收标准
   standard?: string;
-  // 实训资源
-  resource_lib?: string;
+  // 实训资源 may need another json load process if type is string
+  resource_lib?: string | TrainResource[];
   // TODO format? how to display & set it?
   // 位置信息
   gps_info?: string;
+}
+
+export interface TrainResource {
+  file_name: string;
+  file_path: string;
+  file_size: number;
+  file_type: string;
+  created: string | number;
+  original_name: string;
 }

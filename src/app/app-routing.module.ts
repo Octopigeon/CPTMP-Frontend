@@ -8,11 +8,12 @@ import {RegisterComponent} from "./components/register/register.component";
 import {SchoolAdminComponent} from "./contents/school-admin/school-admin.component";
 import {AccountAdminComponent} from "./contents/account-admin/account-admin.component";
 import {TrainAdminComponent} from "./contents/train-admin/train-admin.component";
+import {TrainDetailComponent} from "./contents/train-detail/train-detail.component";
 
 
 const routes: Routes = [
   { path: 'plat/user/me', component: PersonalDataComponent },
-  { path: 'plat/test', component: TrainAdminComponent },
+  { path: 'plat/test', component: TrainDetailComponent },
   // { path: 'plat/test', component: AccountAdminComponent, data: {type: 'enterprise'}  },
   // { path: 'activate/:token'},
   { path: 'register', component: RegisterComponent },
