@@ -41,9 +41,11 @@ export class TrainDetailComponent implements OnInit {
       created: 1594798206653,
       original_name: "2019101403.png"
     }],
-    gps_info: '*Some GPS Position*'
+    // picking location currently not implemented
+    gps_info: ''
   }
 
+  // retrieve from backend
   organizations = {
     1: '组织1',
     2: '组织2',
@@ -52,13 +54,7 @@ export class TrainDetailComponent implements OnInit {
 
   organization_list = Object.entries(this.organizations);
 
-  get organ_entries() { return Object.entries(this.organizations); }
-
-  toDateString(date: number | string) {
-    return (new Date(date)).toLocaleDateString()
-  }
-
-  // TODO maybe change to formGroup and add some validate?
+  // TODO maybe change to formGroup and add some validation?
   controls: {[key: string]: StatedFormControl} = {
     name: new StatedFormControl(''),
     organization_id: new StatedFormControl(''),
@@ -83,7 +79,7 @@ export class TrainDetailComponent implements OnInit {
       // if (!id || !id.trim()) {
       //   this.loc.go(['/', 'not-found'])
       // }
-      // TODO retrieve id from param, and data from backend
+      // TODO retrieve id from param, and data from backend (and special handling to new train)
 
       Object.entries(this.controls).forEach(([field, control]) => {
         if (field.endsWith('time')) {
@@ -104,14 +100,13 @@ export class TrainDetailComponent implements OnInit {
       }
     });
 
-    // TODO post selected file to backend
+    // TODO post selected file to backend, return value has type File[]
     dialogRef.afterClosed().subscribe()
   }
 
   deleteFile() {
     const files = this.fileSelection.selectedOptions.selected;
     // TODO handle file delete. files[i].value is a TrainResource object
-
   }
 
 }

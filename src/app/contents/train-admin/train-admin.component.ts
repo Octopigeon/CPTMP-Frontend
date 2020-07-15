@@ -99,10 +99,6 @@ export class TrainAdminComponent implements OnInit {
       this.dataSource.data.forEach(row => this.selection.select(row));
   }
 
-  toDateString(date: number | string) {
-    return (new Date(date)).toLocaleDateString()
-  }
-
   trainEdit(train?: Train) {
     // const dialogRef = this.dialog.open(SchoolEditComponent, {
     //   data: organization

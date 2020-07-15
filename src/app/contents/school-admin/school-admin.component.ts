@@ -96,10 +96,6 @@ export class SchoolAdminComponent implements OnInit {
       this.dataSource.data.forEach(row => this.selection.select(row));
   }
 
-  toDateString(date: number | string) {
-    return (new Date(date)).toLocaleDateString()
-  }
-
   schoolEdit(organization?: Organization) {
     const dialogRef = this.dialog.open(SchoolEditComponent, {
       data: organization

@@ -30,7 +30,7 @@
     <ng-container *ngFor="let column of columnPairs" [matColumnDef]="column[0]">
       <th mat-header-cell *matHeaderCellDef>{{column[1]}}</th>
       <td mat-cell *matCellDef="let element">
-        {{column[0] === 'created' ? toDateString(element[column[0]]) : element[column[0]]}}
+        {{column[0] === 'created' ? (element[column[0]] | date) : element[column[0]]}}
       </td>
     </ng-container>
 
