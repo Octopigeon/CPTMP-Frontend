@@ -118,7 +118,11 @@ export class SchoolAdminComponent implements OnInit {
     const dialogRef = this.dialog.open(SchoolEditComponent, {
       data: organization
     });
-    this.msg.SendMessage('正在创建组织').subscribe()
+    dialogRef.afterClosed().subscribe(result => {
+      const org = result as Organization;
+      console.log(org.name);
+    })
+
 
     // TODO get data & post create/modify request to backend
     dialogRef.afterClosed().subscribe();

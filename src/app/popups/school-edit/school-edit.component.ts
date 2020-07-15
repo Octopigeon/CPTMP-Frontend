@@ -1,7 +1,8 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {Organization} from "../../types/types";
+import {Organization, UserInfo} from "../../types/types";
+import {observable, Observable, Subscriber} from "rxjs";
 
 @Component({
   selector: 'app-school-edit',
@@ -31,15 +32,32 @@ export class SchoolEditComponent implements OnInit {
   }
 
   // TODO return school info from form
-  getSchool() {
+  getSchool(): Observable<Organization>{
+    return new Observable(sub => {
+      const org: Organization = {
+        name: this.schoolForm.value.name,
+        code: this.schoolForm.value.code,
+        url: this.schoolForm.value.url,
+        description: this.schoolForm.value.description
+      }
+      sub.next(org);
+    })
 
   }
 
   constructor(public dialogRef: MatDialogRef<SchoolEditComponent>,
               @Inject(MAT_DIALOG_DATA) public data?: Organization) {
     this.isEditing = data !== null;
+
     // TODO init form according to data
-    this.schoolForm.value.declarations = data.description;
+    if (this.isEditing){
+      this.schoolForm.setValue({
+        name: data.name,
+        code: data.code,
+        url: data.url,
+        description: data.description
+      })
+    }
   }
 
   ngOnInit(): void {

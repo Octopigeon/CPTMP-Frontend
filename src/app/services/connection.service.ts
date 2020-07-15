@@ -227,7 +227,7 @@ export class ConnectionService {
 
     return result;
   }
-
+/*
   public DeleteUser(deleteUserQ: number): Observable<Resp>{
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
@@ -247,8 +247,8 @@ export class ConnectionService {
         observer.error(error)
       }
     })
-    return result;*/
-  }
+    return result;
+  }*/
 
 
 }
