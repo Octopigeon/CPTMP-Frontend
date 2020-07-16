@@ -57,6 +57,10 @@ import { FileSizePipe } from './pipes/file-size.pipe';
 import { SelectFileComponent } from './popups/select-file/select-file.component';
 import { ProjectAdminComponent } from './contents/project-admin/project-admin.component';
 import { ProjectDetailComponent } from './contents/project-detail/project-detail.component';
+import { ProjectListComponent } from './contents/project-list/project-list.component';
+import {MatCardModule} from "@angular/material/card";
+import { TeamAdminComponent } from './contents/team-admin/team-admin.component';
+import {MatChipsModule} from "@angular/material/chips";
 
 // These are the hardcoded inline svg sources to be used by the `<mat-icon>` component.
 // tslint:disable: max-line-length
@@ -156,7 +160,9 @@ export const svgIconProviders = [
     FileSizePipe,
     SelectFileComponent,
     ProjectAdminComponent,
-    ProjectDetailComponent
+    ProjectDetailComponent,
+    ProjectListComponent,
+    TeamAdminComponent
   ],
   imports: [
     BrowserModule,
@@ -190,6 +196,8 @@ export const svgIconProviders = [
     MatSelectModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatCardModule,
+    MatChipsModule,
   ],
   providers: [
     ErrorHandler,

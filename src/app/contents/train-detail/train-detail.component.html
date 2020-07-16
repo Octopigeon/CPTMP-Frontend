@@ -1,7 +1,13 @@
 <div class="train-info">
-  <button mat-fab color="primary" matTooltip="保存更改" class="save-button" (click)="saveChange()">
-    <mat-icon>save</mat-icon>
-  </button>
+  <div class="float-operation">
+    <!-- TODO add team list routerLink -->
+    <a mat-fab color="primary" matTooltip="查看实训团队列表" class="save-button">
+      <mat-icon>open_in_new</mat-icon>
+    </a>
+    <button *ngIf="editMode" mat-fab color="primary" matTooltip="保存更改" class="save-button" (click)="saveChange()">
+      <mat-icon>save</mat-icon>
+    </button>
+  </div>
   <h1 id="train-name">
     <span class="name-wrapper">
       <span *ngIf="!controls.name.editing">{{controls.name.value}}</span>

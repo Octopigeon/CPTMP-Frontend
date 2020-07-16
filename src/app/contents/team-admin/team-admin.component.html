@@ -1,0 +1,104 @@
+<div class="info-header">
+  <h1 class="header-title">团队管理列表</h1>
+  <p class="header-note">此处可以管理系统中的团队</p>
+</div>
+<div class="operations">
+  <button mat-fab color="primary" matTooltip="创建团队" (click)="teamCreate()"><mat-icon>add</mat-icon></button>
+  <button mat-fab color="warn" matTooltip="删除已选团队" (click)="teamDelete()" [disabled]="selection.isEmpty()">
+    <mat-icon>delete</mat-icon>
+  </button>
+</div>
+<div class="content-wrapper mat-elevation-z8">
+  <div class="filter-wrapper">
+    <h2 class="filter-title">过滤条件</h2>
+    <!-- TODO make this real filter fields add filter form control and update table upon filter field change -->
+    <form class="filter">
+      <mat-form-field class="filter-field">
+        <mat-label>账户名称</mat-label>
+        <input matInput>
+      </mat-form-field>
+      <mat-form-field class="filter-field">
+        <mat-label>姓名</mat-label>
+        <input matInput>
+      </mat-form-field>
+      <mat-form-field class="filter-field">
+        <mat-label>电子邮件</mat-label>
+        <input matInput>
+      </mat-form-field>
+      <mat-form-field class="filter-field">
+        <mat-label>角色</mat-label>
+        <mat-select>
+          <mat-option value="1">角色1</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="filter-field">
+        <mat-label>性别</mat-label>
+        <mat-select>
+          <mat-option value="1">男</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="filter-field">
+        <mat-label>电话号码</mat-label>
+        <input matInput>
+      </mat-form-field>
+    </form>
+  </div>
+  <mat-paginator class="paginator"
+                 [pageSizeOptions]="[10, 50, 100]"
+                 showFirstLastButtons pageSize="10"
+                 [length]="dataSource.length"
+                 (page)="selection.clear()"></mat-paginator>
+  <table mat-table [dataSource]="dataSource" class="user-table" [trackBy]="tableItemCheckBy">
+    <!-- Checkbox Column -->
+    <ng-container matColumnDef="select" sticky>
+      <th mat-header-cell *matHeaderCellDef>
+        <mat-checkbox (change)="$event ? masterToggle() : null"
+                      [checked]="selection.hasValue() && isAllSelected()"
+                      [indeterminate]="selection.hasValue() && !isAllSelected()">
+        </mat-checkbox>
+      </th>
+      <td mat-cell *matCellDef="let row">
+        <mat-checkbox (click)="$event.stopPropagation()"
+                      (change)="$event ? selection.toggle(row) : null"
+                      [checked]="selection.isSelected(row)">
+        </mat-checkbox>
+      </td>
+    </ng-container>
+
+    <ng-container *ngFor="let column of columnPairs" [matColumnDef]="column[0]">
+      <th mat-header-cell *matHeaderCellDef>{{column[1]}}</th>
+      <td mat-cell *matCellDef="let element" [ngSwitch]="column[0]">
+        <img *ngSwitchCase="'avatar'" alt="avatar" class="user-list-avatar"
+             [src]="autoAvatar(element.avatar)" [matTooltip]="validLink(element.avatar) ? '自定义头像' : '默认头像'">
+        <span *ngSwitchCase="'repo_url'" >
+          <a *ngIf="validLink(element.repo_url)" [href]="element.repo_url"
+             target="_blank" rel="noopener" mat-icon-button [matTooltip]="element.repo_url">
+            <mat-icon>open_in_new</mat-icon>
+          </a>
+          <button *ngIf="!validLink(element.repo_url)" mat-icon-button matTooltip="未设置">
+            <mat-icon>check_box_outline_blank</mat-icon>
+          </button>
+        </span>
+        <span *ngSwitchCase="'team_grade'">
+          {{element.team_grade ? element.team_grade : '未评分'}}
+        </span>
+        <span *ngSwitchDefault>{{element[column[0]]}}</span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="edit" stickyEnd>
+      <th mat-header-cell *matHeaderCellDef>编辑</th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-icon-button (click)="teamEdit($event, element)" matTooltip="编辑团队">
+          <mat-icon>open_in_new</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnRefs"></tr>
+    <tr class="user-row"
+        mat-row *matRowDef="let element; columns: columnRefs;"
+        (click)="selection.toggle(element)">
+    </tr>
+  </table>
+</div>

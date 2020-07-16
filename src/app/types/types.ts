@@ -126,3 +126,21 @@ export interface Project {
   // like above
   resource_lib?: string | ResourceFile[];
 }
+
+export interface Team {
+  id: number;
+  name: string;
+  avatar?: string;
+  repo_url?: string;
+  train_project_id: number;
+  train_name: string;
+  project_name: string;
+  member_count?: number;
+  members?: UserInfo[];
+
+  // 团队评分
+  team_grade?: number;
+
+  // 团队评价
+  evaluation?: string;
+}
