@@ -1,4 +1,7 @@
 <div class="train-info">
+  <button mat-fab color="primary" matTooltip="保存更改" class="save-button" (click)="saveChange()">
+    <mat-icon>save</mat-icon>
+  </button>
   <h1 id="train-name">
     <span class="name-wrapper">
       <span *ngIf="!controls.name.editing">{{controls.name.value}}</span>
@@ -24,6 +27,7 @@
         </mat-select>
       </mat-form-field>
     </span>
+    <!-- this can only be modified upon creation (or maybe hardcode organization_id into url?) -->
     <button *ngIf="newEntry" matTooltipPosition="right"
             mat-icon-button [matTooltip]="controls.organization_id.editing ? '完成' : '修改'" class="edit-button"
             (click)="controls.organization_id.switchEdit()">
@@ -117,6 +121,9 @@
           <div mat-line> {{file.file_size | fileSize}} · {{file.created | date}} </div>
         </mat-list-item>
       </a>
+      <mat-list-item class="resource-empty-hint" *ngIf="data.resource_lib.length === 0">
+        <div mat-line>暂无资料</div>
+      </mat-list-item>
     </mat-list>
     <div class="file-edit-wrapper" *ngIf="editFile">
       <mat-selection-list #files>

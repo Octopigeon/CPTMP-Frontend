@@ -55,6 +55,8 @@ import {TrainDetailComponent} from './contents/train-detail/train-detail.compone
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import { FileSizePipe } from './pipes/file-size.pipe';
 import { SelectFileComponent } from './popups/select-file/select-file.component';
+import { ProjectAdminComponent } from './contents/project-admin/project-admin.component';
+import { ProjectDetailComponent } from './contents/project-detail/project-detail.component';
 
 // These are the hardcoded inline svg sources to be used by the `<mat-icon>` component.
 // tslint:disable: max-line-length
@@ -152,7 +154,9 @@ export const svgIconProviders = [
     SingleTextareaComponent,
     TrainDetailComponent,
     FileSizePipe,
-    SelectFileComponent
+    SelectFileComponent,
+    ProjectAdminComponent,
+    ProjectDetailComponent
   ],
   imports: [
     BrowserModule,

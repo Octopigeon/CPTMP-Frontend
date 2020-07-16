@@ -9,11 +9,13 @@ import {SchoolAdminComponent} from "./contents/school-admin/school-admin.compone
 import {AccountAdminComponent} from "./contents/account-admin/account-admin.component";
 import {TrainAdminComponent} from "./contents/train-admin/train-admin.component";
 import {TrainDetailComponent} from "./contents/train-detail/train-detail.component";
+import {ProjectAdminComponent} from "./contents/project-admin/project-admin.component";
+import {ProjectDetailComponent} from "./contents/project-detail/project-detail.component";
 
 
 const routes: Routes = [
   { path: 'plat/user/me', component: PersonalDataComponent },
-  { path: 'plat/test', component: TrainDetailComponent },
+  { path: 'plat/test', component: ProjectDetailComponent },
   // { path: 'plat/test', component: AccountAdminComponent, data: {type: 'enterprise'}  },
   // { path: 'activate/:token'},
   { path: 'register', component: RegisterComponent },

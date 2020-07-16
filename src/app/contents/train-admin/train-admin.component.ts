@@ -83,7 +83,6 @@ export class TrainAdminComponent implements OnInit {
   get columnPairs() { return Object.entries(this.columns) }
   dataSource = new MatTableDataSource<Train>(EXAMPLE_TRAIN);
   selection = new SelectionModel<Train>(true, []);
-  expandedElement: Train | null;
 
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
@@ -97,15 +96,6 @@ export class TrainAdminComponent implements OnInit {
     this.isAllSelected() ?
       this.selection.clear() :
       this.dataSource.data.forEach(row => this.selection.select(row));
-  }
-
-  trainEdit(train?: Train) {
-    // const dialogRef = this.dialog.open(SchoolEditComponent, {
-    //   data: organization
-    // });
-    //
-    // // TO_DO get data & post create/modify request to backend
-    // dialogRef.afterClosed().subscribe()
   }
 
   // TODO delete train according to selection
