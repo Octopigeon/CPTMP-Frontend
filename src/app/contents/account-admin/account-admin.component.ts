@@ -71,9 +71,12 @@ export class AccountAdminComponent implements OnInit {
   userDelete() {
 
     this.msg.SendMessage('正在删除账号……').subscribe()
-
-    window.alert(this.selection.selected[1].user_id);
-    this.conn.DeleteUser(0).subscribe({
+    const userList: number[] = [];
+    for (const typeElement of this.selection.selected) {
+      userList.push(typeElement.user_id);
+    }
+    console.log(userList);
+    this.conn.DeleteUser(userList).subscribe({
       next: resp => {
         this.msg.SendMessage('删除账号成功').subscribe()
         this.conn.GetUserInfo().subscribe()

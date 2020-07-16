@@ -90,6 +90,13 @@ export interface Organization {
   created?: number | string;
 }
 
+export interface OrganizationQ{
+  real_name: string;
+  code: string;
+  website_url: string;
+  description: string;
+}
+
 export interface DeleteUserQ{
   selection: number[];
 }

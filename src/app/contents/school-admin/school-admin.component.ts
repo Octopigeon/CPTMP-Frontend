@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {Organization} from '../../types/types';
+import {Organization, OrganizationQ} from '../../types/types';
 import {MatTableDataSource} from '@angular/material/table';
 import {SelectionModel} from '@angular/cdk/collections';
 import {animate, state, style, transition, trigger} from '@angular/animations';
@@ -13,6 +13,7 @@ import {LocationService} from '../../services/location.service';
 import {Logger} from '../../services/logger.service';
 import {ActivatedRoute} from "@angular/router";
 import {MatPaginator} from "@angular/material/paginator";
+
 
 const EXAMPLE_ORGANIZATION: Organization[] = [{
   id: 1,
@@ -91,8 +92,8 @@ export class SchoolAdminComponent implements OnInit {
 
 
 
-  organizationList: Organization[] = [];
-  dataSource = new MatTableDataSource<Organization>(EXAMPLE_ORGANIZATION);
+
+  dataSource: MatTableDataSource<Organization>;
   selection = new SelectionModel<Organization>(true, []);
   expandedElement: Organization | null;
 
@@ -118,14 +119,52 @@ export class SchoolAdminComponent implements OnInit {
     const dialogRef = this.dialog.open(SchoolEditComponent, {
       data: organization
     });
-    dialogRef.afterClosed().subscribe(result => {
-      const org = result as Organization;
-      console.log(org.name);
-    })
-
 
     // TODO get data & post create/modify request to backend
-    dialogRef.afterClosed().subscribe();
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (organization == null) {
+        this.msg.SendMessage('正在创建新组织……').subscribe();
+        const org: OrganizationQ = {
+          real_name: result.name,
+          code: result.code,
+          website_url: result.url,
+          description: result.description
+        };
+        const orgList: OrganizationQ[] = [org];
+        this.conn.CreateOrganization(orgList).subscribe({
+          next: resp => {
+            if (resp.status === 0) {
+              this.msg.SendMessage('新组织创建成功').subscribe();
+            }
+          },
+          error: () => {
+            this.msg.SendMessage('新组织创建失败。未知错误').subscribe();
+          }
+        });
+
+      }else{
+
+        this.msg.SendMessage('正在修改组织信息……').subscribe();
+        const org: OrganizationQ = {
+          real_name: result.name,
+          code: result.code,
+          website_url: result.url,
+          description: result.description
+        };
+        this.conn.UploadOrgBasicInfo(org).subscribe({
+          next: resp => {
+            if (resp.status === 0) {
+              this.msg.SendMessage('组织信息修改成功').subscribe();
+            }
+          },
+          error: () => {
+            this.msg.SendMessage('组织信息修改失败。未知错误').subscribe();
+          }
+        });
+
+      }
+    });
   }
 
   // TODO delete scholl according to selection
@@ -154,6 +193,7 @@ export class SchoolAdminComponent implements OnInit {
               private route: ActivatedRoute) { }
 
   ngOnInit(): void {
+    this.dataSource = new MatTableDataSource<Organization>(EXAMPLE_ORGANIZATION)
   }
 
 }

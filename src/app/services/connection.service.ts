@@ -1,8 +1,8 @@
 import {Injectable, OnInit} from '@angular/core';
 import {StorageMap} from "@ngx-pwa/local-storage";
 
-import {HttpClient, HttpEvent} from "@angular/common/http";
-import {ChangePasswordQ, ModifyUserBasicInfoQ, LoginQ, Resp, UserInfo, UserInfoL, DeleteUserQ} from "../types/types";
+import {HttpClient, HttpEvent, HttpHeaders} from "@angular/common/http";
+import {ChangePasswordQ, ModifyUserBasicInfoQ, OrganizationQ, LoginQ, Resp, UserInfo, UserInfoL, DeleteUserQ} from "../types/types";
 
 import {Logger} from "./logger.service";
 import {Observable, ReplaySubject, Subscriber} from "rxjs";
@@ -59,6 +59,10 @@ export class ConnectionService {
     return new Observable((observer: Subscriber<T>) => observer.error(err));
   }
 
+  private delete(url: string , ibody: any): Observable<Resp>{
+    return this.client.request<Resp>('delete', url, {body: ibody});
+  }
+
   private get(url: string): Observable<Resp> {
     return this.client.get<Resp>(url);
   }
@@ -66,6 +70,7 @@ export class ConnectionService {
   private post(url: string, body: any): Observable<Resp> {
     return this.client.post<Resp>(url, body);
   }
+
 
   private put(url: string, body: any): Observable<Resp> {
     return this.client.put<Resp>(url, body);
@@ -227,12 +232,57 @@ export class ConnectionService {
 
     return result;
   }
-/*
-  public DeleteUser(deleteUserQ: number): Observable<Resp>{
+
+  public CreateOrganization(org: OrganizationQ[]): Observable<Resp>{
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
-    /*
-    this.delete(API.delete_user).subscribe({
+
+    this.post(API.create_org, org).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Create Organization failed with status code ${response.status}: ${response.msg}.`)
+          observer.error(response);
+          return result;
+        }
+        observer.next(response);
+        observer.complete();
+        },
+      error: error => {
+        this.logger.log(`Create Organization failed with network error: `, error);
+        observer.error(error);
+      }
+    });
+
+    return result;
+  }
+
+  public UploadOrgBasicInfo(org: OrganizationQ): Observable<Resp>{
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+
+    this.post(API.org_basic_info, org).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Upload organization basic information failed with status code ${response.status}: ${response.msg}.`)
+          observer.error(response);
+          return result;
+        }
+        observer.next(response);
+        observer.complete();
+      },
+      error: error => {
+        this.logger.log(`Upload organization basic information failed with network error: `, error);
+        observer.error(error);
+      }
+    });
+    return result;
+  }
+
+  public DeleteUser(deleteUserQ: number[]): Observable<Resp> {
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+
+    this.delete(API.delete_user, deleteUserQ ).subscribe({
       next: response => {
         if (response.status !== 0) {
           this.logger.log(`Delete User failed with status code ${response.status}: ${response.msg}.`)
@@ -248,7 +298,7 @@ export class ConnectionService {
       }
     })
     return result;
-  }*/
+  }
 
 
 }

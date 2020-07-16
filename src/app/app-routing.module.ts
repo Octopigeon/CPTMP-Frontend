@@ -13,7 +13,7 @@ import {AccountAdminComponent} from "./contents/account-admin/account-admin.comp
 const routes: Routes = [
   { path: 'plat/user/me', component: PersonalDataComponent },
   // { path: 'plat/test', component: SchoolAdminComponent },
-  { path: 'plat/test', component: SchoolAdminComponent, data: {type: 'enterprise'}  },
+  { path: 'plat/test', component: AccountAdminComponent, data: {type: 'enterprise'}  },
   // { path: 'activate/:token'},
   { path: 'register', component: RegisterComponent },
   { path: '', component: LoginComponent, pathMatch: 'full' },
