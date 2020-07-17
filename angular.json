@@ -31,7 +31,10 @@
               "src/theme.scss",
               "src/styles.styl"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "hammerjs"
+            ]
           },
           "configurations": {
             "production": {

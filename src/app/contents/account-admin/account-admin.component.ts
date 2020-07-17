@@ -19,7 +19,7 @@ export class AccountAdminComponent implements OnInit {
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
   typeString: {[key: string]: string} = {
-    enterprise: '企业',
+    enterprise: '企业管理员',
     teacher: '组织教师',
     student: '学生'
   }

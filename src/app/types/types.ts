@@ -90,6 +90,7 @@ export interface Organization {
   created?: number | string;
 }
 
+<<<<<<< HEAD
 export interface OrganizationQ{
   real_name: string;
   code: string;
@@ -99,4 +100,59 @@ export interface OrganizationQ{
 
 export interface DeleteUserQ{
   selection: number[];
+=======
+export interface Train {
+  id: number;
+  name: string;
+  organization: string;
+  organization_id: number;
+  start_time?: number | string;
+  end_time?: number | string;
+  // TODO should the following be pure text, or html content?
+  // 实训内容?
+  content?: string;
+  // 验收标准
+  standard?: string;
+  // 实训资源 may need another json load process if type is string
+  resource_lib?: string | ResourceFile[];
+  // TODO format? how to display & set it?
+  // 位置信息
+  gps_info?: string;
+}
+
+export interface ResourceFile {
+  file_name: string;
+  file_path: string;
+  file_size: number;
+  file_type: string;
+  created: string | number;
+  original_name: string;
+}
+
+export interface Project {
+  id: number;
+  name: string;
+  level: number;
+  content: string;
+  // like above
+  resource_lib?: string | ResourceFile[];
+}
+
+export interface Team {
+  id: number;
+  name: string;
+  avatar?: string;
+  repo_url?: string;
+  train_project_id: number;
+  train_name: string;
+  project_name: string;
+  member_count?: number;
+  members?: UserInfo[];
+
+  // 团队评分
+  team_grade?: number;
+
+  // 团队评价
+  evaluation?: string;
+>>>>>>> 30f657f9a720f0cdbbca82446e0a4bcde895a9d1
 }

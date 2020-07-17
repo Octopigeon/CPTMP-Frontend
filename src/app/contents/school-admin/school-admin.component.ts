@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {Organization, OrganizationQ} from '../../types/types';
 import {MatTableDataSource} from '@angular/material/table';
@@ -14,7 +15,18 @@ import {Logger} from '../../services/logger.service';
 import {ActivatedRoute} from "@angular/router";
 import {MatPaginator} from "@angular/material/paginator";
 
+=======
+import { Component, OnInit } from '@angular/core';
+import {Organization} from "../../types/types";
+import {MatTableDataSource} from "@angular/material/table";
+import {SelectionModel} from "@angular/cdk/collections";
+import {animate, state, style, transition, trigger} from "@angular/animations";
+import {MatDialog} from "@angular/material/dialog";
+import {SchoolEditComponent} from "../../popups/school-edit/school-edit.component";
+import {MessageService} from "../../services/message.service";
+>>>>>>> 30f657f9a720f0cdbbca82446e0a4bcde895a9d1
 
+// these can be removed once real api is implemented
 const EXAMPLE_ORGANIZATION: Organization[] = [{
   id: 1,
   name: 'a',
@@ -111,10 +123,13 @@ export class SchoolAdminComponent implements OnInit {
       this.dataSource.data.forEach(row => this.selection.select(row));
   }
 
+<<<<<<< HEAD
   toDateString(date: number | string) {
     return (new Date(date)).toLocaleDateString();
   }
 
+=======
+>>>>>>> 30f657f9a720f0cdbbca82446e0a4bcde895a9d1
   schoolEdit(organization?: Organization) {
     const dialogRef = this.dialog.open(SchoolEditComponent, {
       data: organization

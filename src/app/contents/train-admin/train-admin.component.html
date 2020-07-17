@@ -1,0 +1,48 @@
+<div class="info-header">
+  <h1 class="header-title">实训管理</h1>
+  <p class="header-note">此处可以管理系统中的实训</p>
+</div>
+<div class="operations">
+  <!-- TODO add link to train detail (new) page -->
+  <a mat-fab color="primary" matTooltip="添加实训" aria-label="添加实训"><mat-icon>add</mat-icon></a>
+  <button mat-fab color="warn" [disabled]="selection.isEmpty()" (click)="trainDelete()"
+          matTooltip="删除已选实训" aria-label="删除已选实训"><mat-icon>delete</mat-icon></button>
+</div>
+<div class="content-wrapper mat-elevation-z8">
+  <table mat-table [dataSource]="dataSource" class="train-table">
+    <!-- Checkbox Column -->
+    <ng-container matColumnDef="select" sticky>
+      <th mat-header-cell *matHeaderCellDef>
+        <mat-checkbox (change)="$event ? masterToggle() : null"
+                      [checked]="selection.hasValue() && isAllSelected()"
+                      [indeterminate]="selection.hasValue() && !isAllSelected()">
+        </mat-checkbox>
+      </th>
+      <td mat-cell *matCellDef="let row">
+        <mat-checkbox (click)="$event.stopPropagation()"
+                      (change)="$event ? selection.toggle(row) : null"
+                      [checked]="selection.isSelected(row)">
+        </mat-checkbox>
+      </td>
+    </ng-container>
+
+    <ng-container *ngFor="let column of columnPairs" [matColumnDef]="column[0]">
+      <th mat-header-cell *matHeaderCellDef>{{column[1]}}</th>
+      <td mat-cell *matCellDef="let element">
+        {{column[0].endsWith('time') ? (element[column[0]] | date) : element[column[0]]}}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="edit" stickyEnd>
+      <th mat-header-cell *matHeaderCellDef>详情</th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-icon-button matTooltip="详细信息" matTooltipPosition="left">
+          <mat-icon>open_in_new</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnRefs"></tr>
+    <tr class="user-row" mat-row *matRowDef="let element; columns: columnRefs;"></tr>
+  </table>
+</div>
