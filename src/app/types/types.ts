@@ -90,7 +90,6 @@ export interface Organization {
   created?: number | string;
 }
 
-<<<<<<< HEAD
 export interface OrganizationQ{
   real_name: string;
   code: string;
@@ -98,9 +97,9 @@ export interface OrganizationQ{
   description: string;
 }
 
-export interface DeleteUserQ{
+export interface DeleteUserQ {
   selection: number[];
-=======
+}
 export interface Train {
   id: number;
   name: string;
@@ -154,5 +153,4 @@ export interface Team {
 
   // 团队评价
   evaluation?: string;
->>>>>>> 30f657f9a720f0cdbbca82446e0a4bcde895a9d1
 }

@@ -45,8 +45,6 @@ import {SchoolEditComponent} from './popups/school-edit/school-edit.component';
 import {AccountAdminComponent} from './contents/account-admin/account-admin.component';
 import {ClipboardModule} from "@angular/cdk/clipboard";
 import {MatPaginatorModule} from "@angular/material/paginator";
-<<<<<<< HEAD
-=======
 import {AccountEditComponent} from './popups/account-edit/account-edit.component';
 import {MatSelectModule} from "@angular/material/select";
 import {AccountBulkAddComponent} from './popups/account-bulk-add/account-bulk-add.component';
@@ -63,7 +61,7 @@ import { ProjectListComponent } from './contents/project-list/project-list.compo
 import {MatCardModule} from "@angular/material/card";
 import { TeamAdminComponent } from './contents/team-admin/team-admin.component';
 import {MatChipsModule} from "@angular/material/chips";
->>>>>>> 30f657f9a720f0cdbbca82446e0a4bcde895a9d1
+
 
 // These are the hardcoded inline svg sources to be used by the `<mat-icon>` component.
 // tslint:disable: max-line-length
@@ -153,9 +151,6 @@ export const svgIconProviders = [
     ChangeAvatarComponent,
     SchoolAdminComponent,
     SchoolEditComponent,
-<<<<<<< HEAD
-    AccountAdminComponent
-=======
     AccountAdminComponent,
     AccountEditComponent,
     AccountBulkAddComponent,
@@ -169,7 +164,6 @@ export const svgIconProviders = [
     ProjectDetailComponent,
     ProjectListComponent,
     TeamAdminComponent
->>>>>>> 30f657f9a720f0cdbbca82446e0a4bcde895a9d1
   ],
   imports: [
     BrowserModule,
@@ -200,14 +194,11 @@ export const svgIconProviders = [
     MatCheckboxModule,
     ClipboardModule,
     MatPaginatorModule,
-<<<<<<< HEAD
-=======
     MatSelectModule,
     MatDatepickerModule,
     MatNativeDateModule,
     MatCardModule,
     MatChipsModule,
->>>>>>> 30f657f9a720f0cdbbca82446e0a4bcde895a9d1
   ],
   providers: [
     ErrorHandler,

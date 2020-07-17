@@ -1,0 +1,31 @@
+<h2 class="title">{{isEditing ? '修改用户' : '新建用户'}}</h2>
+<mat-dialog-content>
+  <form [formGroup]="accountForm">
+    <div class="form-input-container">
+      <!-- TODO change to real form -->
+      <mat-form-field appearance="outline" class="form-input">
+        <mat-label>姓名</mat-label>
+        <input matInput placeholder="用户真实姓名" formControlName="name">
+        <mat-icon matSuffix>person</mat-icon>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="form-input">
+        <mat-label>手机号码</mat-label>
+        <input matInput placeholder="手机号码" formControlName="phone" type="number">
+        <mat-icon matSuffix>phone</mat-icon>
+        <mat-hint>手机号码作为用户的备用联系方式</mat-hint>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="form-input">
+        <mat-label>性别</mat-label>
+        <mat-select>
+          <mat-option value="1">男</mat-option>
+          <mat-option value="2">女</mat-option>
+          <mat-option value="3">保密</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </form>
+</mat-dialog-content>
+<div mat-dialog-actions class="dialog-actions">
+  <button mat-button (click)="cancelClose()">取消</button>
+  <button mat-flat-button color="primary" [matDialogClose]="getAccount()" [disabled]="accountForm.invalid">保存</button>
+</div>
