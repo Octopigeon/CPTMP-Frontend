@@ -1,0 +1,220 @@
+<div class="project-info">
+  <div class="float-operation">
+    <button *ngIf="editMode" mat-fab color="primary" matTooltip="保存更改" class="save-button" (click)="saveChange()">
+      <mat-icon>save</mat-icon>
+    </button>
+  </div>
+  <div class="team-title">
+    <div class="avatar-container">
+      <img alt="avatar" class="team-avatar" [src]="autoAvatar(data.avatar)">
+      <div class="avatar-overlay" (click)="changeAvatar()" matRipple>更换头像</div>
+    </div>
+    <div class="title-info-container">
+      <h1 id="team-name">
+        <span class="name-wrapper">
+          <span *ngIf="!controls.name.editing">{{controls.name.value}}</span>
+          <mat-form-field *ngIf="controls.name.editing" class="wide-form-input">
+            <mat-label>团队名</mat-label>
+            <input matInput placeholder="输入新团队名" [formControl]="controls.name">
+          </mat-form-field>
+        </span>
+        <button *ngIf="editMode"
+                mat-icon-button [matTooltip]="controls.name.editing ? '完成' : '修改'" class="edit-button"
+                (click)="controls.name.switchEdit()">
+          <mat-icon>{{controls.name.editing ? 'check' : 'edit'}}</mat-icon>
+        </button>
+      </h1>
+      <p id="team-repo">
+        <span class="repo-wrapper">
+          <span *ngIf="!controls.repo_url.editing">
+            {{controls.repo_url.value}}
+            <a mat-icon-button *ngIf="validLink(controls.repo_url.value)" matTooltip="打开团队仓库"
+               [href]="controls.repo_url.value" target="_blank" rel="noopener"><mat-icon>open_in_new</mat-icon>
+            </a>
+            <button *ngIf="!validLink(controls.repo_url.value)" mat-icon-button matTooltip="未设置">
+              <mat-icon>check_box_outline_blank</mat-icon>
+            </button>
+          </span>
+          <mat-form-field *ngIf="controls.repo_url.editing" class="wide-form-input">
+            <mat-label>团队仓库</mat-label>
+            <input matInput placeholder="输入团队仓库地址" [formControl]="controls.repo_url">
+          </mat-form-field>
+        </span>
+        <button *ngIf="editMode"
+                mat-icon-button [matTooltip]="controls.repo_url.editing ? '完成' : '修改'" class="edit-button"
+                (click)="controls.repo_url.switchEdit()">
+          <mat-icon>{{controls.repo_url.editing ? 'check' : 'edit'}}</mat-icon>
+        </button>
+      </p>
+    </div>
+  </div>
+  <h2>团队信息</h2>
+  <p id="team-train">
+    实训:
+    <span class="train-wrapper">
+      <span *ngIf="!controls.train_id.editing">
+        {{trains[controls.train_id.value] ? trains[controls.train_id.value] : '未选择'}}
+      </span>
+      <mat-form-field *ngIf="controls.train_id.editing" class="wide-form-input">
+        <mat-label>选择实训</mat-label>
+        <mat-select [formControl]="controls.train_id">
+          <mat-option *ngFor="let org of train_list" [value]="org[0]">{{org[1]}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </span>
+    <!-- this can only be modified upon creation -->
+    <button *ngIf="createMode"
+            mat-icon-button [matTooltip]="controls.train_id.editing ? '完成' : '修改'" class="edit-button"
+            (click)="controls.train_id.switchEdit()">
+      <mat-icon>{{controls.train_id.editing ? 'check' : 'edit'}}</mat-icon>
+    </button>
+  </p>
+  <p id="team-project">
+    项目:
+    <span class="team-wrapper">
+      <span *ngIf="!controls.project_id.editing">
+        {{trains[controls.project_id.value] ? trains[controls.project_id.value] : '未选择'}}
+      </span>
+      <mat-form-field *ngIf="controls.project_id.editing" class="wide-form-input">
+        <mat-label>选择实训项目</mat-label>
+        <mat-select [formControl]="controls.project_id">
+          <mat-option *ngFor="let org of projects$ | async" [value]="org[0]">{{org[1]}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </span>
+    <!-- this can only be modified upon creation -->
+    <button *ngIf="createMode"
+            mat-icon-button class="edit-button"
+            [matTooltip]="!controls.train_id.value ? '请先指定实训' : controls.project_id.editing ? '完成' : '修改'"
+            (click)="controls.project_id.switchEdit()"
+            [disabled]="!controls.train_id.value">
+      <mat-icon>{{controls.project_id.editing ? 'check' : 'edit'}}</mat-icon>
+    </button>
+  </p>
+  <div id="team-member">
+    <h3 class="content-title">
+      团队成员
+      <button *ngIf="privileged"
+              mat-icon-button [matTooltip]="userEditing ? '完成' : '修改'" class="edit-button"
+              (click)="userEditing = !userEditing">
+        <mat-icon>{{userEditing ? 'check' : 'edit'}}</mat-icon>
+      </button>
+      <button mat-icon-button matTooltip="复制团队邀请链接" class="edit-button"
+              [cdkCopyToClipboard]="getInviteLink()">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+    </h3>
+    <div class="member-chip">
+      <mat-chip-list aria-label="Team members" *ngIf="!userEditing">
+        <mat-chip *ngFor="let user of users" selectable="false" removable="false">
+          <img class="chip-avatar" [src]="autoAvatar(user.avatar)" alt="">
+          {{user.username}}({{user.name}})
+        </mat-chip>
+      </mat-chip-list>
+    </div>
+    <mat-form-field class="member-chip-list full-form-input" *ngIf="userEditing">
+      <mat-label>成员列表</mat-label>
+      <mat-chip-list #chipList aria-label="Team members">
+        <mat-chip
+          *ngFor="let user of users" selectable="true" removable="true"
+          (removed)="removeUser(user)">
+          <img class="chip-avatar" [src]="autoAvatar(user.avatar)" alt="">
+          {{user.username}}({{user.name}})
+          <mat-icon matChipRemove>cancel</mat-icon>
+        </mat-chip>
+        <input
+          placeholder="输入用户名或姓名..."
+          #userInput
+          [formControl]="userInputControl"
+          [matAutocomplete]="userAuto"
+          [matChipInputFor]="chipList"
+          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+          (matChipInputTokenEnd)="addUser($event)">
+      </mat-chip-list>
+      <mat-autocomplete autoActiveFirstOption #userAuto="matAutocomplete" (optionSelected)="selectUser($event)">
+        <mat-option *ngFor="let user of filteredUsers$ | async" [value]="user">
+          <img class="auto-complete-avatar" [src]="autoAvatar(user.avatar)" alt="">
+          {{user.username}}({{user.name}})
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </div>
+  <h2>团队评价</h2>
+  <p id="team-grade">
+    团队成绩:
+    <span class="grade-wrapper">
+      <span *ngIf="!controls.team_grade.editing">
+        {{controls.team_grade.value ? controls.team_grade.value : '暂未评分'}}
+      </span>
+      <mat-form-field *ngIf="controls.team_grade.editing">
+        <mat-label>实训成绩</mat-label>
+        <input matInput placeholder="输入成绩" [formControl]="controls.team_grade" type="number">
+      </mat-form-field>
+    </span>
+    <!-- this can only be modified by privileged users -->
+    <button *ngIf="privileged"
+            mat-icon-button [matTooltip]="controls.team_grade.editing ? '完成' : '修改'" class="edit-button"
+            (click)="controls.team_grade.switchEdit()">
+      <mat-icon>{{controls.team_grade.editing ? 'check' : 'edit'}}</mat-icon>
+    </button>
+  </p>
+  <div id="team-eval">
+    <h3 class="content-title">
+      团队评价
+      <!-- this can only be modified by privileged users -->
+      <button *ngIf="privileged"
+              mat-icon-button [matTooltip]="controls.evaluation.editing ? '完成' : '修改'" class="edit-button"
+              (click)="controls.evaluation.switchEdit()">
+        <mat-icon>{{controls.evaluation.editing ? 'check' : 'edit'}}</mat-icon>
+      </button>
+    </h3>
+    <p class="content-wrapper">
+      <span *ngIf="!controls.evaluation.editing">
+        {{controls.evaluation.value ? controls.evaluation.value : '暂无评价'}}
+      </span>
+      <mat-form-field *ngIf="controls.evaluation.editing" class="full-form-input">
+        <mat-label>实训评价</mat-label>
+        <textarea matInput placeholder="输入团队评价" [formControl]="controls.evaluation"></textarea>
+      </mat-form-field>
+    </p>
+  </div>
+  <!-- TODO hide resource when creating new team. -->
+  <div id="project-resource">
+    <h2 class="resource-title">
+      团队文档
+      <button *ngIf="editMode"
+              mat-icon-button [matTooltip]="editFile ? '完成' : '修改'" class="edit-button"
+              (click)="editFile = !editFile">
+        <mat-icon>{{editFile ? 'check' : 'edit'}}</mat-icon>
+      </button>
+    </h2>
+    <mat-list *ngIf="!editFile">
+      <a *ngFor="let file of data.resource_lib" class="resource-link"
+         [href]="file.file_path" [download]="file.original_name">
+        <mat-list-item class="resource-item" matRipple>
+          <mat-icon mat-list-icon>insert_drive_file</mat-icon>
+          <div mat-line>{{file.original_name}}</div>
+          <div mat-line> {{file.file_size | fileSize}} · {{file.created | date}} </div>
+        </mat-list-item>
+      </a>
+      <mat-list-item class="resource-empty-hint" *ngIf="data.resource_lib.length === 0">
+        <div mat-line>暂无文档</div>
+      </mat-list-item>
+    </mat-list>
+    <div class="file-edit-wrapper" *ngIf="editFile">
+      <mat-selection-list #files>
+        <mat-list-option *ngFor="let file of data.resource_lib" [value]="file">
+          <mat-icon mat-list-icon>insert_drive_file</mat-icon>
+          <div mat-line>{{file.original_name}}</div>
+          <div mat-line> {{file.file_size | fileSize}} · {{file.created | date}} </div>
+        </mat-list-option>
+      </mat-selection-list>
+      <div class="resource-action" *ngIf="editFile">
+        <button mat-fab color="primary" matTooltip="添加资源"
+                (click)="addFile()"><mat-icon>post_add</mat-icon></button>
+        <button mat-fab color="warn" [disabled]="files.selectedOptions.selected.length === 0" (click)="deleteFile()"
+                matTooltip="删除选中资源"><mat-icon>delete</mat-icon></button>
+      </div>
+    </div>
+  </div>
+</div>

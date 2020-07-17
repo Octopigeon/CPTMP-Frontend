@@ -1,0 +1,33 @@
+<div class="info-header">
+  <h1 class="header-title">团队列表</h1>
+  <p class="header-note">寻找心仪的团队</p>
+</div>
+<div class="item-filter">
+  <mat-chip-list aria-label="条件">
+    <mat-chip>{{train}}</mat-chip>
+    <mat-chip *ngIf="project">{{project}}</mat-chip>
+  </mat-chip-list>
+</div>
+<div class="content-wrapper">
+  <mat-card class="team-card" *ngFor="let team of teams">
+    <mat-card-header>
+      <img mat-card-avatar class="team-avatar" [src]="autoAvatar(team.avatar)" alt="">
+      <mat-card-title>{{team.name}}</mat-card-title>
+      <mat-card-subtitle class="team-subtitle">{{team.project_name}}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-list>
+        <div mat-subheader>成员列表</div>
+        <mat-list-item *ngFor="let member of team.members">
+          <img mat-list-icon class="member-avatar" [src]="autoAvatar(member.avatar)" alt="">
+          <div mat-line>{{member.name}}</div>
+          <div mat-line>{{member.username}}</div>
+        </mat-list-item>
+      </mat-list>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-button>查看详情</button>
+      <button mat-button>申请加入</button>
+    </mat-card-actions>
+  </mat-card>
+</div>

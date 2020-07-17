@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {Project, ResourceFile} from "../../types/types";
+import {Project, ResourceFile, Team} from "../../types/types";
 import {StatedFormControl} from "../../shared/stated-form-control";
 import {ActivatedRoute} from "@angular/router";
 import {LocationService} from "../../services/location.service";

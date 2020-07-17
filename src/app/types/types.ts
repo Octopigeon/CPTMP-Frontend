@@ -137,6 +137,8 @@ export interface Team {
   project_name: string;
   member_count?: number;
   members?: UserInfo[];
+  // like above
+  resource_lib?: string | ResourceFile[];
 
   // 团队评分
   team_grade?: number;
