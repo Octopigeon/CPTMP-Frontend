@@ -6,6 +6,7 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
 import {MatDialog} from "@angular/material/dialog";
 import {SchoolEditComponent} from "../../popups/school-edit/school-edit.component";
 import {MessageService} from "../../services/message.service";
+import {ActivatedRoute} from "@angular/router";
 
 // these can be removed once real api is implemented
 const EXAMPLE_ORGANIZATION: Organization[] = [{
@@ -120,9 +121,12 @@ export class SchoolAdminComponent implements OnInit {
     return invitation_code;
   }
 
-  constructor(public dialog: MatDialog, public msg: MessageService) { }
+  constructor(public dialog: MatDialog, public msg: MessageService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
+    this.route.paramMap.subscribe(params => {
+      // TODO fetch data from backend
+    })
   }
 
 }

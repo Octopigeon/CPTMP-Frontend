@@ -158,9 +158,6 @@ export class TeamDetailComponent implements OnInit {
 
   projects$: Observable<[string, string][]>;
 
-  // filterTrain: Observable<Suggestion[]>;
-  // filterProject: Observable<Suggestion[]>;
-  //
   private _filterUser(value: string): UserInfo[] {
     if (!value) {
       return [];
@@ -206,22 +203,6 @@ export class TeamDetailComponent implements OnInit {
     this.userInput.nativeElement.value = '';
     this.userInputControl.setValue(null);
   }
-  //
-  // private _filterProject(value: string): Suggestion[] {
-  //   const train_id = this.controls.train_id.value;
-  //
-  //   if (!train_id) {
-  //     return []
-  //   }
-  //
-  //   const filterValue = value.toLowerCase()
-  //
-  //   return this.getProjects(train_id)
-  //     .filter(([_, value]) => value.toLowerCase().indexOf(filterValue) === 0)
-  //     .map(([k, v]) =>  {
-  //       return {value: k, display: v}
-  //     });
-  // }
 
   constructor(private route: ActivatedRoute,
               private loc: LocationService,
@@ -236,7 +217,10 @@ export class TeamDetailComponent implements OnInit {
       // if (!id || !id.trim()) {
       //   this.loc.go(['/', 'not-found'])
       // }
-      // TODO retrieve id from param, and data from backend (and special handling to new project)
+      // TODO retrieve id from param, and data from backend (and special handling to new team)
+
+      // we need all trains(_ => {train_id, train_name}),
+      // and all projects belongs to specific train (train_id => {train_project_id, project_name})
 
       Object.entries(this.controls).forEach(([field, control]) => {
         control.setValue(this.data[field]);
@@ -244,11 +228,11 @@ export class TeamDetailComponent implements OnInit {
 
       this.projects$ = this.controls.train_id.valueChanges.pipe(
         startWith(''),
-        debounceTime(500),
         distinctUntilChanged(),
         map(value => this.getProjects(value))
       );
 
+      // user input can change quite frequently, so debounce it to reduce request amount
       this.filteredUsers$ = this.userInputControl.valueChanges.pipe(
         startWith(''),
         debounceTime(500),
@@ -316,9 +300,4 @@ export class TeamDetailComponent implements OnInit {
     // TODO get team invite link
     return 'not implemented'
   }
-}
-
-interface Suggestion {
-  value: number | string;
-  display: string;
 }

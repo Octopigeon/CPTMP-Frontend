@@ -44,8 +44,8 @@ export class ProjectDetailComponent implements OnInit {
     content: new StatedFormControl(''),
   }
 
+  // TODO should be modified according to link (and user permission)
   editMode: boolean = true;
-
   editFile: boolean = true;
 
   constructor(private route: ActivatedRoute, private loc: LocationService, private dialog: MatDialog) { }
@@ -85,7 +85,7 @@ export class ProjectDetailComponent implements OnInit {
   }
 
   saveChange() {
-
+    //TODO save edit changes to server
   }
 
   capLevel(level: number): number {

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {Team} from "../../types/types";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-team-list',
@@ -129,9 +130,12 @@ export class TeamListComponent implements OnInit {
     return link &&(link.startsWith('http') || link.startsWith('/'));
   }
 
-  constructor() { }
+  constructor(private route: ActivatedRoute) { }
 
   ngOnInit(): void {
+    this.route.paramMap.subscribe(params => {
+      // TODO fetch real data according to link parameters
+    })
   }
 
 }
