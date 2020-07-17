@@ -1,6 +1,6 @@
 
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {Organization, OrganizationQ} from '../../types/types';
+import {Organization, CreateOrgQ} from '../../types/types';
 import {MatTableDataSource} from '@angular/material/table';
 import {SelectionModel} from '@angular/cdk/collections';
 import {animate, state, style, transition, trigger} from '@angular/animations';
@@ -123,18 +123,26 @@ export class SchoolAdminComponent implements OnInit {
       data: organization
     });
 
-    // TODO get data & post create/modify request to backend
+    // FinishTodo get data & post create/modify request to backend
 
     dialogRef.afterClosed().subscribe(result => {
+      if (result == null) {
+        if (organization == null){
+          this.msg.SendMessage('创建被取消').subscribe();
+        }else{
+          this.msg.SendMessage('修改被取消').subscribe();
+        }
+        return
+      }
       if (organization == null) {
         this.msg.SendMessage('正在创建新组织……').subscribe();
-        const org: OrganizationQ = {
+        const org: CreateOrgQ = {
           real_name: result.name,
           code: result.code,
           website_url: result.url,
           description: result.description
         };
-        const orgList: OrganizationQ[] = [org];
+        const orgList: CreateOrgQ[] = [org];
         this.conn.CreateOrganization(orgList).subscribe({
           next: resp => {
             if (resp.status === 0) {
@@ -149,7 +157,7 @@ export class SchoolAdminComponent implements OnInit {
       }else{
 
         this.msg.SendMessage('正在修改组织信息……').subscribe();
-        const org: OrganizationQ = {
+        const org: CreateOrgQ = {
           real_name: result.name,
           code: result.code,
           website_url: result.url,

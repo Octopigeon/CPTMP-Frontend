@@ -55,13 +55,9 @@ export class PersonalDataComponent implements OnInit {
   ])
 
   submitBasicDataForm(directive: FormGroupDirective) {
-    // TODO save changes to basic user data
-
-
+    // FINISHtodo save changes to basic user data
 
     this.msg.SendMessage('正在修改公开信息').subscribe()
-
-
 
     const req: ModifyUserBasicInfoQ = {
       name: this.basicDataForm.value.realName,

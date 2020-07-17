@@ -2,13 +2,24 @@ import {Injectable, OnInit} from '@angular/core';
 import {StorageMap} from "@ngx-pwa/local-storage";
 
 import {HttpClient, HttpEvent, HttpHeaders} from "@angular/common/http";
-import {ChangePasswordQ, ModifyUserBasicInfoQ, OrganizationQ, LoginQ, Resp, UserInfo, UserInfoL, DeleteUserQ} from "../types/types";
+import {
+  ChangePasswordQ,
+  ModifyUserBasicInfoQ,
+  CreateOrgQ,
+  LoginQ,
+  Resp,
+  UserInfo,
+  UserInfoL,
+  DeleteUserQ,
+  PageResp, PageInfoQ
+} from "../types/types";
 
 import {Logger} from "./logger.service";
 import {Observable, ReplaySubject, Subscriber} from "rxjs";
 import {API} from "../constants/api";
 import {LocationService} from "./location.service";
 import {distinctUntilChanged, map} from "rxjs/operators";
+import {PrettyStacktraceProcessor} from "jasmine-spec-reporter/built/processors/pretty-stacktrace-processor";
 
 @Injectable({
   providedIn: 'root'
@@ -59,12 +70,20 @@ export class ConnectionService {
     return new Observable((observer: Subscriber<T>) => observer.error(err));
   }
 
-  private delete(url: string , ibody: any): Observable<Resp>{
-    return this.client.request<Resp>('delete', url, {body: ibody});
+  private delete(url: string , ibody?: any): Observable<Resp>{
+    if ( ibody == null ){
+      return this.client.delete<Resp>(url);
+    }else{
+      return this.client.request<Resp>('delete', url, {body: ibody});
+    }
   }
 
   private get(url: string): Observable<Resp> {
     return this.client.get<Resp>(url);
+  }
+
+  private getMore(url: string): Observable<PageResp> {
+    return this.client.get<PageResp>(url);
   }
 
   private post(url: string, body: any): Observable<Resp> {
@@ -233,11 +252,11 @@ export class ConnectionService {
     return result;
   }
 
-  public CreateOrganization(org: OrganizationQ[]): Observable<Resp>{
+  public CreateOrganization(org: CreateOrgQ[]): Observable<Resp>{
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
 
-    this.post(API.create_org, org).subscribe({
+    this.post(API.org, org).subscribe({
       next: response => {
         if (response.status !== 0) {
           this.logger.log(`Create Organization failed with status code ${response.status}: ${response.msg}.`)
@@ -256,7 +275,7 @@ export class ConnectionService {
     return result;
   }
 
-  public UploadOrgBasicInfo(org: OrganizationQ): Observable<Resp>{
+  public UploadOrgBasicInfo(org: CreateOrgQ): Observable<Resp>{
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
 
@@ -298,6 +317,93 @@ export class ConnectionService {
       }
     })
     return result;
+  }
+
+  public DeleteProject(deleteProjectQ: number[]): Observable<Resp>{
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    this.delete(API.delete_project, deleteProjectQ ).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Delete Project failed with status code ${response.status}: ${response.msg}.`)
+          observer.error(response);
+          return result;
+        }
+        observer.next(response);
+        observer.complete();
+      },
+      error: error => {
+        this.logger.log(`Delete Project failed with network error: `, error);
+        observer.error(error)
+      }
+    })
+    return result;
+  }
+
+  public GetOrgInfo(orgId: number): Observable<Resp>{
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    const  url = API.org + '/' + orgId
+    this.get(url).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Get org info failed with status code ${response.status}: ${response.msg}.`)
+          observer.error(response);
+          return result;
+        }
+        observer.next(response);
+        observer.complete();
+      },
+      error: error => {
+        this.logger.log(`Get org info all train failed with network error: `, error);
+        observer.error(error)
+      }
+    })
+    return result;
+  }
+
+  public GetAllTrain(pageInfoQ: PageInfoQ): Observable<Resp>{
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    const url = API.train + '/?offset=' + pageInfoQ.offset + '&page=' + pageInfoQ.page
+    this.get(url).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Get all train failed with status code ${response.status}: ${response.msg}.`)
+          observer.error(response);
+          return result;
+        }
+        observer.next(response);
+        observer.complete();
+        },
+      error: error => {
+        this.logger.log(`Get all train failed with network error: `, error);
+        observer.error(error)
+      }
+    })
+    return result
+  }
+
+  public DeleteTrain(trainId:number): Observable<Resp>{
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    const url = API.train + '/' + trainId
+    this.delete(url).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Delete train failed with status code ${response.status}: ${response.msg}.`)
+          observer.error(response);
+          return result;
+        }
+        observer.next(response);
+        observer.complete();
+      },
+      error: error => {
+        this.logger.log(`Delete train failed with network error: `, error);
+        observer.error(error)
+      }
+    })
+    return result
   }
 
 

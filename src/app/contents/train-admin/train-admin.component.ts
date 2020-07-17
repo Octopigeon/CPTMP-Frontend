@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import {Organization, Train} from "../../types/types";
+import {GetOrgQ, Organization, PageInfoQ, Train, TrainQ} from "../../types/types";
 import {MatTableDataSource} from "@angular/material/table";
 import {SelectionModel} from "@angular/cdk/collections";
 import {SchoolEditComponent} from "../../popups/school-edit/school-edit.component";
 import {animate, state, style, transition, trigger} from "@angular/animations";
+import {ConnectionService} from "../../services/connection.service";
+import {MessageService} from "../../services/message.service";
+import get = Reflect.get;
 
 const EXAMPLE_TRAIN: Train[] = [{
   id: 1,
@@ -81,7 +84,7 @@ export class TrainAdminComponent implements OnInit {
   }
 
   get columnPairs() { return Object.entries(this.columns) }
-  dataSource = new MatTableDataSource<Train>(EXAMPLE_TRAIN);
+  dataSource: MatTableDataSource<Train>;
   selection = new SelectionModel<Train>(true, []);
 
   /** Whether the number of selected elements matches the total number of rows. */
@@ -100,12 +103,83 @@ export class TrainAdminComponent implements OnInit {
 
   // TODO delete train according to selection
   trainDelete() {
-
+    const errorList: number[] = [];
+    this.msg.SendMessage('正在删除实训……').subscribe();
+    for (const columnRef of this.selection.selected) {
+      this.conn.DeleteTrain(columnRef.id).subscribe({
+        next: resp => {
+          if (resp.status !== 0){
+            errorList.push(columnRef.id);
+          }
+        },
+        error: err => {
+          errorList.push(columnRef.id);
+        }
+      })
+    }
+    if (errorList.length > 0){
+      let errorMessage = '实训';
+      for (const columnRef of errorList) {
+        errorMessage = errorMessage + columnRef + '、' ;
+      }
+      errorMessage = errorMessage + '删除失败';
+      this.msg.SendMessage(errorMessage).subscribe();
+    }else{
+      this.msg.SendMessage('删除成功！').subscribe();
+    }
   }
 
-  constructor() { }
+  constructor(private conn: ConnectionService,
+              public msg: MessageService) { }
 
   ngOnInit(): void {
+    this.setDataSource()
+  }
+
+  setDataSource(){
+    const pageInfoQ: PageInfoQ ={
+      page: 1 ,
+      offset: 100
+    }
+    this.conn.GetAllTrain(pageInfoQ).subscribe({
+      next: resp => {
+        if (resp.status === 0) {
+          const trainList: Train[] = [];
+          for (const columnRef of resp.data) {
+            const trainQ: TrainQ = columnRef as TrainQ;
+            const train: Train = {
+              id: trainQ.id,
+              name: trainQ.name,
+              content: trainQ.content,
+              organization: '',
+              organization_id: trainQ.organization_id,
+              start_time: new Date(trainQ.start_time).getTime(),
+              end_time: new Date(trainQ.end_time).getTime(),
+              standard: trainQ.accept_standard,
+              gps_info: trainQ.gps_info,
+              resource_lib: trainQ.resource_library
+            }
+            this.conn.GetOrgInfo(trainQ.organization_id).subscribe({
+              next: nresp => {
+                const getOrgQ: GetOrgQ = nresp.data as GetOrgQ
+                train.organization = getOrgQ.real_name;
+              },
+              error: eresp => {
+                train.organization = '错误:未查到相关组织';
+              }
+            });
+            trainList.push(train);
+          }
+          this.dataSource = new MatTableDataSource<Train>(trainList)
+        } else {
+          this.msg.SendMessage('获取列表失败。').subscribe()
+        }
+      },
+      error: () => {
+        this.msg.SendMessage('获取列表失败。未知错误').subscribe()
+      }
+
+    })
   }
 
 }

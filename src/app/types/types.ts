@@ -2,7 +2,21 @@ export interface Resp {
   status: number;
   date: number | string;
   msg: string;
+  total_rows?: number;
   data?: any;
+}
+
+export interface PageResp {
+  status: number;
+  date: number | string;
+  msg: string;
+  total_rows: number;
+  data?: any;
+}
+
+export interface PageInfoQ {
+  page: number;
+  offset: number;
 }
 
 export interface LoginQ {
@@ -90,11 +104,20 @@ export interface Organization {
   created?: number | string;
 }
 
-export interface OrganizationQ{
+export interface CreateOrgQ{
   real_name: string;
   code: string;
   website_url: string;
   description: string;
+}
+
+export interface GetOrgQ{
+  gmt_creat: string;
+  name: string;
+  real_name: string ;
+  description: string;
+  website_url: string;
+
 }
 
 export interface DeleteUserQ {
@@ -117,6 +140,18 @@ export interface Train {
   // TODO format? how to display & set it?
   // 位置信息
   gps_info?: string;
+}
+
+export interface TrainQ{
+  id: number;
+  name: string;
+  content: string;
+  organization_id: number;
+  start_time: string;
+  end_time: string;
+  accept_standard: string;
+  resource_library: string;
+  gps_info: string;
 }
 
 export interface ResourceFile {

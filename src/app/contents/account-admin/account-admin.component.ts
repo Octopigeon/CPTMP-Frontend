@@ -67,7 +67,7 @@ export class AccountAdminComponent implements OnInit {
       this.dataSource.data.forEach(row => this.selection.select(row));
   }
 
-  // TODO delete selected user
+  // FinshTodo delete selected user
   userDelete() {
 
     this.msg.SendMessage('正在删除账号……').subscribe()

@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
 import {Project, Train} from "../../types/types";
 import {SelectionModel} from "@angular/cdk/collections";
+import {MessageService} from "../../services/message.service";
+import {ConnectionService} from "../../services/connection.service";
+import {LocationService} from "../../services/location.service";
+import {Logger} from "../../services/logger.service";
 
 const EXAMPLE_PROJECT: Project[] = [{
   id: 1,
@@ -84,10 +88,30 @@ export class ProjectAdminComponent implements OnInit {
 
   // TODO delete project according to selection
   projectDelete() {
-
+    this.msg.SendMessage('正在删除项目……').subscribe()
+    const projectList: number[] = [];
+    for (const typeElement of this.selection.selected) {
+      projectList.push(typeElement.id);
+    }
+    console.log(projectList);
+    this.conn.DeleteProject(projectList).subscribe({
+      next: resp => {
+        this.msg.SendMessage('删除项目成功').subscribe()
+        this.conn.GetUserInfo().subscribe()
+        window.alert(2);
+      },
+      error: () => {
+        this.msg.SendMessage('删除项目失败。未知错误').subscribe()
+        this.conn.GetUserInfo().subscribe()
+        window.alert(3);
+      }
+    })
   }
 
-  constructor() { }
+  constructor(public msg: MessageService,
+              public conn: ConnectionService,
+              private loc: LocationService,
+              private logger: Logger) { }
 
   ngOnInit(): void {
   }
