@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {ResourceFile, Train} from "../../types/types";
+import {ResourceFile, Train, TrainQ} from "../../types/types";
 import {FormControl, FormGroup} from "@angular/forms";
 import {ActivatedRoute} from "@angular/router";
 import {LocationService} from "../../services/location.service";
@@ -73,6 +73,10 @@ export class TrainDetailComponent implements OnInit {
 
   saveChange() {
 
+    /*const trainQ: TrainQ = {
+      name =
+
+    }*/
   }
 
   constructor(private route: ActivatedRoute, private loc: LocationService, private dialog: MatDialog) { }

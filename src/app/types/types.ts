@@ -143,7 +143,7 @@ export interface Train {
 }
 
 export interface TrainQ{
-  id: number;
+  id?: number;
   name: string;
   content: string;
   organization_id: number;
