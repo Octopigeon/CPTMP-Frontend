@@ -4,7 +4,7 @@
 </div>
 <div class="operations">
   <!-- TODO add link to train detail (new) page -->
-  <a mat-fab color="primary" matTooltip="添加实训" aria-label="添加实训" href="/plat/train/detail"><mat-icon>add</mat-icon></a>
+  <a mat-fab color="primary" matTooltip="添加实训" aria-label="添加实训" href="/plat/train/detail/new"><mat-icon>add</mat-icon></a>
   <button mat-fab color="warn" [disabled]="selection.isEmpty()" (click)="trainDelete()"
           matTooltip="删除已选实训" aria-label="删除已选实训"><mat-icon>delete</mat-icon></button>
 </div>
@@ -36,7 +36,7 @@
     <ng-container matColumnDef="edit" stickyEnd>
       <th mat-header-cell *matHeaderCellDef>详情</th>
       <td mat-cell *matCellDef="let element">
-        <button mat-icon-button matTooltip="详细信息" matTooltipPosition="left">
+        <button mat-icon-button matTooltip="详细信息" matTooltipPosition="left" (click)='JumpToDetail(element)'>
           <mat-icon>open_in_new</mat-icon>
         </button>
       </td>

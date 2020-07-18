@@ -11,7 +11,7 @@ import {
   UserInfo,
   UserInfoL,
   DeleteUserQ,
-  PageResp, PageInfoQ
+  PageResp, PageInfoQ, TrainQ, CreateTrainQ
 } from "../types/types";
 
 import {Logger} from "./logger.service";
@@ -42,8 +42,8 @@ export class ConnectionService {
     this.avatar = new ReplaySubject<string>(1);
     this.user.pipe(
       map(info => (!info.login ||
-      !info.info.avatar ||
-      (!info.info.avatar.startsWith('http') && !info.info.avatar.startsWith('/')))
+        !info.info.avatar ||
+        (!info.info.avatar.startsWith('http') && !info.info.avatar.startsWith('/')))
         ? '/assets/avatar.png' : info.info.avatar),
       distinctUntilChanged()
     ).subscribe(link => this.avatar.next(link));
@@ -70,10 +70,10 @@ export class ConnectionService {
     return new Observable((observer: Subscriber<T>) => observer.error(err));
   }
 
-  private delete(url: string , ibody?: any): Observable<Resp>{
-    if ( ibody == null ){
+  private delete(url: string, ibody?: any): Observable<Resp> {
+    if (ibody == null) {
       return this.client.delete<Resp>(url);
-    }else{
+    } else {
       return this.client.request<Resp>('delete', url, {body: ibody});
     }
   }
@@ -196,7 +196,7 @@ export class ConnectionService {
     return result;
   }
 
-  public UploadUserBasicData(basicDate: ModifyUserBasicInfoQ): Observable<Resp>{
+  public UploadUserBasicData(basicDate: ModifyUserBasicInfoQ): Observable<Resp> {
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
 
@@ -252,7 +252,31 @@ export class ConnectionService {
     return result;
   }
 
-  public CreateOrganization(org: CreateOrgQ[]): Observable<Resp>{
+  public UploadTrainFile(trainId: number, file: File): Observable<Resp> {
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    let formData = new FormData();
+    formData.append('file', file, file.name);
+    const url = API.train + '/' + trainId + '/resource-lib'
+    this.post(url, formData).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Upload avatar failed with status code ${response.status}: ${response.msg}.`)
+          observer.error(response);
+          return;
+        }
+        observer.next(response);
+        observer.complete();
+      },
+      error: error => {
+        this.logger.log(`Upload avatar failed with network error: `, error);
+        observer.error(error)
+      }
+    })
+    return result;
+  }
+
+  public CreateOrganization(org: CreateOrgQ[]): Observable<Resp> {
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
 
@@ -265,7 +289,7 @@ export class ConnectionService {
         }
         observer.next(response);
         observer.complete();
-        },
+      },
       error: error => {
         this.logger.log(`Create Organization failed with network error: `, error);
         observer.error(error);
@@ -275,7 +299,7 @@ export class ConnectionService {
     return result;
   }
 
-  public UploadOrgBasicInfo(org: CreateOrgQ): Observable<Resp>{
+  public UploadOrgBasicInfo(org: CreateOrgQ): Observable<Resp> {
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
 
@@ -301,7 +325,7 @@ export class ConnectionService {
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
 
-    this.delete(API.delete_user, deleteUserQ ).subscribe({
+    this.delete(API.delete_user, deleteUserQ).subscribe({
       next: response => {
         if (response.status !== 0) {
           this.logger.log(`Delete User failed with status code ${response.status}: ${response.msg}.`)
@@ -319,10 +343,10 @@ export class ConnectionService {
     return result;
   }
 
-  public DeleteProject(deleteProjectQ: number[]): Observable<Resp>{
+  public DeleteProject(deleteProjectQ: number[]): Observable<Resp> {
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
-    this.delete(API.delete_project, deleteProjectQ ).subscribe({
+    this.delete(API.delete_project, deleteProjectQ).subscribe({
       next: response => {
         if (response.status !== 0) {
           this.logger.log(`Delete Project failed with status code ${response.status}: ${response.msg}.`)
@@ -340,10 +364,10 @@ export class ConnectionService {
     return result;
   }
 
-  public GetOrgInfo(orgId: number): Observable<Resp>{
+  public GetOrgInfo(orgId: number): Observable<Resp> {
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
-    const  url = API.org + '/' + orgId
+    const url = API.org + '/' + orgId
     this.get(url).subscribe({
       next: response => {
         if (response.status !== 0) {
@@ -362,7 +386,7 @@ export class ConnectionService {
     return result;
   }
 
-  public GetAllTrain(pageInfoQ: PageInfoQ): Observable<Resp>{
+  public GetAllTrain(pageInfoQ: PageInfoQ): Observable<Resp> {
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
     const url = API.train + '/?offset=' + pageInfoQ.offset + '&page=' + pageInfoQ.page
@@ -375,7 +399,7 @@ export class ConnectionService {
         }
         observer.next(response);
         observer.complete();
-        },
+      },
       error: error => {
         this.logger.log(`Get all train failed with network error: `, error);
         observer.error(error)
@@ -384,10 +408,11 @@ export class ConnectionService {
     return result
   }
 
-  public DeleteTrain(trainId: number[]): Observable<Resp>{
+  public DeleteTrain(trainId: number[]): Observable<Resp> {
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
     const errorList: number[] = [];
+    let length = trainId.length;
     for (const storageElement of trainId) {
       const url = API.train + '/' + storageElement
       this.delete(url).subscribe({
@@ -396,29 +421,120 @@ export class ConnectionService {
             this.logger.log(`Delete train failed with status code ${response.status}: ${response.msg}.`)
             errorList.push(storageElement)
           }
+          length--;
+          if (length <= 0) {
+            if (errorList.length > 0) {
+              let errorMessage = '实训';
+              for (const columnRef of errorList) {
+                errorMessage = errorMessage + columnRef + '、';
+              }
+              errorMessage = errorMessage + '删除失败';
+              observer.error(errorMessage)
+            } else {
+              console.log(errorList.length)
+              observer.next()
+              setTimeout(() => {
+                observer.complete();
+              }, 1000);
+            }
+          }
         },
         error: error => {
           this.logger.log(`Delete train failed with network error: `, error);
           errorList.push(storageElement)
+          length--;
+          if (length <= 0) {
+            if (errorList.length > 0) {
+              let errorMessage = '实训';
+              for (const columnRef of errorList) {
+                errorMessage = errorMessage + columnRef + '、';
+              }
+              errorMessage = errorMessage + '删除失败';
+              observer.error(errorMessage)
+            } else {
+              console.log(errorList.length)
+              observer.next()
+              setTimeout(() => {
+                observer.complete();
+              }, 1000);
+            }
+          }
         }
       })
     }
-    if (errorList.length > 0){
-      let errorMessage = '实训';
-      for (const columnRef of errorList) {
-        errorMessage = errorMessage + columnRef + '、' ;
-      }
-      errorMessage = errorMessage + '删除失败';
-      observer.error(errorMessage)
-    }else{
-      observer.next()
-      setTimeout(() => {
+    return result
+  }
+
+  public GetTrain(trainId: string): Observable<Resp> {
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    const url = API.train + '/' + trainId
+    this.get(url).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Get train failed with status code ${response.status}: ${response.msg}.`)
+          observer.error(response);
+          return result;
+        }
+        observer.next(response);
         observer.complete();
-      }, 1000);
-    }
+      },
+      error: error => {
+        this.logger.log(`Get train failed with network error: `, error);
+        observer.error(error)
+      }
+    })
+    return result
+  }
+
+  public UpdateTrain(trainQ: TrainQ): Observable<Resp> {
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
 
     return result
   }
 
+  public CreateTrain(trainQ: CreateTrainQ): Observable<Resp> {
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    this.post(API.train, trainQ).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Create train failed with status code ${response.status}: ${response.msg}.`)
+          observer.error(response);
+          return result;
+        }
+        observer.next(response);
+        observer.complete();
+      },
+      error: error => {
+        this.logger.log(`Create train failed with network error: `, error);
+        observer.error(error);
+      }
+    })
+    return result
+  }
+
+  public GetAllOrg(pageInfoQ: PageInfoQ): Observable<Resp>{
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    const url = API.org + '?page=' + pageInfoQ.page + '&offset=' + pageInfoQ.offset
+    this.get(url).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Get all org info failed with status code ${response.status}: ${response.msg}.`)
+          observer.error(response);
+          return result;
+        }
+        observer.next(response);
+        observer.complete();
+      },
+      error: error => {
+        this.logger.log(`Get all org info failed with network error: `, error);
+        observer.error(error)
+      }
+    })
+    return result
+  }
 
 }

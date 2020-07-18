@@ -112,6 +112,7 @@ export interface CreateOrgQ{
 }
 
 export interface GetOrgQ{
+  id?: number,
   gmt_creat: string;
   name: string;
   real_name: string ;
@@ -144,6 +145,17 @@ export interface Train {
 
 export interface TrainQ{
   id?: number;
+  name: string;
+  content: string;
+  organization_id: number;
+  start_time: string;
+  end_time: string;
+  accept_standard: string;
+  resource_library: string;
+  gps_info: string;
+}
+
+export interface CreateTrainQ{
   name: string;
   content: string;
   organization_id: number;

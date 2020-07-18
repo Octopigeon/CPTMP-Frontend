@@ -7,6 +7,8 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
 import {ConnectionService} from "../../services/connection.service";
 import {MessageService} from "../../services/message.service";
 import get = Reflect.get;
+import {ActivatedRoute} from "@angular/router";
+import {LocationService} from "../../services/location.service";
 
 const EXAMPLE_TRAIN: Train[] = [{
   id: 1,
@@ -121,8 +123,14 @@ export class TrainAdminComponent implements OnInit {
     })
   }
 
+  JumpToDetail(train: Train){
+    this.loc.go(['/plat/train/detail/',train.id])
+  }
+
   constructor(private conn: ConnectionService,
-              public msg: MessageService) { }
+              public msg: MessageService,
+              private route: ActivatedRoute,
+              private loc: LocationService) { }
 
   ngOnInit(): void {
     this.setDataSource()

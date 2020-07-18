@@ -23,7 +23,7 @@ const routes: Routes = [
   // { path: 'activate/:token'},
   { path: 'register', component: RegisterComponent },
   { path: 'plat/project/detail', component: ProjectDetailComponent },
-  { path: 'plat/train/detail', component: TrainDetailComponent},
+  { path: 'plat/train/detail/:id', component: TrainDetailComponent},
   { path: '', component: LoginComponent, pathMatch: 'full' },
   { path: '**', component: NotFoundComponent }
 ];

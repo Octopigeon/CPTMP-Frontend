@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {ResourceFile, Train, TrainQ} from "../../types/types";
+import {CreateTrainQ, GetOrgQ, Organization, PageInfoQ, ResourceFile, Train, TrainQ} from "../../types/types";
 import {FormControl, FormGroup} from "@angular/forms";
 import {ActivatedRoute} from "@angular/router";
 import {LocationService} from "../../services/location.service";
@@ -8,6 +8,9 @@ import {MatSelectionList} from "@angular/material/list";
 import {MatDialog} from "@angular/material/dialog";
 import {SelectFileComponent} from "../../popups/select-file/select-file.component";
 import {StatedFormControl} from "../../shared/stated-form-control";
+import {ConnectionService} from "../../services/connection.service";
+import {MessageService} from "../../services/message.service";
+import {Logger} from "../../services/logger.service";
 
 @Component({
   selector: 'app-train-detail',
@@ -18,40 +21,38 @@ export class TrainDetailComponent implements OnInit {
 
   @ViewChild(MatSelectionList) fileSelection: MatSelectionList;
 
-  data: Train = {
-    id: 3,
-    name: '实训实训实训实训实训实训',
-    organization_id: 1,
-    organization: '组织1',
+  data: Train;
+
+  newTrain: Train = {
+    id: null,
+    name: '新实训',
+    organization_id: 0,
+    organization: '请选择组织',
     start_time: 1594455135343,
     end_time: 1594455155343,
-    content: '实训内容实训内容实训内容实训内容实训内容实训内容实训内容实训内容实训内容实训内容实训内容',
-    standard: '验收标准验收标准验收标准验收标准验收标准验收标准验收标准验收标准验收标准验收标准验收标准',
-    resource_lib: [{
-      file_name: "db7b5936-9ceb-422a-bad3-90366432a07c.jpg",
-      file_path: "/api/storage/2020/7/15/db7b5936-9ceb-422a-bad3-90366432a07c.jpg",
-      file_size: 584778,
-      file_type: "image/jpeg",
-      created: 1594798123238,
-      original_name: "2019101404.jpg"
-      }, {
-      file_name: "21e62a42-c557-43b5-8530-b3abab4ecee8.png",
-      file_path: "/api/storage/2020/7/15/21e62a42-c557-43b5-8530-b3abab4ecee8.png",
-      file_size: 1845323,
-      file_type: "image/png",
-      created: 1594798206653,
-      original_name: "2019101403.png"
-    }],
+    content: '请编辑实训内容',
+    standard: '请编辑实训标准',
+    resource_lib: [],
+    // picking location currently not implemented
+    gps_info: ''
+  }
+
+  err: Train = {
+    id: 0,
+    name: 'ERROR',
+    organization_id: 0,
+    organization: 'ERROR',
+    start_time: 1594455135343,
+    end_time: 1594455155343,
+    content: 'ERROR',
+    standard: 'ERROR',
+    resource_lib: [],
     // picking location currently not implemented
     gps_info: ''
   }
 
   // retrieve from backend
-  organizations = {
-    1: '组织1',
-    2: '组织2',
-    3: '组织3'
-  }
+  organizations = new Map<number, string>();
 
   organization_list = Object.entries(this.organizations);
 
@@ -71,33 +72,122 @@ export class TrainDetailComponent implements OnInit {
 
   editFile: boolean = true;
 
+  pTrainQ: TrainQ;
+
   saveChange() {
-
-    /*const trainQ: TrainQ = {
-      name =
-
-    }*/
+    if (this.data.id === null){
+      const trainQ: CreateTrainQ = {
+        name: this.controls.name?.value,
+        organization_id: this.controls.organization_id?.value,
+        start_time: new Date(this.controls.start_time?.value).toJSON(),
+        end_time: new Date(this.controls.end_time?.value).toJSON(),
+        content: this.controls.content?.value,
+        accept_standard: this.controls.standard?.value,
+        resource_library: this.controls.resource_lib?.value,
+        gps_info: this.controls.gps_info?.value
+      }
+      console.log(trainQ)
+      this.conn.CreateTrain(trainQ).subscribe({
+        next: resp => {
+          if (resp.status === 0) {
+            this.msg.SendMessage('创建实训成功').subscribe()
+          } else {
+            this.msg.SendMessage('创建实训失败').subscribe()
+          }
+        },
+        error: () => {
+          this.msg.SendMessage('创建实训失败。未知错误').subscribe()
+        }
+      })
+    }else{
+      const trainQ: TrainQ = {
+        id: this.data.id,
+        name: this.controls.name?.value,
+        organization_id: this.controls.organization_id?.value,
+        start_time: new Date(this.controls.start_time?.value).toJSON(),
+        end_time: new Date(this.controls.end_time?.value).toJSON(),
+        content: this.controls.content?.value,
+        accept_standard: this.controls.standard?.value,
+        resource_library: this.controls.resource_lib?.value,
+        gps_info: this.controls.gps_info?.value
+      }
+      console.log(trainQ)
+    }
   }
 
-  constructor(private route: ActivatedRoute, private loc: LocationService, private dialog: MatDialog) { }
+  constructor(private route: ActivatedRoute,
+              private loc: LocationService,
+              private dialog: MatDialog,
+              private conn: ConnectionService,
+              public msg: MessageService,
+              private logger: Logger) { }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(param => {
       const id = param.get('id');
-      console.log(id);
+      this.GetOrgInfo()
       // TODO must have valid id (uncomment following code)
       // if (!id || !id.trim()) {
       //   this.loc.go(['/', 'not-found'])
       // }
       // TODO retrieve id from param, and data from backend (and special handling to new train)
+      if (id === 'new'){
+        this.data = this.newTrain
+        this.setData()
+      }else{
+        this.conn.GetTrain(id).subscribe({
+          next: resp => {
+            if (resp.status === 0) {
+              const trainQ = resp.data as TrainQ
+              if(trainQ.id === undefined){
+                this.data = this.err
+              }
+              const train: Train = {
+                id: trainQ.id,
+                name: trainQ.name,
+                content: trainQ.content,
+                organization: '',
+                organization_id: trainQ.organization_id,
+                start_time: new Date(trainQ.start_time).getTime(),
+                end_time: new Date(trainQ.end_time).getTime(),
+                standard: trainQ.accept_standard,
+                gps_info: trainQ.gps_info,
+                resource_lib: trainQ.resource_library
+              }
+              this.conn.GetOrgInfo(trainQ.organization_id).subscribe({
+                next: nresp => {
+                  const getOrgQ: GetOrgQ = nresp.data as GetOrgQ
+                  train.organization = getOrgQ.real_name;
+                },
+                error: eresp => {
+                  train.organization = '错误:未查到相关组织';
+                }
+              });
+              this.data = train
+              this.setData()
+            } else {
+              this.data = this.err
+              this.setData()
+              this.msg.SendMessage('获取实训信息失败。请稍后再试').subscribe()
+            }
+          },
+          error: () => {
+            this.data = this.err
+            this.setData()
+            this.msg.SendMessage('获取实训信息失败。未知错误').subscribe()
+          }
+        })
+      }
+    })
+  }
 
-      Object.entries(this.controls).forEach(([field, control]) => {
-        if (field.endsWith('time')) {
-          control.setValue(new Date(this.data[field]));
-        } else {
-          control.setValue(this.data[field]);
-        }
-      })
+  setData(){
+    Object.entries(this.controls).forEach(([field, control]) => {
+      if (field.endsWith('time')) {
+        control.setValue(new Date(this.data[field]));
+      } else {
+        control.setValue(this.data[field]);
+      }
     })
   }
 
@@ -112,12 +202,47 @@ export class TrainDetailComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((value: File[]) => {
       // TODO post selected file to backend
+      this.conn.UploadTrainFile(this.data.id, value[0]).subscribe({
+        next: result => {
+          this.logger.log(result)
+          this.msg.SendMessage('文件上传成功').subscribe()
+        },
+        error: error => {
+          this.logger.log(error)
+          this.msg.SendMessage('文件上传失败').subscribe()
+        }
+      })
     })
   }
 
   deleteFile() {
     const files: ResourceFile[] = this.fileSelection.selectedOptions.selected.map(selection => selection.value);
     // TODO handle file delete.
+  }
+
+  GetOrgInfo(){
+    const pageInfoQ: PageInfoQ = {
+      page : 1,
+      offset: 100
+    }
+    console.log(123)
+    this.conn.GetAllOrg(pageInfoQ).subscribe({
+      next: resp => {
+        if (resp.status !== 0){
+          this.organizations.set(0, 'error')
+          this.msg.SendMessage('获取组织列表失败').subscribe()
+        }
+        for (const connElement of resp.data) {
+          const organization: GetOrgQ = connElement as GetOrgQ
+          this.organizations.set(organization.id, organization.real_name)
+          console.log(this.organizations)
+        }
+      },
+      error: err => {
+        this.organizations.set(0, 'error')
+        this.msg.SendMessage('获取组织列表失败。未知错误').subscribe()
+      }
+    })
   }
 
 }
