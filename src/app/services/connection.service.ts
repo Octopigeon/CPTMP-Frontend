@@ -132,7 +132,7 @@ export class ConnectionService {
         this.user.next(this._user);
         observer.next(info);
         observer.complete();
-        if (!this.loc.url.startsWith('/plat')) {
+        if (!this.loc.url.startsWith('/plat') && !this.loc.url.startsWith('/info')) {
           // take user to panel when user has login
           // TODO change to status panel in the future
           this.loc.go(['/', 'plat', 'user', 'me'])

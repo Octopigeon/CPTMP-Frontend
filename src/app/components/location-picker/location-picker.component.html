@@ -1,0 +1,19 @@
+<div class="map-wrapper" [style.height]="height" #wrapper>
+  <p *ngIf="loading">正在加载地图...</p>
+  <p *ngIf="!loading && !loaded">加载失败</p>
+  <div class="map-container" *ngIf="!loading && loaded">
+    <google-map [width]="'100%'"
+                [height]="height"
+                [center]="center"
+                [zoom]="zoom"
+                [options]="options"
+                [draggable]="picking"
+                (mapClick)="setMarker($event)">
+      <map-marker [position]="markerPosition"></map-marker>
+      <map-circle [radius]="radius" *ngIf="showRadius"
+                  [center]="markerPosition"
+                  [options]="circleOptions"
+                  (circleClick)="setMarker($event)"></map-circle>
+    </google-map>
+  </div>
+</div>

@@ -1,10 +1,11 @@
-import {BrowserModule, HammerModule} from '@angular/platform-browser';
+import {BrowserModule} from '@angular/platform-browser';
 import {HttpClientModule} from '@angular/common/http';
 import {ErrorHandler, NgModule} from '@angular/core';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+
 import {windowProvider, WINDOW} from "./services/window";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {MatToolbarModule} from "@angular/material/toolbar";
@@ -12,6 +13,7 @@ import {MatIconModule, MatIconRegistry} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
 import {ImageCropperModule} from 'ngx-image-cropper';
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {GoogleMapsModule} from '@angular/google-maps';
 
 import {CustomIconRegistry, SVG_ICONS} from "./shared/custom-icon-registry";
 import {SearchBoxComponent} from './components/search-box/search-box.component';
@@ -53,17 +55,22 @@ import {TrainAdminComponent} from './contents/train-admin/train-admin.component'
 import {SingleTextareaComponent} from './popups/single-textarea/single-textarea.component';
 import {TrainDetailComponent} from './contents/train-detail/train-detail.component';
 import {MatDatepickerModule} from "@angular/material/datepicker";
-import { FileSizePipe } from './pipes/file-size.pipe';
-import { SelectFileComponent } from './popups/select-file/select-file.component';
-import { ProjectAdminComponent } from './contents/project-admin/project-admin.component';
-import { ProjectDetailComponent } from './contents/project-detail/project-detail.component';
-import { ProjectListComponent } from './contents/project-list/project-list.component';
+import {FileSizePipe} from './pipes/file-size.pipe';
+import {SelectFileComponent} from './popups/select-file/select-file.component';
+import {ProjectAdminComponent} from './contents/project-admin/project-admin.component';
+import {ProjectDetailComponent} from './contents/project-detail/project-detail.component';
+import {ProjectListComponent} from './contents/project-list/project-list.component';
 import {MatCardModule} from "@angular/material/card";
-import { TeamAdminComponent } from './contents/team-admin/team-admin.component';
+import {TeamAdminComponent} from './contents/team-admin/team-admin.component';
 import {MatChipsModule} from "@angular/material/chips";
-import { TeamDetailComponent } from './contents/team-detail/team-detail.component';
+import {TeamDetailComponent} from './contents/team-detail/team-detail.component';
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
-import { TeamListComponent } from './contents/team-list/team-list.component';
+import {TeamListComponent} from './contents/team-list/team-list.component';
+import {InviteComponent} from './components/invite/invite.component';
+import {LocationPickerComponent} from './components/location-picker/location-picker.component';
+import {MatSliderModule} from "@angular/material/slider";
+import {MatSlideToggleModule} from "@angular/material/slide-toggle";
+import { JoinRequestComponent } from './components/join-request/join-request.component';
 
 // These are the hardcoded inline svg sources to be used by the `<mat-icon>` component.
 // tslint:disable: max-line-length
@@ -167,51 +174,56 @@ export const svgIconProviders = [
     ProjectListComponent,
     TeamAdminComponent,
     TeamDetailComponent,
-    TeamListComponent
+    TeamListComponent,
+    InviteComponent,
+    LocationPickerComponent,
+    JoinRequestComponent
   ],
-    imports: [
-        BrowserModule,
-        HammerModule,
-        AppRoutingModule,
-        BrowserAnimationsModule,
-        HttpClientModule,
-        MatProgressBarModule,
-        MatToolbarModule,
-        MatIconModule,
-        MatButtonModule,
-        MatSidenavModule,
-        MatRippleModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatStepperModule,
-        MatExpansionModule,
-        MatListModule,
-        MatTreeModule,
-        MatGridListModule,
-        ImageCropperModule,
-        MatRadioModule,
-        MatTooltipModule,
-        MatDialogModule,
-        MatTableModule,
-        MatCheckboxModule,
-        ClipboardModule,
-        MatPaginatorModule,
-        MatSelectModule,
-        MatDatepickerModule,
-        MatNativeDateModule,
-        MatCardModule,
-        MatChipsModule,
-        MatAutocompleteModule,
-    ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    HttpClientModule,
+    MatProgressBarModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatButtonModule,
+    MatSidenavModule,
+    MatRippleModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatStepperModule,
+    MatExpansionModule,
+    MatListModule,
+    MatTreeModule,
+    MatGridListModule,
+    ImageCropperModule,
+    MatRadioModule,
+    MatTooltipModule,
+    MatDialogModule,
+    MatTableModule,
+    MatCheckboxModule,
+    ClipboardModule,
+    MatPaginatorModule,
+    MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatCardModule,
+    MatChipsModule,
+    MatAutocompleteModule,
+    GoogleMapsModule,
+    MatSliderModule,
+    MatSlideToggleModule,
+  ],
   providers: [
     ErrorHandler,
     svgIconProviders,
     MatSnackBar,
     Overlay,
     {provide: MatIconRegistry, useClass: CustomIconRegistry},
-    {provide: WINDOW, useFactory: windowProvider}
+    {provide: WINDOW, useFactory: windowProvider},
   ],
   bootstrap: [AppComponent]
 })

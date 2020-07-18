@@ -15,13 +15,17 @@ import {ProjectListComponent} from "./contents/project-list/project-list.compone
 import {TeamAdminComponent} from "./contents/team-admin/team-admin.component";
 import {TeamDetailComponent} from "./contents/team-detail/team-detail.component";
 import {TeamListComponent} from "./contents/team-list/team-list.component";
+import {InviteComponent} from "./components/invite/invite.component";
+import {JoinRequestComponent} from "./components/join-request/join-request.component";
 
 
 const routes: Routes = [
   { path: 'plat/user/me', component: PersonalDataComponent },
-  { path: 'plat/test', component: TeamListComponent },
+  { path: 'plat/test', component: TeamDetailComponent },
   // { path: 'plat/test', component: AccountAdminComponent, data: {type: 'enterprise'}  },
   // { path: 'activate/:token'},
+  { path: 'info/invite', component: InviteComponent },
+  { path: 'info/join', component: JoinRequestComponent },
   { path: 'register', component: RegisterComponent },
   { path: '', component: LoginComponent, pathMatch: 'full' },
   { path: '**', component: NotFoundComponent }

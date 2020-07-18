@@ -36,6 +36,7 @@ export class TeamDetailComponent implements OnInit {
     train_name: `Train1`,
     train_project_id: 1,
     member_count: 1,
+    leader_id: 1,
     members: [{
       avatar: "",
       email: `user1@mail.com`,
@@ -84,6 +85,7 @@ export class TeamDetailComponent implements OnInit {
   userIDs = new Set(this.data.members.map(u => u.user_id));
   users: UserInfo[] = this.data.members;
   userEditing: boolean = false;
+  leaderID: number;
 
   allUsers: UserInfo[] = [{
     avatar: "",
@@ -159,7 +161,9 @@ export class TeamDetailComponent implements OnInit {
   projects$: Observable<[string, string][]>;
 
   private _filterUser(value: string): UserInfo[] {
+    // TODO change to real fetch (with entry count limit)
     if (!value) {
+      // for user adding, hint when no keyword given is meaningless
       return [];
     }
 
@@ -175,9 +179,17 @@ export class TeamDetailComponent implements OnInit {
     if (index >= 0) {
       this.users.splice(index, 1);
       this.userIDs.delete(user.user_id);
+      if (user.user_id === this.data.leader_id) {
+        if (this.users.length === 0) {
+          this.leaderID = undefined;
+        } else {
+          this.leaderID = this.users[0].user_id;
+        }
+      }
     }
   }
 
+  // no need to handle add by input event
   addUser(e: MatChipInputEvent) {
     const input = e.input;
 
@@ -197,12 +209,20 @@ export class TeamDetailComponent implements OnInit {
     if (this.users.findIndex(u => u.user_id === user.user_id) < 0) {
       this.users.push(user);
       this.userIDs.add(user.user_id);
+      if (this.users.length === 0) {
+        this.leaderID = user.user_id;
+      }
     } else {
       this.msg.SendMessage(`用户${user.username}已存在于成员列表中`).subscribe();
     }
     this.userInput.nativeElement.value = '';
     this.userInputControl.setValue(null);
   }
+
+  setLeader(user: UserInfo) {
+    this.leaderID = user.user_id;
+  }
+
 
   constructor(private route: ActivatedRoute,
               private loc: LocationService,
@@ -225,6 +245,7 @@ export class TeamDetailComponent implements OnInit {
       Object.entries(this.controls).forEach(([field, control]) => {
         control.setValue(this.data[field]);
       })
+      this.leaderID = this.data.leader_id;
 
       this.projects$ = this.controls.train_id.valueChanges.pipe(
         startWith(''),

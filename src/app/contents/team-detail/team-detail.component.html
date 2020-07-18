@@ -106,7 +106,9 @@
     </h3>
     <div class="member-chip">
       <mat-chip-list aria-label="Team members" *ngIf="!userEditing">
-        <mat-chip *ngFor="let user of users" selectable="false" removable="false">
+        <!-- TODO should we add a link to user info? -->
+        <mat-chip *ngFor="let user of users" selectable="false" removable="false" class="team-chip"
+                  [class.leader-chip]="user.user_id === leaderID">
           <img class="chip-avatar" [src]="autoAvatar(user.avatar)" alt="">
           {{user.username}}({{user.name}})
         </mat-chip>
@@ -115,9 +117,10 @@
     <mat-form-field class="member-chip-list full-form-input" *ngIf="userEditing">
       <mat-label>成员列表</mat-label>
       <mat-chip-list #chipList aria-label="Team members">
-        <mat-chip
+        <mat-chip class="team-chip"
           *ngFor="let user of users" selectable="true" removable="true"
-          (removed)="removeUser(user)">
+          [class.leader-chip]="user.user_id === leaderID"
+          (removed)="removeUser(user)" (dblclick)="setLeader(user)">
           <img class="chip-avatar" [src]="autoAvatar(user.avatar)" alt="">
           {{user.username}}({{user.name}})
           <mat-icon matChipRemove>cancel</mat-icon>

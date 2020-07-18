@@ -136,6 +136,7 @@ export interface Team {
   train_name: string;
   project_name: string;
   member_count?: number;
+  leader_id: number;
   members?: UserInfo[];
   // like above
   resource_lib?: string | ResourceFile[];

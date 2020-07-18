@@ -74,7 +74,47 @@
       <mat-icon>{{controls.end_time.editing ? 'check' : 'edit'}}</mat-icon>
     </button>
   </p>
-  <!-- TODO add `project add` part -->
+  <div id="train-project">
+    <h2 class="content-title">
+      实训项目
+      <button mat-icon-button [matTooltip]="projectEditing ? '完成' : '修改'" class="edit-button"
+              (click)="projectEditing = !projectEditing">
+        <mat-icon>{{projectEditing ? 'check' : 'edit'}}</mat-icon>
+      </button>
+    </h2>
+    <div class="project-chip">
+      <mat-chip-list aria-label="Train projects" *ngIf="!projectEditing">
+        <!-- TODO should we add a link to project info? -->
+        <mat-chip *ngFor="let project of selectedProjects" selectable="false" removable="false">
+          {{project.project_name}}
+        </mat-chip>
+      </mat-chip-list>
+    </div>
+    <mat-form-field class="project-chip-list full-form-input" *ngIf="projectEditing">
+      <mat-label>项目列表</mat-label>
+      <mat-chip-list #chipList aria-label="Train projects">
+        <mat-chip
+          *ngFor="let project of selectedProjects" selectable="true" removable="true"
+          (removed)="removeProject(project)">
+          {{project.project_name}}
+          <mat-icon matChipRemove>cancel</mat-icon>
+        </mat-chip>
+        <input
+          placeholder="输入项目名称..."
+          #projectInput
+          [formControl]="projectInputControl"
+          [matAutocomplete]="projectAuto"
+          [matChipInputFor]="chipList"
+          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+          (matChipInputTokenEnd)="addProject($event)">
+      </mat-chip-list>
+      <mat-autocomplete autoActiveFirstOption #projectAuto="matAutocomplete" (optionSelected)="selectProject($event)">
+        <mat-option *ngFor="let project of filteredProjects$ | async" [value]="project">
+          {{project.project_name}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </div>
   <div id="train-content">
     <h2 class="content-title">
       实训内容
@@ -146,6 +186,36 @@
         <button mat-fab color="warn" [disabled]="files.selectedOptions.selected.length === 0" (click)="deleteFile()"
                 matTooltip="删除选中资源"><mat-icon>delete</mat-icon></button>
       </div>
+    </div>
+  </div>
+  <div id="train-position">
+    <h2 class="position-title">
+      实训地点
+      <button *ngIf="editMode" matTooltipPosition="right"
+              mat-icon-button [matTooltip]="editLoc ? '完成' : '修改'" class="edit-button"
+              (click)="editLoc = !editLoc">
+        <mat-icon>{{editLoc ? 'check' : 'edit'}}</mat-icon>
+      </button>
+    </h2>
+    <div class="use-radius">
+      启用打卡范围:
+      <mat-slide-toggle class="radius-slider"
+        [(ngModel)]="useRadius" color="accent" [disabled]="!editLoc"></mat-slide-toggle>
+    </div>
+    <div class="radius-control" [@displayRadius]="useRadius ? 'display' : 'hidden'">
+      有效打卡范围:
+      <mat-slider class="wide-form-input" [disabled]="!editLoc"
+        min="10" max="2000" step="1" value="100" thumbLabel="true" [(ngModel)]="radius"></mat-slider>
+      <span class="radius">{{radius}}</span>米
+    </div>
+    <div class="map-wrapper">
+      <app-location-picker
+        [zoom]="zoom"
+        [picking]="editLoc"
+        [radius]="radius"
+        [position]="location"
+        [showRadius]="useRadius">
+      </app-location-picker>
     </div>
   </div>
 </div>

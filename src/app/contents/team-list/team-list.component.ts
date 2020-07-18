@@ -20,6 +20,7 @@ export class TeamListComponent implements OnInit {
     train_name: `Train1`,
     train_project_id: 1,
     member_count: 1,
+    leader_id: 1,
     members: [{
       avatar: "",
       email: `user1@mail.com`,
@@ -38,6 +39,7 @@ export class TeamListComponent implements OnInit {
     train_name: `Train1`,
     train_project_id: 1,
     member_count: 1,
+    leader_id: 1,
     members: [{
       avatar: "",
       email: `user1@mail.com`,
@@ -74,6 +76,7 @@ export class TeamListComponent implements OnInit {
     train_name: `Train1`,
     train_project_id: 1,
     member_count: 1,
+    leader_id: 1,
     members: [{
       avatar: "",
       email: `user1@mail.com`,
@@ -101,6 +104,7 @@ export class TeamListComponent implements OnInit {
     train_name: `Train1`,
     train_project_id: 1,
     member_count: 1,
+    leader_id: 1,
     members: [{
       avatar: "",
       email: `user1@mail.com`,

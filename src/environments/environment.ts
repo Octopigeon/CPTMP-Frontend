@@ -4,7 +4,9 @@
 
 export const environment = {
   production: false,
-  backend: '/'
+  backend: '/',
+  // currently only allow localhost to load
+  google_map_key: 'AIzaSyBLnHmlaxo_wzKhip_KPfPOGjAFC7najhY'
 };
 
 /*
