@@ -34,7 +34,7 @@ export class TrainDetailComponent implements OnInit {
     standard: '请编辑实训标准',
     resource_lib: [],
     // picking location currently not implemented
-    gps_info: ''
+    gps_info: '0'
   }
 
   err: Train = {
@@ -48,13 +48,11 @@ export class TrainDetailComponent implements OnInit {
     standard: 'ERROR',
     resource_lib: [],
     // picking location currently not implemented
-    gps_info: ''
+    gps_info: ' '
   }
 
   // retrieve from backend
   organizations = new Map<number, string>();
-
-  organization_list = Object.entries(this.organizations);
 
   // we can't use FormGroup as we customized form control
   controls: {[key: string]: StatedFormControl} = {
@@ -72,8 +70,6 @@ export class TrainDetailComponent implements OnInit {
 
   editFile: boolean = true;
 
-  pTrainQ: TrainQ;
-
   saveChange() {
     if (this.data.id === null){
       const trainQ: CreateTrainQ = {
@@ -84,9 +80,8 @@ export class TrainDetailComponent implements OnInit {
         content: this.controls.content?.value,
         accept_standard: this.controls.standard?.value,
         resource_library: this.controls.resource_lib?.value,
-        gps_info: this.controls.gps_info?.value
+        gps_info: '00'
       }
-      console.log(trainQ)
       this.conn.CreateTrain(trainQ).subscribe({
         next: resp => {
           if (resp.status === 0) {
@@ -111,7 +106,6 @@ export class TrainDetailComponent implements OnInit {
         resource_library: this.controls.resource_lib?.value,
         gps_info: this.controls.gps_info?.value
       }
-      console.log(trainQ)
     }
   }
 
@@ -134,6 +128,7 @@ export class TrainDetailComponent implements OnInit {
       if (id === 'new'){
         this.data = this.newTrain
         this.setData()
+        this.editMode = false;
       }else{
         this.conn.GetTrain(id).subscribe({
           next: resp => {
@@ -225,21 +220,19 @@ export class TrainDetailComponent implements OnInit {
       page : 1,
       offset: 100
     }
-    console.log(123)
     this.conn.GetAllOrg(pageInfoQ).subscribe({
       next: resp => {
         if (resp.status !== 0){
-          this.organizations.set(0, 'error')
+          this.organizations[0] = 'error'
           this.msg.SendMessage('获取组织列表失败').subscribe()
         }
         for (const connElement of resp.data) {
           const organization: GetOrgQ = connElement as GetOrgQ
-          this.organizations.set(organization.id, organization.real_name)
-          console.log(this.organizations)
+          this.organizations.set( organization.id , organization.real_name)
         }
       },
       error: err => {
-        this.organizations.set(0, 'error')
+        this.organizations[0] = 'error'
         this.msg.SendMessage('获取组织列表失败。未知错误').subscribe()
       }
     })

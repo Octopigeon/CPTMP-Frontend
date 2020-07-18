@@ -31,7 +31,7 @@ export class SchoolEditComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  // TODO return school info from form
+  // FinishTodo return school info from form
   getSchool(){
     const org: Organization = {
       name: this.schoolForm.value.name,
@@ -46,7 +46,7 @@ export class SchoolEditComponent implements OnInit {
               @Inject(MAT_DIALOG_DATA) public data: Organization) {
     this.isEditing = data !== null;
 
-    // TODO init form according to data
+    // FinishTodo init form according to data
     if (this.isEditing){
       this.schoolForm.setValue({
         name: data.name,

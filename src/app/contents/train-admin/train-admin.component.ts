@@ -103,12 +103,12 @@ export class TrainAdminComponent implements OnInit {
       this.dataSource.data.forEach(row => this.selection.select(row));
   }
 
-  // TODO delete train according to selection
-  trainDelete() {
+  // FinishTodo delete train according to selection
+  trainDelete(): void{
     let List: number[] = [];
     this.msg.SendMessage('正在删除实训……').subscribe();
     for (const columnRef of this.selection.selected) {
-      List.push(columnRef.id)
+      List.push(columnRef.id);
     }
     this.conn.DeleteTrain(List).subscribe({
       next: resp => {
@@ -118,13 +118,13 @@ export class TrainAdminComponent implements OnInit {
         this.msg.SendMessage(err).subscribe();
       },
       complete: () => {
-        this.setDataSource()
+        this.setDataSource();
       }
     })
   }
 
-  JumpToDetail(train: Train){
-    this.loc.go(['/plat/train/detail/',train.id])
+  JumpToDetail(train: Train): void{
+    this.loc.go(['/plat/train/detail/',train.id]);
   }
 
   constructor(private conn: ConnectionService,
@@ -133,14 +133,15 @@ export class TrainAdminComponent implements OnInit {
               private loc: LocationService) { }
 
   ngOnInit(): void {
-    this.setDataSource()
+    this.setDataSource();
   }
 
-  setDataSource(){
-    const pageInfoQ: PageInfoQ ={
+  setDataSource(): void{
+    const pageInfoQ: PageInfoQ = {
       page: 1 ,
       offset: 100
-    }
+    };
+
     this.conn.GetAllTrain(pageInfoQ).subscribe({
       next: resp => {
         if (resp.status === 0) {
@@ -158,10 +159,10 @@ export class TrainAdminComponent implements OnInit {
               standard: trainQ.accept_standard,
               gps_info: trainQ.gps_info,
               resource_lib: trainQ.resource_library
-            }
+            };
             this.conn.GetOrgInfo(trainQ.organization_id).subscribe({
               next: nresp => {
-                const getOrgQ: GetOrgQ = nresp.data as GetOrgQ
+                const getOrgQ: GetOrgQ = nresp.data as GetOrgQ;
                 train.organization = getOrgQ.real_name;
               },
               error: eresp => {
@@ -170,17 +171,17 @@ export class TrainAdminComponent implements OnInit {
             });
             trainList.push(train);
           }
-          this.dataSource = new MatTableDataSource<Train>(trainList)
+          this.dataSource = new MatTableDataSource<Train>(trainList);
         } else {
-          this.msg.SendMessage('获取列表失败。').subscribe()
+          this.msg.SendMessage('获取列表失败。').subscribe();
         }
       },
       error: () => {
-        this.msg.SendMessage('获取列表失败。未知错误').subscribe()
-        this.dataSource = new MatTableDataSource<Train>(EXAMPLE_TRAIN)
+        this.msg.SendMessage('获取列表失败。未知错误').subscribe();
+        this.dataSource = new MatTableDataSource<Train>(EXAMPLE_TRAIN);
       }
 
-    })
+    });
   }
 
 }

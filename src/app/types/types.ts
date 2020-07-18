@@ -68,6 +68,14 @@ export interface RegisterQ {
   invitation_code: string;
 }
 
+export interface PostRegisterQ{
+  common_id: string;
+  name: string;
+  password: string;
+  email: string;
+  organization_id: number;
+}
+
 export interface RegisterP {
   status_code: number;
   id?: string;

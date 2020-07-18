@@ -7,6 +7,9 @@
     <button *ngIf="editMode" mat-fab color="primary" matTooltip="保存更改" class="save-button" (click)="saveChange()">
       <mat-icon>save</mat-icon>
     </button>
+    <button *ngIf="!editMode" mat-fab color="primary" matTooltip="创建新实训" class="save-button" (click)="saveChange()">
+      <mat-icon>library_add</mat-icon>
+    </button>
   </div>
   <h1 id="train-name">
     <span class="name-wrapper">
@@ -25,11 +28,11 @@
   <p id="train-organ">
     实训组织:
     <span class="organ-wrapper">
-      <span *ngIf="!controls.organization_id.editing">{{organizations[controls.organization_id.value]}}</span>
+      <span *ngIf="!controls.organization_id.editing">{{organizations.get(controls.organization_id.value)}}</span>
       <mat-form-field *ngIf="controls.organization_id.editing" class="wide-form-input" appearance="fill">
         <mat-label>选择实训组织</mat-label>
         <mat-select [formControl]="controls.organization_id">
-          <mat-option *ngFor="let org of organization_list" [value]="org[0] * 1">{{org[1]}}</mat-option>
+          <mat-option *ngFor="let org of organizations | keyvalue" [value]="org.key">{{org.value}}</mat-option>
         </mat-select>
       </mat-form-field>
     </span>
@@ -109,7 +112,7 @@
     </p>
   </div>
   <!-- TODO hide resource when creating new train. -->
-  <div id="train-resource">
+  <div id="train-resource" >
     <h2 class="resource-title">
       实训资料
       <button *ngIf="editMode" matTooltipPosition="right"

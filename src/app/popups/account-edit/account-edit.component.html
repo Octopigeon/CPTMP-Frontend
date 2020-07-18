@@ -8,15 +8,25 @@
         <input matInput placeholder="用户真实姓名" formControlName="name">
         <mat-icon matSuffix>person</mat-icon>
       </mat-form-field>
-      <mat-form-field appearance="outline" class="form-input">
+      <mat-form-field appearance="outline" class="form-input" *ngIf="!isEditing">
+        <mat-label>组织内ID</mat-label>
+        <input matInput placeholder="用户在组织内的ID" formControlName="common_id">
+        <mat-icon matSuffix>domain</mat-icon>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="form-input" *ngIf="!isEditing">
+        <mat-label>邮箱</mat-label>
+        <input matInput placeholder="用户常用邮箱" formControlName="email">
+        <mat-icon matSuffix>mail</mat-icon>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="form-input" *ngIf="isEditing">
         <mat-label>手机号码</mat-label>
         <input matInput placeholder="手机号码" formControlName="phone" type="number">
         <mat-icon matSuffix>phone</mat-icon>
         <mat-hint>手机号码作为用户的备用联系方式</mat-hint>
       </mat-form-field>
-      <mat-form-field appearance="outline" class="form-input">
+      <mat-form-field appearance="outline" class="form-input" *ngIf="isEditing">
         <mat-label>性别</mat-label>
-        <mat-select>
+        <mat-select [(value)]="gender">
           <mat-option value="1">男</mat-option>
           <mat-option value="2">女</mat-option>
           <mat-option value="3">保密</mat-option>
@@ -27,5 +37,5 @@
 </mat-dialog-content>
 <div mat-dialog-actions class="dialog-actions">
   <button mat-button (click)="cancelClose()">取消</button>
-  <button mat-flat-button color="primary" [matDialogClose]="getAccount()" [disabled]="accountForm.invalid">保存</button>
+  <button mat-flat-button color="primary" (click)="getAccount()" [disabled]="accountForm.invalid">保存</button>
 </div>

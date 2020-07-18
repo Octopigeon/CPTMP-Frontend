@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {LocationService} from "../../services/location.service";
 import {ActivatedRoute} from "@angular/router";
-import {Organization, UserInfo, RoleTable, DeleteUserQ} from "../../types/types";
+import {Organization, UserInfo, RoleTable, DeleteUserQ, PageInfoQ, Resp, PostRegisterQ} from "../../types/types";
 import {CollectionViewer, DataSource, ListRange, SelectionModel} from "@angular/cdk/collections";
 import {MatPaginator, PageEvent} from "@angular/material/paginator";
 import {BehaviorSubject, Observable, of, Subscriber, Subscription} from "rxjs";
@@ -83,13 +83,13 @@ export class AccountAdminComponent implements OnInit {
     this.conn.DeleteUser(userList).subscribe({
       next: resp => {
         this.msg.SendMessage('删除账号成功').subscribe()
-        this.conn.GetUserInfo().subscribe()
-        window.alert(2);
       },
       error: () => {
         this.msg.SendMessage('删除账号失败。未知错误').subscribe()
-        this.conn.GetUserInfo().subscribe()
-        window.alert(3);
+      },
+      complete: () => {
+        this.dataSource.getRange();
+        console.log(123)
       }
     })
   }
@@ -104,7 +104,26 @@ export class AccountAdminComponent implements OnInit {
     });
 
     // TODO get data & post create/modify request to backend
-    dialogRef.afterClosed().subscribe()
+    dialogRef.afterClosed().subscribe(result => {
+      if ( user == null ){
+        if (result == null){
+          this.msg.SendMessage('创建被取消').subscribe();
+        }else{
+          const regQ: PostRegisterQ = result as PostRegisterQ;
+          const regQList: PostRegisterQ[] = [regQ];
+          this.conn.PostEnterpriseAdminReg(regQList).subscribe({
+            next: resp => {
+              this.msg.SendMessage('创建账号成功').subscribe();
+            },
+            error: () => {
+              this.msg.SendMessage('创建账号失败').subscribe();
+            }
+          })
+        }
+      }else{
+
+      }
+    })
   }
 
   userBulkAdd(event?: Event) {
@@ -114,8 +133,22 @@ export class AccountAdminComponent implements OnInit {
 
     const dialogRef = this.dialog.open(AccountBulkAddComponent);
 
-    // TODO post data to backend
-    dialogRef.afterClosed().subscribe()
+    // FinishTodo post data to backend
+    dialogRef.afterClosed().subscribe(result => {
+      if (result == null){
+        this.msg.SendMessage('导入被取消').subscribe();
+      }else{
+        const regQ: PostRegisterQ[] = result as PostRegisterQ[];
+        this.conn.PostEnterpriseAdminReg(regQ).subscribe({
+          next: resp => {
+            this.msg.SendMessage('导入账号成功').subscribe();
+          },
+          error: () => {
+            this.msg.SendMessage('导入账号失败').subscribe();
+          }
+        })
+      }
+    });
   }
 
   userEditPassword(event?: Event, user?: UserInfo) {
@@ -150,7 +183,8 @@ export class AccountAdminComponent implements OnInit {
   constructor(private loc: LocationService,
               private route: ActivatedRoute,
               private conn: ConnectionService,
-              public msg: MessageService ) { }
+              public msg: MessageService,
+              private dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.route.data.subscribe(data => {
@@ -158,30 +192,37 @@ export class AccountAdminComponent implements OnInit {
         return;
       }
       this.type = data.type;
-      this.dataSource = new AccountDataSource(this.conn, this.type, this.paginator);
+      this.dataSource = new AccountDataSource(this.conn, this.type, this.paginator,this.msg);
     })
   }
 }
 
 export class AccountDataSource extends DataSource<UserInfo> {
 
-  public length: number = 0;
+  public length: number = 10000;
 
   public data: UserInfo[] = [];
   private readonly data$: BehaviorSubject<UserInfo[]>;
 
   private _subscription = new Subscription();
 
-  constructor(private conn: ConnectionService, private type: string, private paginator: MatPaginator) {
+  private index: number = 0;
+
+  private size: number = 10;
+
+  constructor(private conn: ConnectionService,
+              private type: string,
+              private paginator: MatPaginator,
+              public msg: MessageService) {
     super();
     this.data$ = new BehaviorSubject<UserInfo[]>(this.data);
 
     // this should be changed upon each get
     this.length = 1000;
     this.paginator.page.subscribe((event: PageEvent) => {
-      const start = event.pageIndex * event.pageSize;
-      const end = start + event.pageSize;
-      this.getRange(start, end).subscribe(data => {
+      this.index = event.pageIndex;
+      this.size = event.pageSize;
+      this.getRange().subscribe(data => {
         this.data = data;
         this.data$.next(this.data);
       })
@@ -194,25 +235,44 @@ export class AccountDataSource extends DataSource<UserInfo> {
 
   }
 
-  // TODO implement real data fetch
-  private getRange(start: number, end: number): Observable<UserInfo[]> {
-    console.log(start, end);
-    const list: UserInfo[] = [];
+  // FinishTodo implement real data fetch
+  public getRange(): Observable<UserInfo[]> {
+    let observer: Subscriber<UserInfo[]>;
+    const result = new Observable<UserInfo[]>(o => observer = o);
+    const pageInfoQ: PageInfoQ = {
+      page: this.index + 1,
+      offset: this.size
+    };
+    this.conn.GetAllUser(pageInfoQ).subscribe({
+      next: resp => {
 
-    for (let i = start; i <= Math.min(end, this.length); i++) {
-      list.push({
-        avatar: "",
-        email: `user${i}@mail.com`,
-        gender: i % 2 == 0,
-        name: `user${i}`,
-        phone_number: `12345${i}`,
-        role_name: 'ROLE_ENTERPRISE_ADMIN',
-        user_id: i,
-        username: `TEST000${i}`
-      })
-    }
-    console.log(123)
-    return of(list);
+        if (resp.status !== 0){
+          this.msg.SendMessage('获取列表失败').subscribe();
+          observer.error()
+        }
+        this.length = resp.total_rows;
+        const list: UserInfo[] = [];
+        for (const paginatorElement of resp.data) {
+          const getUserInfo: UserInfo = paginatorElement as UserInfo;
+          list.push({
+            avatar: getUserInfo.avatar,
+            email: getUserInfo.email,
+            gender: getUserInfo.gender,
+            name: getUserInfo.name,
+            phone_number: getUserInfo.phone_number,
+            role_name: getUserInfo.role_name,
+            user_id: getUserInfo.user_id,
+            username: getUserInfo.username
+          });
+        }
+        observer.next(list);
+      },
+      error: err => {
+        this.msg.SendMessage('获取列表失败').subscribe();
+        observer.error();
+      }
+    });
+    return result
   }
 
   connect(collectionViewer: CollectionViewer): Observable<UserInfo[] | ReadonlyArray<UserInfo>> {
@@ -225,7 +285,7 @@ export class AccountDataSource extends DataSource<UserInfo> {
     //     this.data$.next(this.data);
     //   })
     // }))
-    this.getRange(0, this.paginator.pageSize).subscribe(data => {
+    this.getRange().subscribe(data => {
       this.data = data;
       this.data$.next(this.data);
     })
