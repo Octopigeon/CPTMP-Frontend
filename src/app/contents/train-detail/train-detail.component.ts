@@ -80,6 +80,7 @@ export class TrainDetailComponent implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.subscribe(param => {
       const id = param.get('id');
+      console.log(id);
       // TODO must have valid id (uncomment following code)
       // if (!id || !id.trim()) {
       //   this.loc.go(['/', 'not-found'])

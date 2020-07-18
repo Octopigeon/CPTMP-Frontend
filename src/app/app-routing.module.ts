@@ -18,7 +18,7 @@ import {TeamAdminComponent} from "./contents/team-admin/team-admin.component";
 
 const routes: Routes = [
   { path: 'plat/user/me', component: PersonalDataComponent },
-  { path: 'plat/test', component: AccountAdminComponent },
+  { path: 'plat/test', component: TrainAdminComponent },
   // { path: 'plat/test', component: AccountAdminComponent, data: {type: 'enterprise'}  },
   // { path: 'activate/:token'},
   { path: 'register', component: RegisterComponent },

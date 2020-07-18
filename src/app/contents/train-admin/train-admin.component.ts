@@ -103,30 +103,22 @@ export class TrainAdminComponent implements OnInit {
 
   // TODO delete train according to selection
   trainDelete() {
-    const errorList: number[] = [];
+    let List: number[] = [];
     this.msg.SendMessage('正在删除实训……').subscribe();
     for (const columnRef of this.selection.selected) {
-      this.conn.DeleteTrain(columnRef.id).subscribe({
-        next: resp => {
-          if (resp.status !== 0){
-            errorList.push(columnRef.id);
-          }
-        },
-        error: err => {
-          errorList.push(columnRef.id);
-        }
-      })
+      List.push(columnRef.id)
     }
-    if (errorList.length > 0){
-      let errorMessage = '实训';
-      for (const columnRef of errorList) {
-        errorMessage = errorMessage + columnRef + '、' ;
+    this.conn.DeleteTrain(List).subscribe({
+      next: resp => {
+        this.msg.SendMessage('删除成功！').subscribe();
+      },
+      error: err => {
+        this.msg.SendMessage(err).subscribe();
+      },
+      complete: () => {
+        this.setDataSource()
       }
-      errorMessage = errorMessage + '删除失败';
-      this.msg.SendMessage(errorMessage).subscribe();
-    }else{
-      this.msg.SendMessage('删除成功！').subscribe();
-    }
+    })
   }
 
   constructor(private conn: ConnectionService,
@@ -177,6 +169,7 @@ export class TrainAdminComponent implements OnInit {
       },
       error: () => {
         this.msg.SendMessage('获取列表失败。未知错误').subscribe()
+        this.dataSource = new MatTableDataSource<Train>(EXAMPLE_TRAIN)
       }
 
     })

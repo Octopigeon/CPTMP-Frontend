@@ -384,25 +384,39 @@ export class ConnectionService {
     return result
   }
 
-  public DeleteTrain(trainId:number): Observable<Resp>{
+  public DeleteTrain(trainId: number[]): Observable<Resp>{
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
-    const url = API.train + '/' + trainId
-    this.delete(url).subscribe({
-      next: response => {
-        if (response.status !== 0) {
-          this.logger.log(`Delete train failed with status code ${response.status}: ${response.msg}.`)
-          observer.error(response);
-          return result;
+    const errorList: number[] = [];
+    for (const storageElement of trainId) {
+      const url = API.train + '/' + storageElement
+      this.delete(url).subscribe({
+        next: response => {
+          if (response.status !== 0) {
+            this.logger.log(`Delete train failed with status code ${response.status}: ${response.msg}.`)
+            errorList.push(storageElement)
+          }
+        },
+        error: error => {
+          this.logger.log(`Delete train failed with network error: `, error);
+          errorList.push(storageElement)
         }
-        observer.next(response);
-        observer.complete();
-      },
-      error: error => {
-        this.logger.log(`Delete train failed with network error: `, error);
-        observer.error(error)
+      })
+    }
+    if (errorList.length > 0){
+      let errorMessage = '实训';
+      for (const columnRef of errorList) {
+        errorMessage = errorMessage + columnRef + '、' ;
       }
-    })
+      errorMessage = errorMessage + '删除失败';
+      observer.error(errorMessage)
+    }else{
+      observer.next()
+      setTimeout(() => {
+        observer.complete();
+      }, 1000);
+    }
+
     return result
   }
 
