@@ -4,13 +4,49 @@
 </div>
 <div class="operations">
   <button mat-fab color="primary" matTooltip="添加{{typeString[type]}}帐号"
-          (click)="userEdit(null)"><mat-icon>add</mat-icon></button>
+          (click)="userEdit($event, null)"><mat-icon>add</mat-icon></button>
+  <button mat-fab color="primary" matTooltip="批量添加{{typeString[type]}}帐号"
+          (click)="userBulkAdd($event)"><mat-icon>post_add</mat-icon></button>
   <button mat-fab color="warn" [disabled]="selection.isEmpty()" (click)="userDelete()"
           matTooltip="删除已选{{typeString[type]}}帐号"><mat-icon>delete</mat-icon></button>
 </div>
 <div class="content-wrapper mat-elevation-z8">
+  <div class="filter-wrapper">
+    <h2 class="filter-title">过滤条件</h2>
+    <!-- TODO make this real filter fields add filter form control and update table upon filter field change -->
+    <form class="filter">
+      <mat-form-field class="filter-field">
+        <mat-label>账户名称</mat-label>
+        <input matInput>
+      </mat-form-field>
+      <mat-form-field class="filter-field">
+        <mat-label>姓名</mat-label>
+        <input matInput>
+      </mat-form-field>
+      <mat-form-field class="filter-field">
+        <mat-label>电子邮件</mat-label>
+        <input matInput>
+      </mat-form-field>
+      <mat-form-field class="filter-field">
+        <mat-label>角色</mat-label>
+        <mat-select>
+          <mat-option value="1">角色1</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="filter-field">
+        <mat-label>性别</mat-label>
+        <mat-select>
+          <mat-option value="1">男</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="filter-field">
+        <mat-label>电话号码</mat-label>
+        <input matInput>
+      </mat-form-field>
+    </form>
+  </div>
   <mat-paginator class="paginator"
-                 [pageSizeOptions]="[10,50,100]"
+                 [pageSizeOptions]="[10, 50, 100]"
                  showFirstLastButtons pageSize="10"
                  [length]="dataSource.length"
                  (page)="selection.clear()"></mat-paginator>
@@ -37,6 +73,7 @@
         <span *ngSwitchCase="'role_name'">{{RoleTable[element[column[0]]]}}</span>
         <img *ngSwitchCase="'avatar'" alt="avatar" class="user-list-avatar"
              [src]="autoAvatar(element.avatar)" [matTooltip]="validLink(element.avatar) ? '自定义头像' : '默认头像'">
+        <span *ngSwitchCase="'gender'">{{element[column[0]] === null ? '保密' : element[column[0]] ? '男' : '女'}}</span>
         <span *ngSwitchDefault>{{element[column[0]]}}</span>
       </td>
     </ng-container>
@@ -44,7 +81,12 @@
     <ng-container matColumnDef="edit" stickyEnd>
       <th mat-header-cell *matHeaderCellDef>编辑</th>
       <td mat-cell *matCellDef="let element">
-        <button mat-icon-button (click)="$event ? $event.stopPropagation() : null"><mat-icon>edit</mat-icon></button>
+        <button mat-icon-button (click)="userEdit($event, element)" matTooltip="编辑账户">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button (click)="userEditPassword($event, element)" matTooltip="修改账户密码">
+          <mat-icon>vpn_key</mat-icon>
+        </button>
       </td>
     </ng-container>
 

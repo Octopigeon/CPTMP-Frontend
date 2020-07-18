@@ -8,6 +8,11 @@ import {BehaviorSubject, Observable, of, Subscriber, Subscription} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {ConnectionService} from "../../services/connection.service";
 import {MessageService} from "../../services/message.service";
+import {SchoolEditComponent} from "../../popups/school-edit/school-edit.component";
+import {MatDialog} from "@angular/material/dialog";
+import {AccountEditComponent} from "../../popups/account-edit/account-edit.component";
+import {AccountBulkAddComponent} from "../../popups/account-bulk-add/account-bulk-add.component";
+import {SingleInputComponent} from "../../popups/single-input/single-input.component";
 
 @Component({
   selector: 'app-account-admin',
@@ -51,7 +56,6 @@ export class AccountAdminComponent implements OnInit {
 
   get columnPairs() { return Object.entries(this.columns) }
   selection = new SelectionModel<UserInfo>(true, []);
-  expandedElement: UserInfo | null;
 
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
@@ -95,7 +99,40 @@ export class AccountAdminComponent implements OnInit {
       event.stopPropagation();
     }
 
-    // TODO edit user info
+    const dialogRef = this.dialog.open(AccountEditComponent, {
+      data: user
+    });
+
+    // TODO get data & post create/modify request to backend
+    dialogRef.afterClosed().subscribe()
+  }
+
+  userBulkAdd(event?: Event) {
+    if (event) {
+      event.stopPropagation();
+    }
+
+    const dialogRef = this.dialog.open(AccountBulkAddComponent);
+
+    // TODO post data to backend
+    dialogRef.afterClosed().subscribe()
+  }
+
+  userEditPassword(event?: Event, user?: UserInfo) {
+    if (event) {
+      event.stopPropagation();
+    }
+
+    const dialogRef = this.dialog.open(SingleInputComponent, {
+      data: {
+        title: '修改密码',
+        inputLabel: '新密码',
+        inputPlaceholder: '输入为此账户设置的新密码'
+      }
+    });
+
+    // TODO post data to backend
+    dialogRef.afterClosed().subscribe()
   }
 
   tableItemCheckBy(index: number, item: UserInfo) {
