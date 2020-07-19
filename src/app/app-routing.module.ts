@@ -30,6 +30,14 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'plat/project/detail', component: ProjectDetailComponent },
   { path: 'plat/train/detail/:id', component: TrainDetailComponent},
+  { path: 'plat/account', component: AccountAdminComponent, data: {type: 'enterprise'} },
+  { path: 'plat/project', component: ProjectAdminComponent},
+  { path: 'plat/projectList', component: ProjectListComponent},
+  { path: 'plat/org', component: SchoolAdminComponent},
+  { path: 'plat/team', component: TeamAdminComponent},
+  { path: 'plat/teamList', component: TeamListComponent},
+  { path: 'plat/team/detail', component: TeamDetailComponent},
+  { path: 'plat/train', component: TrainAdminComponent},
   { path: '', component: LoginComponent, pathMatch: 'full' },
   { path: '**', component: NotFoundComponent }
 ];
