@@ -17,6 +17,7 @@ import {MatAutocompleteSelectedEvent} from "@angular/material/autocomplete";
 import {MessageService} from "../../services/message.service";
 import {debounceTime, distinctUntilChanged, map, startWith, tap} from "rxjs/operators";
 import {animate, state, style, transition, trigger} from "@angular/animations";
+import {GoogleMapsModule} from "@angular/google-maps";
 
 
 @Component({
@@ -157,7 +158,7 @@ export class TrainDetailComponent implements OnInit {
   }
 
   editLoc: boolean = false;
-  // location: google.maps.LatLngLiteral = {lat: 30.5332712, lng: 114.3574959};
+  location: google.maps.LatLngLiteral = {lat: 30.5332712, lng: 114.3574959};
   zoom: number = 14;
   radius: number = 100;
   useRadius: boolean = true;
@@ -206,7 +207,8 @@ export class TrainDetailComponent implements OnInit {
               private dialog: MatDialog,
               private conn: ConnectionService,
               private logger: Logger,
-              private msg: MessageService) { }
+              private msg: MessageService,
+              private google: GoogleMapsModule) { }
 
 
   ngOnInit(): void {
