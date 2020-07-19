@@ -71,7 +71,8 @@ import {LocationPickerComponent} from './components/location-picker/location-pic
 import {MatSliderModule} from "@angular/material/slider";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import { JoinRequestComponent } from './components/join-request/join-request.component';
-
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 // These are the hardcoded inline svg sources to be used by the `<mat-icon>` component.
 // tslint:disable: max-line-length
@@ -217,6 +218,7 @@ export const svgIconProviders = [
     GoogleMapsModule,
     MatSliderModule,
     MatSlideToggleModule,
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
   providers: [
     ErrorHandler,
