@@ -157,7 +157,7 @@ export class TrainDetailComponent implements OnInit {
   }
 
   editLoc: boolean = false;
-  location: google.maps.LatLngLiteral = {lat: 30.5332712, lng: 114.3574959};
+  // location: google.maps.LatLngLiteral = {lat: 30.5332712, lng: 114.3574959};
   zoom: number = 14;
   radius: number = 100;
   useRadius: boolean = true;
@@ -210,6 +210,7 @@ export class TrainDetailComponent implements OnInit {
 
 
   ngOnInit(): void {
+    console.log(123)
     this.route.paramMap.subscribe(param => {
       const id = param.get('id');
       this.GetOrgInfo()

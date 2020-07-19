@@ -22,8 +22,8 @@ import {JoinRequestComponent} from "./components/join-request/join-request.compo
 
 const routes: Routes = [
   { path: 'plat/user/me', component: PersonalDataComponent },
-  { path: 'plat/test', component: TrainDetailComponent },
-  //{ path: 'plat/test', component: AccountAdminComponent, data: {type: 'enterprise'}  },
+  { path: 'plat/test', component: TrainAdminComponent },
+  //{ path: 'plat/test', component: TrainAdminComponent, data: {type: 'enterprise'}  },
   // { path: 'activate/:token'},
   { path: 'info/invite', component: InviteComponent },
   { path: 'info/join', component: JoinRequestComponent },
