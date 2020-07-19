@@ -86,6 +86,9 @@ export class ProjectAdminComponent implements OnInit {
     return [...Array(count).keys()].map(i => i + begin);
   }
 
+  /***
+   * 删除用户选定的实训项目
+   */
   // TODO delete project according to selection
   projectDelete() {
     this.msg.SendMessage('正在删除项目……').subscribe()
@@ -93,7 +96,6 @@ export class ProjectAdminComponent implements OnInit {
     for (const typeElement of this.selection.selected) {
       projectList.push(typeElement.id);
     }
-    console.log(projectList);
     this.conn.DeleteProject(projectList).subscribe({
       next: resp => {
         this.msg.SendMessage('删除项目成功').subscribe()

@@ -163,8 +163,11 @@ export class TrainDetailComponent implements OnInit {
   radius: number = 100;
   useRadius: boolean = true;
 
+  /***
+   * 保存对当前页面的修改或创建新的实训
+   */
   saveChange() {
-    if (this.data.id === null){
+    if (this.data.id === null){   //若没有传入实训对象，则为创建新的实训
       const trainQ: CreateTrainQ = {
         name: this.controls.name?.value,
         organization_id: this.controls.organization_id?.value,
@@ -187,7 +190,7 @@ export class TrainDetailComponent implements OnInit {
           this.msg.SendMessage('创建实训失败。未知错误').subscribe()
         }
       })
-    }else{
+    }else{  // 若传入了实训对象，则为对当前对象的修改进行保存
       const trainQ: TrainQ = {
         id: this.data.id,
         name: this.controls.name?.value,
@@ -226,6 +229,7 @@ export class TrainDetailComponent implements OnInit {
         this.setData();
         this.editMode = false;
       }else{
+        //  载入实训的组织列表
         this.conn.GetTrain(id).subscribe({
           next: resp => {
             if (resp.status === 0) {
@@ -292,6 +296,9 @@ export class TrainDetailComponent implements OnInit {
     )
   }
 
+  /***
+   * 为实训上传对应的文件
+   */
   addFile() {
     const dialogRef = this.dialog.open(SelectFileComponent, {
       data: {
@@ -316,11 +323,18 @@ export class TrainDetailComponent implements OnInit {
     })
   }
 
+  /***
+   * 删除实训的相关对应文件
+   */
   deleteFile() {
     const files: ResourceFile[] = this.fileSelection.selectedOptions.selected.map(selection => selection.value);
     // TODO handle file delete.
   }
 
+  /***
+   * 获得所有组织的信息
+   * @constructor
+   */
   GetOrgInfo(){
     const pageInfoQ: PageInfoQ = {
       page : 1,

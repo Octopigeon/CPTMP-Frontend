@@ -57,15 +57,26 @@ export class TeamAdminComponent implements OnInit {
       this.dataSource.data.forEach(row => this.selection.select(row));
   }
 
+  /***
+   * 根据用户选择删除对应团队
+   */
   // TODO delete selected team
   teamDelete() {
 
   }
 
+  /**
+   * 创建团队
+   */
   teamCreate() {
 
   }
 
+  /***
+   * 根据传入对团队信息进行修改
+   * @param event  调用此方法的对象
+   * @param team  传入的团队对象信息
+   */
   teamEdit(event: Event, team: Team) {
     if (event) {
       event.stopPropagation();
@@ -96,6 +107,9 @@ export class TeamAdminComponent implements OnInit {
               private conn: ConnectionService,
               private dialog: MatDialog) { }
 
+  /***
+   * 初始化，分页查询获得团队信息
+   */
   ngOnInit(): void {
     this.route.data.subscribe(data => {
       this.dataSource = new TeamDataSource(this.conn, this.paginator);

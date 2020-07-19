@@ -31,6 +31,9 @@ export class SchoolEditComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  /***
+   * 获取该视窗修改后的组织信息
+   */
   // FinishTodo return school info from form
   getSchool(){
     const org: Organization = {
@@ -42,6 +45,11 @@ export class SchoolEditComponent implements OnInit {
     this.dialogRef.close(org);
   }
 
+  /***
+   * 根据传入信息对该视窗的数据进行初始化
+   * @param dialogRef
+   * @param data
+   */
   constructor(public dialogRef: MatDialogRef<SchoolEditComponent>,
               @Inject(MAT_DIALOG_DATA) public data: Organization) {
     this.isEditing = data !== null;

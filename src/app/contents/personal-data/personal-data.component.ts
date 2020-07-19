@@ -54,6 +54,11 @@ export class PersonalDataComponent implements OnInit {
     this.passwordConfirm
   ])
 
+  /***
+   * 进行用户公开信息的修改
+   * @param directive  提交信息的页表对象
+   */
+
   submitBasicDataForm(directive: FormGroupDirective) {
     // FINISHtodo save changes to basic user data
 
@@ -80,6 +85,10 @@ export class PersonalDataComponent implements OnInit {
     directive.resetForm()
   }
 
+  /***
+   * 进行用户密码的修改
+   * @param directive  提交信息的页表对象
+   */
   submitPasswordChangeForm(directive: FormGroupDirective) {
     this.msg.SendMessage('正在修改密码').subscribe()
 
@@ -107,13 +116,16 @@ export class PersonalDataComponent implements OnInit {
     directive.resetForm()
   }
 
+  /***
+   * 修改用户的头像
+   */
   changeAvatar() {
     const dialogRef = this.dialog.open(ChangeAvatarComponent);
 
     dialogRef.afterClosed().subscribe(result => {
       this.logger.log('The dialog was closed');
       if (result) {
-        const observable = result as Observable<Blob>;
+        const observable = result as Observable<Blob>;  // 将弹窗获得结果转换成Blob对象
         this.conn.UploadAvatar(observable).subscribe({
           next: result => {
             this.logger.log(result)

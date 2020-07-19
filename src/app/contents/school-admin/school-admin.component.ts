@@ -128,6 +128,10 @@ export class SchoolAdminComponent implements OnInit {
     return (new Date(date)).toLocaleDateString();
   }
 
+  /***
+   * 根据用户的传入，对组织进行创建和修改
+   * @param organization  用户传入的组织对象
+   */
   schoolEdit(organization?: Organization) {
     const dialogRef = this.dialog.open(SchoolEditComponent, {
       data: organization
@@ -137,7 +141,7 @@ export class SchoolAdminComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result == null) {
-        if (organization == null){
+        if (organization == null){      // 若用户未传入组织对象，则创建新组织
           this.msg.SendMessage('创建被取消').subscribe();
         }else{
           this.msg.SendMessage('修改被取消').subscribe();
@@ -168,7 +172,7 @@ export class SchoolAdminComponent implements OnInit {
         });
 
       }else{
-
+        // 若传入了对象组织，则对其信息进行修改
         this.msg.SendMessage('正在修改组织信息……').subscribe();
         const org: CreateOrgQ = {
           real_name: result.name,
@@ -191,6 +195,9 @@ export class SchoolAdminComponent implements OnInit {
     });
   }
 
+  /***
+   * 根据用户的选择对组织进行删除
+   */
   // TODO delete scholl according to selection
   schoolDelete() {
 
@@ -209,9 +216,11 @@ export class SchoolAdminComponent implements OnInit {
     return invitation_code;
   }
 
-
+  /**
+   * 查询所有组织信息
+   */
   getDate(){
-    this.organizationList = [];
+    this.organizationList = [];   // 形成查询分页请求
     const pageInfoQ: PageInfoQ = {
       page: 1,
       offset: 100,
@@ -224,7 +233,7 @@ export class SchoolAdminComponent implements OnInit {
           this.dataSource = new MatTableDataSource<Organization>(this.organizationList);
           return;
         }
-        for (const connElement of resp.data) {
+        for (const connElement of resp.data) {   // 载入各个组织信息
           const organization: GetOrgQ = connElement as GetOrgQ;
           const org: Organization = {
             id: organization.id,
@@ -260,7 +269,7 @@ export class SchoolAdminComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
-        this.getDate();
+        this.getDate();  // 载入所有组织信息
     });
       // TODO fetch data from backend
   }

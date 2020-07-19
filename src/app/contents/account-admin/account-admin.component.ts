@@ -71,6 +71,10 @@ export class AccountAdminComponent implements OnInit {
       this.dataSource.data.forEach(row => this.selection.select(row));
   }
 
+  /***
+   * 将选取的用户从系统中删除
+   */
+
   // FinshTodo delete selected user
   userDelete() {
 
@@ -80,7 +84,7 @@ export class AccountAdminComponent implements OnInit {
       userList.push(typeElement.user_id);
     }
     console.log(userList);
-    this.conn.DeleteUser(userList).subscribe({
+    this.conn.DeleteUser(userList).subscribe({  // 调用连接类ConnectionService进连接，删除所选列表
       next: resp => {
         this.msg.SendMessage('删除账号成功').subscribe()
       },
@@ -88,11 +92,16 @@ export class AccountAdminComponent implements OnInit {
         this.msg.SendMessage('删除账号失败。未知错误').subscribe()
       },
       complete: () => {
-        this.dataSource.getRange();
-        console.log(123)
+        this.dataSource.getRange();    // 删除后更新列表
       }
     })
   }
+
+  /***
+   * 对选定用户的信息进行修改
+   * @param event  调用此方法的对应列表项
+   * @param user   进行修改的用户对象原信息，可为无，若不传入，则为创建新用户
+   */
 
   userEdit(event?: Event, user?: UserInfo) {
     if (event) {
@@ -104,8 +113,8 @@ export class AccountAdminComponent implements OnInit {
     });
 
     // TODO get data & post create/modify request to backend
-    dialogRef.afterClosed().subscribe(result => {
-      if ( user == null ){
+    dialogRef.afterClosed().subscribe(result => {  // 获取弹窗返回结果数据
+      if ( user == null ){    // 若开始时没有传入用户对象，则为创建新用户
         if (result == null){
           this.msg.SendMessage('创建被取消').subscribe();
         }else{
@@ -120,12 +129,16 @@ export class AccountAdminComponent implements OnInit {
             }
           })
         }
-      }else{
+      }else{   // 若传入了用户对象，则对其进行修改
 
       }
     })
   }
 
+  /***
+   * 根据csv文件批量导入用户
+   * @param event 调用此方法的对象
+   */
   userBulkAdd(event?: Event) {
     if (event) {
       event.stopPropagation();
@@ -134,7 +147,7 @@ export class AccountAdminComponent implements OnInit {
     const dialogRef = this.dialog.open(AccountBulkAddComponent);
 
     // FinishTodo post data to backend
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe(result => {  // 获取弹窗关闭后的结果数据
       if (result == null){
         this.msg.SendMessage('导入被取消').subscribe();
       }else{
@@ -151,12 +164,17 @@ export class AccountAdminComponent implements OnInit {
     });
   }
 
+  /***
+   * 利用系统管理员最高权限直接修改用户密码
+   * @param event  调用此方法的对象
+   * @param user  传入此方法的对象用户的信息
+   */
   userEditPassword(event?: Event, user?: UserInfo) {
     if (event) {
       event.stopPropagation();
     }
 
-    const dialogRef = this.dialog.open(SingleInputComponent, {
+    const dialogRef = this.dialog.open(SingleInputComponent, {   // 为弹窗输入内容
       data: {
         title: '修改密码',
         inputLabel: '新密码',
@@ -186,6 +204,9 @@ export class AccountAdminComponent implements OnInit {
               public msg: MessageService,
               private dialog: MatDialog) { }
 
+  /***
+   * 页面初始化，分页获取用户信息
+   */
   ngOnInit(): void {
     this.route.data.subscribe(data => {
       if (!data || !data.type || !this.typeString[data.type]) {
@@ -235,11 +256,14 @@ export class AccountDataSource extends DataSource<UserInfo> {
 
   }
 
+  /***
+   *  根据当前的页标，分页查询用户信息
+   */
   // FinishTodo implement real data fetch
   public getRange(): Observable<UserInfo[]> {
     let observer: Subscriber<UserInfo[]>;
     const result = new Observable<UserInfo[]>(o => observer = o);
-    const pageInfoQ: PageInfoQ = {
+    const pageInfoQ: PageInfoQ = {  // 生成查询页的请求
       page: this.index + 1,
       offset: this.size
     };
@@ -252,7 +276,7 @@ export class AccountDataSource extends DataSource<UserInfo> {
         }
         this.length = resp.total_rows;
         const list: UserInfo[] = [];
-        for (const paginatorElement of resp.data) {
+        for (const paginatorElement of resp.data) {  // 分页装载查询获得的用户信息
           const getUserInfo: UserInfo = paginatorElement as UserInfo;
           list.push({
             avatar: getUserInfo.avatar,

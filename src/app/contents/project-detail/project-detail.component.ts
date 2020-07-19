@@ -44,6 +44,9 @@ export class ProjectDetailComponent implements OnInit {
     content: new StatedFormControl(''),
   }
 
+  /***
+   * 根据进入此页面的链接，决定此页面是新建项目还是对原有项目进行修改
+   */
   // TODO should be modified according to link (and user permission)
   editMode: boolean = true;
   editFile: boolean = true;
@@ -66,6 +69,9 @@ export class ProjectDetailComponent implements OnInit {
     })
   }
 
+  /***
+   * 上传项目的对应资源
+   */
   addFile() {
     const dialogRef = this.dialog.open(SelectFileComponent, {
       data: {
@@ -74,17 +80,25 @@ export class ProjectDetailComponent implements OnInit {
         multiple: true
       }
     });
-
+    /***
+     * 根据用户上传的文件，将其上传到服务器供其他人进行查阅
+     */
     dialogRef.afterClosed().subscribe((value: File[]) => {
       // TODO post selected file to backend
     })
   }
 
+  /***
+   * 删除文件
+   */
   deleteFile() {
     const files: ResourceFile[] = this.fileSelection.selectedOptions.selected.map(selection => selection.value);
     // TODO handle file delete.
   }
 
+  /***
+   * 保存对项目的修改
+   */
   saveChange() {
     //TODO save edit changes to server
   }

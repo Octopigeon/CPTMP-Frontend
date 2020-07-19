@@ -76,7 +76,9 @@ export class TeamDetailComponent implements OnInit {
     2: 'Project2tycbtynbtnerrtbvrt',
     3: 'Project3ybnyujmyumncrtydvgbrgb'
   }
-
+  /***
+   * 初始化页面信息
+   */
   separatorKeysCodes: number[] = [ENTER, COMMA];
   userInputControl = new FormControl();
   filteredUsers$: Observable<UserInfo[]>;

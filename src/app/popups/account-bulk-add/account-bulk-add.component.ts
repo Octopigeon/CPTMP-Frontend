@@ -21,12 +21,14 @@ export class AccountBulkAddComponent implements OnInit {
 
   postRegisterQ: PostRegisterQ[] = [];
 
+  /***
+   * 读取用户传入的vcs文件
+   */
   fileChangeEvent() {
     const filePicker = this.filePicker.nativeElement;
     if (!filePicker || !filePicker.files || filePicker.files.length === 0) {
       return;
     }
-
     const file = filePicker.files[0];
     new Observable<string>(observer => {
       const reader  = new FileReader();
@@ -61,6 +63,10 @@ export class AccountBulkAddComponent implements OnInit {
     });
   }
 
+  /***
+   * 对用户传入为vcs文件进行分词，格式化数据
+   * @param csvString
+   */
   csvToObject(csvString): any[]{
     const csvarry = csvString.split('\r\n');
     const datas: any[] = [];

@@ -26,6 +26,9 @@ export class AccountEditComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  /***
+   * 返回该视窗修改后的用户对象
+   */
   // TODO return user info from form
   getAccount() {
     if ( !this.isEditing ){
@@ -40,6 +43,11 @@ export class AccountEditComponent implements OnInit {
     }
   }
 
+  /***
+   * 根据传入数据进行初始化
+   * @param dialogRef
+   * @param data
+   */
   constructor(public dialogRef: MatDialogRef<AccountEditComponent>,
               @Inject(MAT_DIALOG_DATA) public data?: UserInfo) {
     this.isEditing = data !== null;

@@ -2,6 +2,10 @@ import {NavigationNode} from "../types/nav.model";
 
 export type SidebarEntries = Map<string, string>
 
+/**
+ * 左侧导航框的内容，children代表子项
+ */
+
 export const AdminNodes: NavigationNode[] = [{
   title: "账户设置",
   tooltip: "控制当前账户的设置",

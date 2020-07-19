@@ -91,6 +91,11 @@ export class ConnectionService {
     return this.client.put<Resp>(url, body);
   }
 
+  /**
+   * 登陆连接
+   * @param loginInfo 登陆的用户信息
+   * @constructor
+   */
   public Login(loginInfo: LoginQ): Observable<UserInfo> {
     if (!loginInfo.username || !loginInfo.password) {
       return this.failed<UserInfo>({
@@ -129,6 +134,10 @@ export class ConnectionService {
     return result;
   }
 
+  /***
+   * 获取用户信息的连接
+   * @constructor
+   */
   public GetUserInfo(): Observable<UserInfo> {
     let observer: Subscriber<UserInfo>;
     const result = new Observable<UserInfo>((o: Subscriber<UserInfo>) => observer = o);
@@ -169,6 +178,12 @@ export class ConnectionService {
     return result;
   }
 
+
+  /***
+   * 修改密码的连接
+   * @param changeRequest  修改密码的信息体
+   * @constructor
+   */
   public ChangePassword(changeRequest: ChangePasswordQ): Observable<Resp> {
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
@@ -192,6 +207,11 @@ export class ConnectionService {
     return result;
   }
 
+  /***
+   * 修改用户基本信息的连接
+   * @param basicDate  用户基本信息
+   * @constructor
+   */
   public UploadUserBasicData(basicDate: ModifyUserBasicInfoQ): Observable<Resp> {
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
@@ -215,6 +235,11 @@ export class ConnectionService {
     return result;
   }
 
+  /***
+   * 修改用户头像的连接
+   * @param avatar  用户头像对象
+   * @constructor
+   */
   public UploadAvatar(avatar: Observable<Blob>): Observable<Resp> {
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
@@ -248,6 +273,12 @@ export class ConnectionService {
     return result;
   }
 
+  /***
+   * 上传实训材料的连接
+   * @param trainId  对应实训的ID
+   * @param file  文件对象
+   * @constructor
+   */
   public UploadTrainFile(trainId: number, file: File): Observable<Resp> {
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
@@ -272,6 +303,11 @@ export class ConnectionService {
     return result;
   }
 
+  /***
+   * 创建组织的连接
+   * @param org  组织信息
+   * @constructor
+   */
   public CreateOrganization(org: CreateOrgQ[]): Observable<Resp> {
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
@@ -297,6 +333,11 @@ export class ConnectionService {
     return result;
   }
 
+  /***
+   * 修改组织基本信息的连接
+   * @param org 组织信息
+   * @constructor
+   */
   public UploadOrgBasicInfo(org: CreateOrgQ): Observable<Resp> {
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
@@ -319,6 +360,11 @@ export class ConnectionService {
     return result;
   }
 
+  /***
+   * 删除用户的连接
+   * @param deleteUserQ  删除用的的id数组
+   * @constructor
+   */
   public DeleteUser(deleteUserQ: number[]): Observable<Resp> {
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
@@ -344,6 +390,11 @@ export class ConnectionService {
     return result;
   }
 
+  /***
+   * 删除项目的连接
+   * @param deleteProjectQ  删除项目的ID数组
+   * @constructor
+   */
   public DeleteProject(deleteProjectQ: number[]): Observable<Resp> {
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
@@ -365,6 +416,11 @@ export class ConnectionService {
     return result;
   }
 
+  /***
+   * 获取对应组织信息的连接
+   * @param orgId  对应组织的ID
+   * @constructor
+   */
   public GetOrgInfo(orgId: number): Observable<Resp> {
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
@@ -387,6 +443,11 @@ export class ConnectionService {
     return result;
   }
 
+  /***
+   * 分页查询所有实训的连接
+   * @param pageInfoQ  分页信息
+   * @constructor
+   */
   public GetAllTrain(pageInfoQ: PageInfoQ): Observable<Resp> {
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
@@ -409,6 +470,11 @@ export class ConnectionService {
     return result;
   }
 
+  /***
+   * 删除实训的连接
+   * @param trainId  删除实训的ID
+   * @constructor
+   */
   public DeleteTrain(trainId: number[]): Observable<Resp> {
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
@@ -466,6 +532,12 @@ export class ConnectionService {
     return result;
   }
 
+
+  /***
+   * 获取对应实训的信息
+   * @param trainId 对应实训的信息
+   * @constructor
+   */
   public GetTrain(trainId: string): Observable<Resp> {
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
@@ -488,6 +560,11 @@ export class ConnectionService {
     return result;
   }
 
+  /***
+   * 修改实训信息的连接
+   * @param trainQ 对应实训的信息
+   * @constructor
+   */
   public UpdateTrain(trainQ: TrainQ): Observable<Resp> {
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
@@ -495,6 +572,11 @@ export class ConnectionService {
     return result;
   }
 
+  /***
+   * 创建实训的连接
+   * @param trainQ  对应实训的信息
+   * @constructor
+   */
   public CreateTrain(trainQ: CreateTrainQ): Observable<Resp> {
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
@@ -516,6 +598,11 @@ export class ConnectionService {
     return result;
   }
 
+  /***
+   * 分页查询所有组织的连接
+   * @param pageInfoQ  分页请求
+   * @constructor
+   */
   public GetAllOrg(pageInfoQ: PageInfoQ): Observable<Resp>{
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
@@ -538,6 +625,12 @@ export class ConnectionService {
     return result;
   }
 
+
+  /**
+   * 分页查询所有用户的连接
+   * @param pageInfoQ  分页请求
+   * @constructor
+   */
   public GetAllUser(pageInfoQ: PageInfoQ): Observable<Resp> {
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
@@ -560,6 +653,11 @@ export class ConnectionService {
     return result;
   }
 
+  /**
+   * 批量导入用户的连接
+   * @param regQ 导入信息
+   * @constructor
+   */
   public PostEnterpriseAdminReg(regQ: PostRegisterQ[]): Observable<Resp>{
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);

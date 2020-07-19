@@ -103,6 +103,9 @@ export class TrainAdminComponent implements OnInit {
       this.dataSource.data.forEach(row => this.selection.select(row));
   }
 
+  /***
+   * 根据用户选定对的实训项目，对其删除
+   */
   // FinishTodo delete train according to selection
   trainDelete(): void{
     let List: number[] = [];
@@ -123,6 +126,11 @@ export class TrainAdminComponent implements OnInit {
     })
   }
 
+  /***
+   * 跳转到对应的实训详细页面
+   * @param train 跳转的目标实训
+   * @constructor
+   */
   JumpToDetail(train: Train): void{
     this.loc.go(['/plat/train/detail/',train.id]);
   }
@@ -136,8 +144,11 @@ export class TrainAdminComponent implements OnInit {
     this.setDataSource();
   }
 
+  /***
+   * 分页查询，获取所有实训信息
+   */
   setDataSource(): void{
-    const pageInfoQ: PageInfoQ = {
+    const pageInfoQ: PageInfoQ = {   // 创建分页请求
       page: 1 ,
       offset: 100
     };

@@ -56,6 +56,9 @@ export class ProjectListComponent implements OnInit {
 
   constructor(private route: ActivatedRoute) { }
 
+  /***
+   * 根据从后端查询到的数据对页面的数据进行初始化
+   */
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       // TODO change projects and train to real info fetched from backend
