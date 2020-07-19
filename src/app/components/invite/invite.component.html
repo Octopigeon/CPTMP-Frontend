@@ -1,0 +1,19 @@
+<div class="team-wrapper">
+  <div class="team-avatar">
+    <img [src]="autoAvatar(data.avatar)" alt="avatar" class="team-img">
+  </div>
+  <div class="member-avatar">
+    <div class="member-block" *ngFor="let member of data.members">
+      <img [src]="autoAvatar(member.avatar)"
+           [alt]="member.username" class="member-img">
+      <span>{{member.name}}</span>
+    </div>
+  </div>
+  <h1 class="info">
+    您被邀请加入团队「{{data.name}}」
+  </h1>
+  <div class="action">
+    <button mat-raised-button>拒绝</button>
+    <button mat-raised-button color="accent">加入</button>
+  </div>
+</div>

@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {Project, ResourceFile} from "../../types/types";
+import {Project, ResourceFile, Team} from "../../types/types";
 import {StatedFormControl} from "../../shared/stated-form-control";
 import {ActivatedRoute} from "@angular/router";
 import {LocationService} from "../../services/location.service";
@@ -44,8 +44,8 @@ export class ProjectDetailComponent implements OnInit {
     content: new StatedFormControl(''),
   }
 
+  // TODO should be modified according to link (and user permission)
   editMode: boolean = true;
-
   editFile: boolean = true;
 
   constructor(private route: ActivatedRoute, private loc: LocationService, private dialog: MatDialog) { }
@@ -86,7 +86,7 @@ export class ProjectDetailComponent implements OnInit {
   }
 
   saveChange() {
-
+    //TODO save edit changes to server
   }
 
   capLevel(level: number): number {

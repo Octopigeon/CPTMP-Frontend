@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  backend: '/'
+  backend: '/',
+  google_map_key: 'AIzaSyBLnHmlaxo_wzKhip_KPfPOGjAFC7najhY'
 };

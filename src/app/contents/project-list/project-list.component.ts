@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {Project} from "../../types/types";
+import {ActivatedRoute} from "@angular/router";
 
 const EXAMPLE_PROJECT: Project[] = [{
   id: 1,
@@ -37,7 +38,6 @@ const EXAMPLE_PROJECT: Project[] = [{
 export class ProjectListComponent implements OnInit {
 
   projects = EXAMPLE_PROJECT;
-
   train = '实训名称';
 
   capLevel(level: number): number {
@@ -54,9 +54,12 @@ export class ProjectListComponent implements OnInit {
     return [...Array(count).keys()].map(i => i + begin);
   }
 
-  constructor() { }
+  constructor(private route: ActivatedRoute) { }
 
   ngOnInit(): void {
+    this.route.paramMap.subscribe(params => {
+      // TODO change projects and train to real info fetched from backend
+    })
   }
 
 }

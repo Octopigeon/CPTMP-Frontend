@@ -30,8 +30,8 @@
     项目等级:
     <span class="level-wrapper">
       <span *ngIf="!controls.level.editing">
-        <mat-icon *ngFor="let _unused of range(capLevel(controls.level.value))" color="accent">star</mat-icon>
-        <mat-icon *ngFor="let _unused of range(5 - capLevel(controls.level.value))" color="accent">star_outline</mat-icon>
+        <mat-icon *ngFor="let _ of range(capLevel(controls.level.value))" color="accent">star</mat-icon>
+        <mat-icon *ngFor="let _ of range(5 - capLevel(controls.level.value))" color="accent">star_outline</mat-icon>
       </span>
       <mat-radio-group *ngIf="controls.level.editing" [formControl]="controls.level">
         <mat-radio-button *ngFor="let level of range(5, 1)"

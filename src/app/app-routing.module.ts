@@ -14,13 +14,19 @@ import {ProjectAdminComponent} from "./contents/project-admin/project-admin.comp
 import {ProjectDetailComponent} from "./contents/project-detail/project-detail.component";
 import {ProjectListComponent} from "./contents/project-list/project-list.component";
 import {TeamAdminComponent} from "./contents/team-admin/team-admin.component";
+import {TeamDetailComponent} from "./contents/team-detail/team-detail.component";
+import {TeamListComponent} from "./contents/team-list/team-list.component";
+import {InviteComponent} from "./components/invite/invite.component";
+import {JoinRequestComponent} from "./components/join-request/join-request.component";
 
 
 const routes: Routes = [
   { path: 'plat/user/me', component: PersonalDataComponent },
-  { path: 'plat/test', component: SchoolAdminComponent },
+  { path: 'plat/test', component: TrainDetailComponent },
   //{ path: 'plat/test', component: AccountAdminComponent, data: {type: 'enterprise'}  },
   // { path: 'activate/:token'},
+  { path: 'info/invite', component: InviteComponent },
+  { path: 'info/join', component: JoinRequestComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'plat/project/detail', component: ProjectDetailComponent },
   { path: 'plat/train/detail/:id', component: TrainDetailComponent},

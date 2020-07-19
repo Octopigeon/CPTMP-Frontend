@@ -1,0 +1,22 @@
+<div class="team-wrapper">
+  <div class="team-avatar">
+    <img [src]="autoAvatar(data.avatar)" alt="avatar" class="team-img">
+  </div>
+  <div class="member-block">
+    <div class="member-avatar">
+      <img [src]="autoAvatar(user.avatar)"
+           [alt]="user.username" class="member-img">
+    </div>
+    <div class="member-info">
+      <p class="name">{{user.name}}</p>
+      <p class="username">{{user.username}}</p>
+    </div>
+  </div>
+  <h1 class="info">
+    「{{user.name}}」申请加入团队「{{data.name}}」
+  </h1>
+  <div class="action">
+    <button mat-raised-button>拒绝</button>
+    <button mat-raised-button color="accent">同意</button>
+  </div>
+</div>

@@ -217,7 +217,7 @@ export class AccountDataSource extends DataSource<UserInfo> {
     super();
     this.data$ = new BehaviorSubject<UserInfo[]>(this.data);
 
-    // this should be changed upon each get
+    // TODO update this upon each data fetch
     this.length = 1000;
     this.paginator.page.subscribe((event: PageEvent) => {
       this.index = event.pageIndex;

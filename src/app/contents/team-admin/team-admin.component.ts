@@ -149,6 +149,7 @@ export class TeamDataSource extends DataSource<Team> {
         train_name: `Train${i}`,
         train_project_id: i,
         member_count: i % 4 + 1,
+        leader_id: 1
       })
     }
 

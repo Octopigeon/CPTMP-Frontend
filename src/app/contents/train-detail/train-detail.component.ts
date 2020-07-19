@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {CreateTrainQ, GetOrgQ, Organization, PageInfoQ, ResourceFile, Train, TrainQ} from "../../types/types";
 import {FormControl, FormGroup} from "@angular/forms";
 import {ActivatedRoute} from "@angular/router";
@@ -9,17 +9,32 @@ import {MatDialog} from "@angular/material/dialog";
 import {SelectFileComponent} from "../../popups/select-file/select-file.component";
 import {StatedFormControl} from "../../shared/stated-form-control";
 import {ConnectionService} from "../../services/connection.service";
-import {MessageService} from "../../services/message.service";
 import {Logger} from "../../services/logger.service";
+import {COMMA, ENTER} from "@angular/cdk/keycodes";
+import {Observable} from "rxjs";
+import {MatChipInputEvent} from "@angular/material/chips";
+import {MatAutocompleteSelectedEvent} from "@angular/material/autocomplete";
+import {MessageService} from "../../services/message.service";
+import {debounceTime, distinctUntilChanged, map, startWith, tap} from "rxjs/operators";
+import {animate, state, style, transition, trigger} from "@angular/animations";
+
 
 @Component({
   selector: 'app-train-detail',
   templateUrl: './train-detail.component.html',
-  styleUrls: ['./train-detail.component.styl']
+  styleUrls: ['./train-detail.component.styl'],
+  animations: [
+    trigger('displayRadius', [
+      state('hidden', style({height: '0px', minHeight: '0'})),
+      state('display', style({height: '*'})),
+      transition('hidden <=> display', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 export class TrainDetailComponent implements OnInit {
 
   @ViewChild(MatSelectionList) fileSelection: MatSelectionList;
+  @ViewChild('projectInput') projectInput: ElementRef<HTMLInputElement>;
 
   data: Train;
 
@@ -70,6 +85,83 @@ export class TrainDetailComponent implements OnInit {
 
   editFile: boolean = true;
 
+  projects = {
+    1: 'Project1dtnhfvnrtyytryvrncty',
+    2: 'Project2tycbtynbtnerrtbvrt',
+    3: 'Project3ybnyujmyumncrtydvgbrgb'
+  }
+
+  separatorKeysCodes: number[] = [ENTER, COMMA];
+  projectInputControl = new FormControl();
+  filteredProjects$: Observable<SimplifiedProject[]>;
+  filteredProjects: SimplifiedProject[];
+  // should be sync with users
+  projectIDs = new Set(["1"]);
+  selectedProjects: SimplifiedProject[] = [{
+    project_id: "1",
+    project_name: 'Project1dtnhfvnrtyytryvrncty'
+  }];
+  projectEditing: boolean = false;
+
+  projects$: Observable<[string, string][]>;
+
+  private _filterProjects(value: string): SimplifiedProject[] {
+    // TODO change to real fetch (with entry count limit)
+    if (!value) {
+      // its meaningful to give some projects to choose even if keyword is empty
+      return Object.entries(this.projects)
+        .filter(([id, name]) => !this.projectIDs.has(id))
+        .map(([project_id, project_name]) => { return {project_id, project_name}});
+    }
+
+    const filterValue = value.toLowerCase()
+    return Object.entries(this.projects)
+      .filter(([id, name]) => (name.toLowerCase().includes(filterValue) && !this.projectIDs.has(id)))
+      .map(([project_id, project_name]) => { return {project_id, project_name}});
+  }
+
+  removeProject(project: SimplifiedProject) {
+    const index = this.selectedProjects.findIndex(value => value.project_id === project.project_id);
+
+    if (index >= 0) {
+      this.selectedProjects.splice(index, 1);
+      this.projectIDs.delete(project.project_id);
+    }
+  }
+
+  // no need to handle add by input event
+  addProject(e: MatChipInputEvent) {
+    const input = e.input;
+
+    if (this.filteredProjects.length === 0) {
+      this.msg.SendMessage(`没有满足查询条件「${e.value}」的项目`).subscribe();
+    }
+
+    if (input) {
+      input.value = '';
+    }
+
+    this.projectInputControl.setValue(null);
+  }
+
+  selectProject(e: MatAutocompleteSelectedEvent) {
+    const project = e.option.value as SimplifiedProject;
+    if (this.selectedProjects.findIndex(u => u.project_id === project.project_id) < 0) {
+      this.selectedProjects.push(project);
+      this.projectIDs.add(project.project_id);
+    } else {
+      this.msg.SendMessage(`项目「${project.project_id}」已存在于项目列表中`).subscribe();
+    }
+    this.projectInput.nativeElement.value = '';
+    this.projectInputControl.setValue(null);
+  }
+
+  editLoc: boolean = false;
+  location: google.maps.LatLngLiteral = {lat: 30.5332712, lng: 114.3574959};
+  zoom: number = 14;
+  radius: number = 100;
+  useRadius: boolean = true;
+
   saveChange() {
     if (this.data.id === null){
       const trainQ: CreateTrainQ = {
@@ -113,8 +205,9 @@ export class TrainDetailComponent implements OnInit {
               private loc: LocationService,
               private dialog: MatDialog,
               private conn: ConnectionService,
-              public msg: MessageService,
-              private logger: Logger) { }
+              private logger: Logger,
+              private msg: MessageService) { }
+
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(param => {
@@ -126,8 +219,8 @@ export class TrainDetailComponent implements OnInit {
       // }
       // TODO retrieve id from param, and data from backend (and special handling to new train)
       if (id === 'new'){
-        this.data = this.newTrain
-        this.setData()
+        this.data = this.newTrain;
+        this.setData();
         this.editMode = false;
       }else{
         this.conn.GetTrain(id).subscribe({
@@ -176,6 +269,7 @@ export class TrainDetailComponent implements OnInit {
     })
   }
 
+
   setData(){
     Object.entries(this.controls).forEach(([field, control]) => {
       if (field.endsWith('time')) {
@@ -183,7 +277,16 @@ export class TrainDetailComponent implements OnInit {
       } else {
         control.setValue(this.data[field]);
       }
-    })
+    });
+
+      // user input can change quite frequently, so debounce it to reduce request amount
+    this.filteredProjects$ = this.projectInputControl.valueChanges.pipe(
+      startWith(''),
+      debounceTime(500),
+      distinctUntilChanged(),
+      map(value => this._filterProjects(value)),
+      tap(projects => this.filteredProjects = projects)
+    )
   }
 
   addFile() {
@@ -238,5 +341,10 @@ export class TrainDetailComponent implements OnInit {
     })
   }
 
+}
+
+interface SimplifiedProject {
+  project_id: string;
+  project_name: string;
 }
 

@@ -1,4 +1,5 @@
 
+
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {Organization, CreateOrgQ, PageInfoQ, GetOrgQ} from '../../types/types';
 import {MatTableDataSource} from '@angular/material/table';
@@ -14,7 +15,6 @@ import {LocationService} from '../../services/location.service';
 import {Logger} from '../../services/logger.service';
 import {ActivatedRoute} from "@angular/router";
 import {MatPaginator} from "@angular/material/paginator";
-
 
 // these can be removed once real api is implemented
 const EXAMPLE_ORGANIZATION: Organization[] = [{
@@ -209,19 +209,20 @@ export class SchoolAdminComponent implements OnInit {
     return invitation_code;
   }
 
+
   getDate(){
     this.organizationList = [];
     const pageInfoQ: PageInfoQ = {
       page: 1,
       offset: 100,
-    }
+    };
     this.conn.GetAllOrg(pageInfoQ).subscribe({
       next: resp => {
         if (resp.status !== 0){
           this.organizationList = err;
           this.msg.SendMessage('获取组织列表失败').subscribe();
           this.dataSource = new MatTableDataSource<Organization>(this.organizationList);
-          return
+          return;
         }
         for (const connElement of resp.data) {
           const organization: GetOrgQ = connElement as GetOrgQ;
@@ -233,17 +234,17 @@ export class SchoolAdminComponent implements OnInit {
             url: organization.website_url,
             invitation_code: ' ',
             created: new Date(organization.gmt_creat).getTime()
-          }
+          };
           this.organizationList.push(org);
         }
         this.dataSource = new MatTableDataSource<Organization>(this.organizationList);
-        return
+        return;
       },
       error: error => {
         this.organizationList = err;
         this.msg.SendMessage('获取组织列表失败。未知错误').subscribe()
         this.dataSource = new MatTableDataSource<Organization>(this.organizationList);
-        return
+        return;
       }
     });
   }
@@ -255,8 +256,13 @@ export class SchoolAdminComponent implements OnInit {
               private logger: Logger,
               private route: ActivatedRoute) { }
 
+
+
   ngOnInit(): void {
-    this.getDate()
+    this.route.paramMap.subscribe(params => {
+        this.getDate();
+    });
+      // TODO fetch data from backend
   }
 
 }
