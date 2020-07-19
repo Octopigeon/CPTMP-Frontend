@@ -1,6 +1,6 @@
 
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {Organization, CreateOrgQ} from '../../types/types';
+import {Organization, CreateOrgQ, PageInfoQ, GetOrgQ} from '../../types/types';
 import {MatTableDataSource} from '@angular/material/table';
 import {SelectionModel} from '@angular/cdk/collections';
 import {animate, state, style, transition, trigger} from '@angular/animations';
@@ -59,6 +59,16 @@ const EXAMPLE_ORGANIZATION: Organization[] = [{
   created: 1594455135343
 }];
 
+const err: Organization[] = [{
+  id: 0,
+  name: 'error',
+  code: 'error',
+  description: 'error',
+  url: 'http://error.error.error',
+  invitation_code: 'error',
+  created: 0
+}];
+
 @Component({
   selector: 'app-school-admin',
   templateUrl: './school-admin.component.html',
@@ -92,7 +102,7 @@ export class SchoolAdminComponent implements OnInit {
 
   get columnPairs() { return Object.entries(this.columns); }
 
-
+  organizationList: Organization[] = [];
 
 
   dataSource: MatTableDataSource<Organization>;
@@ -204,7 +214,41 @@ export class SchoolAdminComponent implements OnInit {
               private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.dataSource = new MatTableDataSource<Organization>(EXAMPLE_ORGANIZATION)
+    const pageInfoQ: PageInfoQ = {
+      page: 1,
+      offset: 100,
+    }
+    this.conn.GetAllOrg(pageInfoQ).subscribe({
+      next: resp => {
+        if (resp.status !== 0){
+          this.organizationList = err;
+          this.msg.SendMessage('获取组织列表失败').subscribe();
+          this.dataSource = new MatTableDataSource<Organization>(this.organizationList);
+          return
+        }
+        for (const connElement of resp.data) {
+          const organization: GetOrgQ = connElement as GetOrgQ
+          const org: Organization = {
+            id: organization.id,
+            name: organization.real_name,
+            code: organization.name,
+            description: organization.description,
+            url: organization.website_url,
+            invitation_code: ' ',
+            created: new Date(organization.gmt_creat).getTime()
+          }
+          this.organizationList.push(org);
+          this.dataSource = new MatTableDataSource<Organization>(this.organizationList);
+          return
+        }
+      },
+      error: error => {
+        this.organizationList = err;
+        this.msg.SendMessage('获取组织列表失败。未知错误').subscribe()
+        this.dataSource = new MatTableDataSource<Organization>(this.organizationList);
+        return
+      }
+    });
   }
 
 }

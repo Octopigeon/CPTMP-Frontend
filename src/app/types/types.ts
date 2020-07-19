@@ -126,7 +126,6 @@ export interface GetOrgQ{
   real_name: string ;
   description: string;
   website_url: string;
-
 }
 
 export interface DeleteUserQ {
