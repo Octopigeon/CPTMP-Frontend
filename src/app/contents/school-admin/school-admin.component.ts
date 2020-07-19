@@ -102,7 +102,7 @@ export class SchoolAdminComponent implements OnInit {
 
   get columnPairs() { return Object.entries(this.columns); }
 
-  organizationList: Organization[] = [];
+  organizationList: Organization[];
 
 
   dataSource: MatTableDataSource<Organization>;
@@ -161,6 +161,9 @@ export class SchoolAdminComponent implements OnInit {
           },
           error: () => {
             this.msg.SendMessage('新组织创建失败。未知错误').subscribe();
+          },
+          complete: () => {
+            this.getDate();
           }
         });
 
@@ -206,14 +209,8 @@ export class SchoolAdminComponent implements OnInit {
     return invitation_code;
   }
 
-  constructor(public dialog: MatDialog,
-              public msg: MessageService,
-              public conn: ConnectionService,
-              private loc: LocationService,
-              private logger: Logger,
-              private route: ActivatedRoute) { }
-
-  ngOnInit(): void {
+  getDate(){
+    this.organizationList = [];
     const pageInfoQ: PageInfoQ = {
       page: 1,
       offset: 100,
@@ -227,7 +224,7 @@ export class SchoolAdminComponent implements OnInit {
           return
         }
         for (const connElement of resp.data) {
-          const organization: GetOrgQ = connElement as GetOrgQ
+          const organization: GetOrgQ = connElement as GetOrgQ;
           const org: Organization = {
             id: organization.id,
             name: organization.real_name,
@@ -238,9 +235,9 @@ export class SchoolAdminComponent implements OnInit {
             created: new Date(organization.gmt_creat).getTime()
           }
           this.organizationList.push(org);
-          this.dataSource = new MatTableDataSource<Organization>(this.organizationList);
-          return
         }
+        this.dataSource = new MatTableDataSource<Organization>(this.organizationList);
+        return
       },
       error: error => {
         this.organizationList = err;
@@ -249,6 +246,17 @@ export class SchoolAdminComponent implements OnInit {
         return
       }
     });
+  }
+
+  constructor(public dialog: MatDialog,
+              public msg: MessageService,
+              public conn: ConnectionService,
+              private loc: LocationService,
+              private logger: Logger,
+              private route: ActivatedRoute) { }
+
+  ngOnInit(): void {
+    this.getDate()
   }
 
 }

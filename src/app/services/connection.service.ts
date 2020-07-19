@@ -281,7 +281,9 @@ export class ConnectionService {
         if (response.status !== 0) {
           this.logger.log(`Create Organization failed with status code ${response.status}: ${response.msg}.`);
           observer.error(response);
-          return result;
+          setTimeout(() => {
+            observer.complete();
+          }, 1000);
         }
         observer.next(response);
         observer.complete();
