@@ -18,9 +18,9 @@ export class ProjectDetailComponent implements OnInit {
 
   data: Project = {
     id: 1,
-    name: "Project1",
+    name: "新项目",
     level: 3,
-    content: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    content: "暂无项目主题",
     resource_lib: [{
       file_name: "db7b5936-9ceb-422a-bad3-90366432a07c.jpg",
       file_path: "/api/storage/2020/7/15/db7b5936-9ceb-422a-bad3-90366432a07c.jpg",
@@ -56,13 +56,15 @@ export class ProjectDetailComponent implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.subscribe(param => {
       const id = param.get('id');
-      console.log(id)
+
       // TODO must have valid id (uncomment following code)
       // if (!id || !id.trim()) {
       //   this.loc.go(['/', 'not-found'])
       // }
       // TODO retrieve id from param, and data from backend (and special handling to new project)
-
+      if (id === 'new'){
+        this.editMode = false;
+      }
       Object.entries(this.controls).forEach(([field, control]) => {
         control.setValue(this.data[field]);
       })

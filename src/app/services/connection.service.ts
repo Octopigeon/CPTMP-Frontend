@@ -378,7 +378,7 @@ export class ConnectionService {
         observer.next(response);
         setTimeout(() => {
           observer.complete();
-        }, 1000);
+        }, 500);
       },
       error: error => {
 
@@ -397,15 +397,17 @@ export class ConnectionService {
   public DeleteProject(deleteProjectQ: number[]): Observable<Resp> {
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
-    this.delete(API.delete_project, deleteProjectQ).subscribe({
+    this.delete(API.train_project, deleteProjectQ).subscribe({
       next: response => {
         if (response.status !== 0) {
           this.logger.log(`Delete Project failed with status code ${response.status}: ${response.msg}.`);
           observer.error(response);
-          return result;
+        }else{
+          observer.next(response);
+          setTimeout(() => {
+            observer.complete();
+          }, 500);
         }
-        observer.next(response);
-        observer.complete();
       },
       error: error => {
         this.logger.log(`Delete Project failed with network error: `, error);
@@ -676,11 +678,12 @@ export class ConnectionService {
   public GetAllTeam(pageInfoQ: PageInfoQ): Observable<Resp> {
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
-    const url = API.search_team + '/name';
+    const url = API.search_team + '/name?key_word=&page=' + pageInfoQ.page + '&offset=' + pageInfoQ.offset ;
+    console.log(url)
     this.get(url).subscribe({
       next: response => {
         if (response.status !== 0) {
-          this.logger.log(`Get all steam team with status code ${response.status}: ${response.msg}.`);
+          this.logger.log(`Get all team failed with status code ${response.status}: ${response.msg}.`);
           observer.error(response);
           return result;
         }
@@ -694,6 +697,29 @@ export class ConnectionService {
     })
     return result;
 
+  }
+
+  public GetAllObject(pageInfoQ: PageInfoQ): Observable<Resp> {
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    const url = API.project + '?offset=' + pageInfoQ.offset + '&page=' + pageInfoQ.page ;
+    console.log(url);
+    this.get(url).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Get all object failed with status code ${response.status}: ${response.msg}.`);
+          observer.error(response);
+          return result;
+        }
+        observer.next(response);
+        observer.complete();
+      },
+      error: error => {
+        this.logger.log(`Get all object failed with network error: `, error);
+        observer.error(error);
+      }
+    });
+    return result;
   }
   /**
    * 批量导入用户的连接

@@ -196,6 +196,26 @@ export interface Project {
   resource_lib?: string | ResourceFile[];
 }
 
+export interface  ProjectQ {
+  id: number;
+  name: string;
+  level: number;
+  content: string;
+  // like above
+  resource_library?: string | ResourceFile[];
+}
+
+export interface GetTeamQ{
+  id: number;
+  name: string;
+  avatar: string;
+  evaluation: string;
+  train_id: number;
+  project_id: number;
+  repo_url: string;
+  team_grade: number;
+}
+
 export interface Team {
   id: number;
   name: string;

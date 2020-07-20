@@ -1,6 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {CollectionViewer, DataSource, SelectionModel} from "@angular/cdk/collections";
-import {Team, UserInfo} from "../../types/types";
+import {GetTeamQ, PageInfoQ, Resp, Team, UserInfo} from "../../types/types";
 import {AccountEditComponent} from "../../popups/account-edit/account-edit.component";
 import {AccountBulkAddComponent} from "../../popups/account-bulk-add/account-bulk-add.component";
 import {SingleInputComponent} from "../../popups/single-input/single-input.component";
@@ -8,8 +8,9 @@ import {LocationService} from "../../services/location.service";
 import {ActivatedRoute} from "@angular/router";
 import {ConnectionService} from "../../services/connection.service";
 import {MatDialog} from "@angular/material/dialog";
-import {BehaviorSubject, Observable, of, Subscription} from "rxjs";
+import {BehaviorSubject, Observable, of, Subscriber, Subscription} from "rxjs";
 import {MatPaginator, PageEvent} from "@angular/material/paginator";
+import {MessageService} from "../../services/message.service";
 
 @Component({
   selector: 'app-team-admin',
@@ -105,14 +106,15 @@ export class TeamAdminComponent implements OnInit {
   constructor(private loc: LocationService,
               private route: ActivatedRoute,
               private conn: ConnectionService,
-              private dialog: MatDialog) { }
+              private dialog: MatDialog,
+              public msg: MessageService) { }
 
   /***
    * 初始化，分页查询获得团队信息
    */
   ngOnInit(): void {
     this.route.data.subscribe(data => {
-      this.dataSource = new TeamDataSource(this.conn, this.paginator);
+      this.dataSource = new TeamDataSource(this.conn, this.paginator, this.msg);
     })
   }
 }
@@ -126,7 +128,9 @@ export class TeamDataSource extends DataSource<Team> {
 
   private _subscription = new Subscription();
 
-  constructor(private conn: ConnectionService, private paginator: MatPaginator) {
+  constructor(private conn: ConnectionService,
+              private paginator: MatPaginator,
+              public msg: MessageService) {
     super();
     this.data$ = new BehaviorSubject<Team[]>(this.data);
 
@@ -135,6 +139,7 @@ export class TeamDataSource extends DataSource<Team> {
     this.paginator.page.subscribe((event: PageEvent) => {
       const start = event.pageIndex * event.pageSize;
       const end = start + event.pageSize;
+      console.log(event.pageIndex)
       this.getRange(start, end).subscribe(data => {
         this.data = data;
         this.data$.next(this.data);
@@ -147,27 +152,46 @@ export class TeamDataSource extends DataSource<Team> {
   }
 
   // TODO implement real data fetch
-  private getRange(start: number, end: number): Observable<Team[]> {
-    console.log(start, end);
+  private getRange(tpage: number, tindex: number): Observable<Team[]> {
+    let observer: Subscriber<Team[]>;
+    const result = new Observable<Team[]>(o => observer = o);
+    const pageInfoQ: PageInfoQ = {
+      page : tpage + 1,
+      offset: tindex
+    };
     const list: Team[] = [];
-
-    for (let i = start; i < Math.min(end, this.length); i++) {
-      list.push({
-        avatar: "",
-        name: `team${i}`,
-        evaluation: i % 2 === 0 ? '' : 'a',
-        id: i,
-        project_name: "projectP",
-        repo_url: i % 2 === 0 ? '' : "https://github.com",
-        team_grade:  i % 2 === 0 ? null : i % 5 + 5,
-        train_name: `Train${i}`,
-        train_project_id: i,
-        member_count: i % 4 + 1,
-        leader_id: 1
-      })
-    }
-
-    return of(list);
+    this.conn.GetAllTeam(pageInfoQ).subscribe({
+      next: value => {
+        if (value.status !== 0){
+          this.msg.SendMessage('获取团队信息失败').subscribe();
+          observer.error();
+        }else{
+          for (const valueElement of value.data) {
+            const teamQ: GetTeamQ = valueElement as GetTeamQ;
+            list.push({
+              avatar: teamQ.avatar,
+              name: teamQ.name,
+              evaluation: teamQ.evaluation,
+              id: teamQ.id,
+              project_name: '123',
+              repo_url: teamQ.repo_url,
+              team_grade: teamQ.team_grade,
+              train_name: `Train`,
+              train_project_id: teamQ.train_id,
+              member_count: 1,
+              leader_id: 1
+            })
+            observer.next(list);
+            observer.complete();
+          }
+        }
+      },
+      error: err => {
+        this.msg.SendMessage('获取团队信息失败。未知错误').subscribe();
+        observer.error();
+      }
+    });
+    return result;
   }
 
   connect(collectionViewer: CollectionViewer): Observable<Team[] | ReadonlyArray<Team>> {

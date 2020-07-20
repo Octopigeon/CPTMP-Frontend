@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
-import {Project, Team, Train} from "../../types/types";
+import {PageInfoQ, Project, ProjectQ, Team, Train} from "../../types/types";
 import {SelectionModel} from "@angular/cdk/collections";
 import {MessageService} from "../../services/message.service";
 import {ConnectionService} from "../../services/connection.service";
@@ -55,7 +55,7 @@ export class ProjectAdminComponent implements OnInit {
   }
 
   get columnPairs() { return Object.entries(this.columns) }
-  dataSource = new MatTableDataSource<Project>(EXAMPLE_PROJECT);
+  dataSource: MatTableDataSource<Project>;
   selection = new SelectionModel<Project>(true, []);
 
   /** Whether the number of selected elements matches the total number of rows. */
@@ -104,6 +104,9 @@ export class ProjectAdminComponent implements OnInit {
       error: () => {
         this.msg.SendMessage('删除项目失败。未知错误').subscribe()
         this.conn.GetUserInfo().subscribe()
+      },
+      complete: () => {
+        this.getDate();
       }
     })
   }
@@ -114,10 +117,42 @@ export class ProjectAdminComponent implements OnInit {
               private logger: Logger) { }
 
   ngOnInit(): void {
+    this.getDate()
   }
 
   JumpToDetail(project: Project){
     this.loc.go(['/plat/project/detail/', project.id]);
+  }
+
+  getDate(){
+    const pageInfoQ: PageInfoQ = {
+      page: 1,
+      offset: 100,
+    }
+    this.conn.GetAllObject(pageInfoQ).subscribe({
+      next: value => {
+        let project: Project[] = [];
+        if (value.status !== 0){
+          this.msg.SendMessage('获取项目信息失败').subscribe();
+        }else{
+          for (const selectionElement of value.data) {
+            const projectQ: ProjectQ = selectionElement as ProjectQ;
+            project.push({
+              id: projectQ.id,
+              name: projectQ.name,
+              level: projectQ.level,
+              content: projectQ.content,
+              resource_lib: projectQ.resource_library
+            });
+          }
+          console.log(project)
+          this.dataSource = new MatTableDataSource<Project>(project);
+        }
+      },
+      error: err => {
+        this.msg.SendMessage('获取项目信息失败').subscribe();
+      }
+    });
   }
 
 }

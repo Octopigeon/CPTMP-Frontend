@@ -6,7 +6,8 @@ export const API = {
   change_password: `${environment.backend}api/user/me/password`,  // 修改密码的API地址
   upload_avatar: `${environment.backend}api/user/me/avatar`,  //  上传头像的API地址
   user: `${environment.backend}api/user`,  // 与用户有关的API地址
-  delete_project: `${environment.backend}api/train-project`,  // 删除实训的API地址
+  train_project: `${environment.backend}api/train-project`,  // 项目的API地址
+  project: `${environment.backend}api/project`,  // 项目的API地址
   org: `${environment.backend}api/org`,  // 与组织有关的API地址
   org_basic_info: `${environment.backend}api/org/basic-info`, // 获取组织基本信息的API地址
   train: `${environment.backend}api/train`,  // 与实训有关的API地址
