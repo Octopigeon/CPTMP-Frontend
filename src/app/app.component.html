@@ -30,7 +30,7 @@
   <mat-sidenav #sidenav class="main-sidenav"
                [opened]="!(isStartPage  | async) && (windowType | async) === 'desktop'"
                [mode]="windowType | async | sidebarMode">
-    <nav-menu [nodes]="sidenavNodes" [isWide]="true"></nav-menu>
+    <nav-menu [nodes]="sideNavNodes$ | async" [isWide]="true" [currentNode]="nav.currentNodes | async"></nav-menu>
   </mat-sidenav>
   <mat-sidenav-content>
     <div id="top-of-page"></div>
