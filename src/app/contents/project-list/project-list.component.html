@@ -22,7 +22,7 @@
     </mat-card-content>
     <mat-card-actions>
       <!-- TODO bind real action to buttons (maybe change to <a> element) -->
-      <button mat-button>查看详情</button>
+      <button mat-button (click)="JumpToDetail(project)">查看详情</button>
       <button mat-button>寻找团队</button>
       <button mat-button>创建团队</button>
     </mat-card-actions>

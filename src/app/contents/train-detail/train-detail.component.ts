@@ -249,6 +249,7 @@ export class TrainDetailComponent implements OnInit {
                 gps_info: trainQ.gps_info,
                 resource_lib: trainQ.resource_library
               }
+              console.log((train.resource_lib))
               this.conn.GetOrgInfo(trainQ.organization_id).subscribe({
                 next: nresp => {
                   const getOrgQ: GetOrgQ = nresp.data as GetOrgQ
@@ -356,6 +357,10 @@ export class TrainDetailComponent implements OnInit {
         this.msg.SendMessage('获取组织列表失败。未知错误').subscribe()
       }
     })
+  }
+
+  SetProjectData(){
+
   }
 
 }

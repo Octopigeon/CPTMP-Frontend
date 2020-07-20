@@ -66,9 +66,10 @@ export class PersonalDataComponent implements OnInit {
 
     const req: ModifyUserBasicInfoQ = {
       name: this.basicDataForm.value.realName,
-      gender: this.basicDataForm.value.gender,
+      gender: (this.basicDataForm.value.gender === 'null') ? null : this.basicDataForm.value.gender,
       introduction: this.basicDataForm.value.introduction
     }
+    console.log( req);
     this.conn.UploadUserBasicData(req).subscribe({
       next: resp => {
         this.msg.SendMessage('公开信息修改成功').subscribe()
@@ -142,9 +143,10 @@ export class PersonalDataComponent implements OnInit {
 
   ngOnInit(): void {
     this.conn.user.subscribe(user => {
+      console.log(user.info)
       this.basicDataForm.controls.realName.setValue(user.info.name);
       this.basicDataForm.controls.gender.setValue(
-        user.info.gender === null ? 'null' : user.info.gender ? 'true' : 'false');
+        user.info.gender == null ? 'null' : user.info.gender ? 'true' : 'false');
       this.basicDataForm.controls.introduction.setValue(user.info.introduction);
     })
   }

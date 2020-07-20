@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Team} from "../../types/types";
 import {ActivatedRoute} from "@angular/router";
+import {LocationService} from "../../services/location.service";
 
 @Component({
   selector: 'app-team-list',
@@ -134,12 +135,17 @@ export class TeamListComponent implements OnInit {
     return link &&(link.startsWith('http') || link.startsWith('/'));
   }
 
-  constructor(private route: ActivatedRoute) { }
+  constructor(private route: ActivatedRoute,
+              private loc: LocationService) { }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       // TODO fetch real data according to link parameters
     })
+  }
+
+  JumpToDetail(team: Team){
+    this.loc.go(['/plat/team/detail/', team.id]);
   }
 
 }

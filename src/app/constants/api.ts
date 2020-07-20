@@ -11,4 +11,6 @@ export const API = {
   org_basic_info: `${environment.backend}api/org/basic-info`, // 获取组织基本信息的API地址
   train: `${environment.backend}api/train`,  // 与实训有关的API地址
   enterprise_admin: `${environment.backend}api/user/enterprise-admin`,  // 与批量导入企业管理员有关的地址
+  search_team: `${environment.backend}api/team/search`,
+  change_password_force: `${environment.backend}api/user/pwd`
 }

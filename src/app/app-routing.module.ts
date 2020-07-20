@@ -28,7 +28,7 @@ const routes: Routes = [
   { path: 'info/invite', component: InviteComponent },   //  转到邀请加入团队界面
   { path: 'info/join', component: JoinRequestComponent },  //  转到加入团队界面
   { path: 'register', component: RegisterComponent },   // 转到注册界面
-  { path: 'plat/project/detail', component: ProjectDetailComponent },   // 转到项目详细信息界面
+  { path: 'plat/project/detail/:id', component: ProjectDetailComponent },   // 转到项目详细信息界面
   { path: 'plat/train/detail/:id', component: TrainDetailComponent},   // 转到实训详细信息界面
   { path: 'plat/account', component: AccountAdminComponent, data: {type: 'enterprise'} },   // 转到用户管理界面
   { path: 'plat/project', component: ProjectAdminComponent},   // 转到项目管理界面
@@ -36,7 +36,7 @@ const routes: Routes = [
   { path: 'plat/org', component: SchoolAdminComponent},  // 转到组织管理界面
   { path: 'plat/team', component: TeamAdminComponent},  //  转到团队管理界面
   { path: 'plat/teamList', component: TeamListComponent},  // 转到团队列表界面
-  { path: 'plat/team/detail', component: TeamDetailComponent},  // 转到团队详细信息界面
+  { path: 'plat/team/detail/:id', component: TeamDetailComponent},  // 转到团队详细信息界面
   { path: 'plat/train', component: TrainAdminComponent},  // 转到实训管理界面
   { path: '', component: LoginComponent, pathMatch: 'full' },  // 转到登陆界面
   { path: '**', component: NotFoundComponent }  // 转到404界面

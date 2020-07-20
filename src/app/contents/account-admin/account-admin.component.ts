@@ -1,7 +1,16 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {LocationService} from "../../services/location.service";
 import {ActivatedRoute} from "@angular/router";
-import {Organization, UserInfo, RoleTable, DeleteUserQ, PageInfoQ, Resp, PostRegisterQ} from "../../types/types";
+import {
+  Organization,
+  UserInfo,
+  RoleTable,
+  DeleteUserQ,
+  PageInfoQ,
+  Resp,
+  PostRegisterQ,
+  ChangPwdByForce
+} from "../../types/types";
 import {CollectionViewer, DataSource, ListRange, SelectionModel} from "@angular/cdk/collections";
 import {MatPaginator, PageEvent} from "@angular/material/paginator";
 import {BehaviorSubject, Observable, of, Subscriber, Subscription} from "rxjs";
@@ -183,7 +192,24 @@ export class AccountAdminComponent implements OnInit {
     });
 
     // TODO post data to backend
-    dialogRef.afterClosed().subscribe()
+    dialogRef.afterClosed().subscribe(result => {
+      const newPassword: ChangPwdByForce = {
+        username: user.username,
+        new_password: result
+      }
+      this.conn.ChangePassWordByForce(newPassword).subscribe({
+        next: resp => {
+          if (resp.status !== 0) {
+            this.msg.SendMessage('密码修改失败').subscribe()
+            return;
+          }
+          this.msg.SendMessage('密码修改成功').subscribe()
+        },
+        error: () => {
+          this.msg.SendMessage('密码修改失败。未知错误').subscribe()
+        }
+      })
+    })
   }
 
   tableItemCheckBy(index: number, item: UserInfo) {

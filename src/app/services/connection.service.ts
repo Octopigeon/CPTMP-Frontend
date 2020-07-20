@@ -11,7 +11,7 @@ import {
   UserInfo,
   UserInfoL,
   DeleteUserQ,
-  PageResp, PageInfoQ, TrainQ, CreateTrainQ, PostRegisterQ
+  PageResp, PageInfoQ, TrainQ, CreateTrainQ, PostRegisterQ, ChangPwdByForce
 } from "../types/types";
 
 import {Logger} from "./logger.service";
@@ -215,7 +215,6 @@ export class ConnectionService {
   public UploadUserBasicData(basicDate: ModifyUserBasicInfoQ): Observable<Resp> {
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
-
     this.put(API.user_info, basicDate).subscribe({
       next: response => {
         if (response.status !== 0) {
@@ -653,6 +652,49 @@ export class ConnectionService {
     return result;
   }
 
+  public ChangePassWordByForce(newPassword: ChangPwdByForce): Observable<Resp>{
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    this.put(API.change_password_force,newPassword).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Change passWord by force failed with status code ${response.status}: ${response.msg}.`);
+          observer.error(response);
+          return result;
+        }
+        observer.next(response);
+        observer.complete();
+      },
+      error: error => {
+        this.logger.log(`Change passWord by force failed with network error: `, error);
+        observer.error(error);
+      }
+    })
+    return result;
+  }
+
+  public GetAllTeam(pageInfoQ: PageInfoQ): Observable<Resp> {
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    const url = API.search_team + '/name';
+    this.get(url).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Get all steam team with status code ${response.status}: ${response.msg}.`);
+          observer.error(response);
+          return result;
+        }
+        observer.next(response);
+        observer.complete();
+      },
+      error: error => {
+        this.logger.log(`Get all team failed with network error: `, error);
+        observer.error(error);
+      }
+    })
+    return result;
+
+  }
   /**
    * 批量导入用户的连接
    * @param regQ 导入信息

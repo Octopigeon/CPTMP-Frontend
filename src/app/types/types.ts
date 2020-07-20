@@ -182,6 +182,11 @@ export interface ResourceFile {
   original_name: string;
 }
 
+export interface ChangPwdByForce {
+  username: string;
+  new_password: string;
+}
+
 export interface Project {
   id: number;
   name: string;

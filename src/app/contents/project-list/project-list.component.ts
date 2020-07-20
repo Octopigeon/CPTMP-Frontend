@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Project} from "../../types/types";
 import {ActivatedRoute} from "@angular/router";
+import {LocationService} from "../../services/location.service";
 
 const EXAMPLE_PROJECT: Project[] = [{
   id: 1,
@@ -54,7 +55,8 @@ export class ProjectListComponent implements OnInit {
     return [...Array(count).keys()].map(i => i + begin);
   }
 
-  constructor(private route: ActivatedRoute) { }
+  constructor(private route: ActivatedRoute,
+              private loc: LocationService,) { }
 
   /***
    * 根据从后端查询到的数据对页面的数据进行初始化
@@ -63,6 +65,10 @@ export class ProjectListComponent implements OnInit {
     this.route.paramMap.subscribe(params => {
       // TODO change projects and train to real info fetched from backend
     })
+  }
+
+  JumpToDetail(project: Project){
+    this.loc.go(['/plat/project/detail/', project.id]);
   }
 
 }

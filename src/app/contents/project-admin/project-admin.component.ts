@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
-import {Project, Train} from "../../types/types";
+import {Project, Team, Train} from "../../types/types";
 import {SelectionModel} from "@angular/cdk/collections";
 import {MessageService} from "../../services/message.service";
 import {ConnectionService} from "../../services/connection.service";
@@ -100,12 +100,10 @@ export class ProjectAdminComponent implements OnInit {
       next: resp => {
         this.msg.SendMessage('删除项目成功').subscribe()
         this.conn.GetUserInfo().subscribe()
-        window.alert(2);
       },
       error: () => {
         this.msg.SendMessage('删除项目失败。未知错误').subscribe()
         this.conn.GetUserInfo().subscribe()
-        window.alert(3);
       }
     })
   }
@@ -116,6 +114,10 @@ export class ProjectAdminComponent implements OnInit {
               private logger: Logger) { }
 
   ngOnInit(): void {
+  }
+
+  JumpToDetail(project: Project){
+    this.loc.go(['/plat/project/detail/', project.id]);
   }
 
 }
