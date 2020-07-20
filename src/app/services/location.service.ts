@@ -5,6 +5,7 @@ import { ReplaySubject } from 'rxjs';
 import {filter, map} from 'rxjs/operators';
 import {ActivatedRoute, NavigationEnd, NavigationExtras, NavigationStart, Router, UrlSegment} from "@angular/router";
 import {Logger} from "./logger.service";
+import {SwUpdatesService} from "./sw-updates.service";
 
 @Injectable({
   providedIn: 'root'
@@ -20,15 +21,15 @@ export class LocationService {
 
   constructor(
     public router: Router,
-    private logger: Logger
-    /* swUpdates: SwUpdatesService */) {
+    private logger: Logger,
+    private swUpdates: SwUpdatesService) {
     this.url$ = new ReplaySubject<string>(1);
     this.url$.subscribe(url => this._url = url);
     this.url$.next(this.router.url);
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(event => this.url$.next((event as NavigationEnd).urlAfterRedirects));
-    // swUpdates.updateActivated.subscribe(() => this.swUpdateActivated = true);
+    swUpdates.updateActivated.subscribe(() => this.swUpdateActivated = true);
   }
 
   go(commands: any[], extras?: NavigationExtras) {
@@ -36,12 +37,16 @@ export class LocationService {
   }
 
   // Original TO_DO ignore if url-without-hash-or-search matches current location?
-  goUrl(url: string|null|undefined) {
+  goUrl(url: string|null|undefined, newOnExternal: boolean = false) {
     if (!url) { return; }
     url = LocationService.stripSlashes(url);
     if (/^http/.test(url)) {
       // Has http protocol so leave the site
-      this.goExternal(url);
+      if (newOnExternal) {
+        this.newExternal(url);
+      } else {
+        this.goExternal(url);
+      }
     } else if (this.swUpdateActivated) {
       // (Do a "full page navigation" if a ServiceWorker update has been activated)
       this.goExternal(url);
@@ -52,6 +57,11 @@ export class LocationService {
 
   goExternal(url: string) {
     window.location.assign(url);
+  }
+
+  newExternal(url: string) {
+    const other = window.open(url, "_blank");
+    other.opener = null;
   }
 
   replace(url: string) {

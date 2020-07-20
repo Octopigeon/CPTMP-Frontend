@@ -2,12 +2,12 @@ import {Component, OnInit} from '@angular/core';
 import {EnvService} from "./services/env.service";
 import {AdminNodes} from "./constants/sidebar";
 import {LocationService} from "./services/location.service";
-import {map, tap} from "rxjs/operators";
+import {map, shareReplay, tap} from "rxjs/operators";
 import {Logger} from "./services/logger.service";
 import {ConnectionService} from "./services/connection.service";
 import {NavigationService} from "./services/navigation.service";
 import {NavigationNode} from "./types/nav.model";
-import {ReplaySubject, Subject} from "rxjs";
+import {of, ReplaySubject, Subject} from "rxjs";
 
 @Component({
   selector: 'cptmp-root',
@@ -17,7 +17,6 @@ import {ReplaySubject, Subject} from "rxjs";
 export class AppComponent implements OnInit {
   title = 'CPTMP';
   isFetching = false;
-  isTransitioning = false;
 
   // start page has different style and elements
   isStartPage = this.loc.url$.pipe(
@@ -27,6 +26,8 @@ export class AppComponent implements OnInit {
 
   windowType = this.env.size$;
   sideNavNodes$ = new ReplaySubject<NavigationNode[]>(1);
+
+  messageCount$ = of(3).pipe(shareReplay(1));
 
   constructor(private env: EnvService,
               private loc: LocationService,

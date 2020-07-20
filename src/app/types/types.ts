@@ -212,3 +212,11 @@ export interface Team {
   evaluation?: string;
 }
 
+export interface Message {
+  // TODO how to represent system message? (current plan: nullable)
+  sender?: UserInfo;
+  title: string;
+  message: string;
+  action?: string;
+  unread: boolean;
+}
