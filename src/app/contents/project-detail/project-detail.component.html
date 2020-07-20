@@ -1,0 +1,103 @@
+<div class="project-info">
+  <div class="float-operation">
+    <!-- TODO add team list routerLink -->
+    <a mat-fab color="primary" matTooltip="查看选择此实训的团队" class="list-button">
+      <mat-icon>open_in_new</mat-icon>
+    </a>
+    <!-- TODO add create team routerLink -->
+    <a mat-fab color="primary" matTooltip="新建团队" class="new-button">
+      <mat-icon>add</mat-icon>
+    </a>
+    <button *ngIf="editMode" mat-fab color="primary" matTooltip="保存更改" class="save-button" (click)="saveChange()">
+      <mat-icon>save</mat-icon>
+    </button>
+  </div>
+  <h1 id="project-name">
+    <span class="name-wrapper">
+      <span *ngIf="!controls.name.editing">{{controls.name.value}}</span>
+      <mat-form-field *ngIf="controls.name.editing" class="wide-form-input">
+        <mat-label>项目名</mat-label>
+        <input matInput placeholder="输入新项目名" [formControl]="controls.name">
+      </mat-form-field>
+    </span>
+    <button *ngIf="editMode" matTooltipPosition="right"
+            mat-icon-button [matTooltip]="controls.name.editing ? '完成' : '修改'" class="edit-button"
+            (click)="controls.name.switchEdit()">
+      <mat-icon>{{controls.name.editing ? 'check' : 'edit'}}</mat-icon>
+    </button>
+  </h1>
+  <div id="project-level">
+    项目等级:
+    <span class="level-wrapper">
+      <span *ngIf="!controls.level.editing">
+        <mat-icon *ngFor="let _ of range(capLevel(controls.level.value))" color="accent">star</mat-icon>
+        <mat-icon *ngFor="let _ of range(5 - capLevel(controls.level.value))" color="accent">star_outline</mat-icon>
+      </span>
+      <mat-radio-group *ngIf="controls.level.editing" [formControl]="controls.level">
+        <mat-radio-button *ngFor="let level of range(5, 1)"
+                          [value]="level" class="level-radio">{{level}}</mat-radio-button>
+      </mat-radio-group>
+    </span>
+    <button *ngIf="editMode" matTooltipPosition="right"
+            mat-icon-button [matTooltip]="controls.level.editing ? '完成' : '修改'" class="edit-button"
+            (click)="controls.level.switchEdit()">
+      <mat-icon>{{controls.level.editing ? 'check' : 'edit'}}</mat-icon>
+    </button>
+  </div>
+  <div id="project-content">
+    <h2 class="content-title">
+      项目内容
+      <button *ngIf="editMode" matTooltipPosition="right"
+              mat-icon-button [matTooltip]="controls.content.editing ? '完成' : '修改'" class="edit-button"
+              (click)="controls.content.switchEdit()">
+        <mat-icon>{{controls.content.editing ? 'check' : 'edit'}}</mat-icon>
+      </button>
+    </h2>
+    <p class="content-wrapper">
+      <span *ngIf="!controls.content.editing">{{controls.content.value}}</span>
+      <mat-form-field *ngIf="controls.content.editing" class="full-form-input">
+        <mat-label>填写项目内容</mat-label>
+        <textarea matInput placeholder="输入项目内容" [formControl]="controls.content"></textarea>
+      </mat-form-field>
+    </p>
+  </div>
+  <!-- TODO hide resource when creating new train. -->
+  <div id="project-resource">
+    <h2 class="resource-title">
+      项目资料
+      <button *ngIf="editMode" matTooltipPosition="right"
+              mat-icon-button [matTooltip]="editFile ? '完成' : '修改'" class="edit-button"
+              (click)="editFile = !editFile">
+        <mat-icon>{{editFile ? 'check' : 'edit'}}</mat-icon>
+      </button>
+    </h2>
+    <mat-list *ngIf="!editFile">
+      <a *ngFor="let file of data.resource_lib" class="resource-link"
+         [href]="file.file_path" [download]="file.original_name">
+        <mat-list-item class="resource-item" matRipple>
+          <mat-icon mat-list-icon>insert_drive_file</mat-icon>
+          <div mat-line>{{file.original_name}}</div>
+          <div mat-line> {{file.file_size | fileSize}} · {{file.created | date}} </div>
+        </mat-list-item>
+      </a>
+      <mat-list-item class="resource-empty-hint" *ngIf="data.resource_lib.length === 0">
+        <div mat-line>暂无资料</div>
+      </mat-list-item>
+    </mat-list>
+    <div class="file-edit-wrapper" *ngIf="editFile">
+      <mat-selection-list #files>
+        <mat-list-option *ngFor="let file of data.resource_lib" [value]="file">
+          <mat-icon mat-list-icon>insert_drive_file</mat-icon>
+          <div mat-line>{{file.original_name}}</div>
+          <div mat-line> {{file.file_size | fileSize}} · {{file.created | date}} </div>
+        </mat-list-option>
+      </mat-selection-list>
+      <div class="resource-action" *ngIf="editFile">
+        <button mat-fab color="primary" matTooltip="添加资源"
+                (click)="addFile()"><mat-icon>post_add</mat-icon></button>
+        <button mat-fab color="warn" [disabled]="files.selectedOptions.selected.length === 0" (click)="deleteFile()"
+                matTooltip="删除选中资源"><mat-icon>delete</mat-icon></button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -2,7 +2,7 @@ import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
 import {WINDOW} from "./services/window";
-import {SidebarModePipe} from "./sidebar-mode.pipe"
+import {SidebarModePipe} from "./pipes/sidebar-mode.pipe"
 
 describe('AppComponent', () => {
   beforeEach(async(() => {

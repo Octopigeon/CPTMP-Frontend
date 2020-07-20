@@ -19,7 +19,6 @@ export class LocationService {
   private readonly urlParser = document.createElement('a');
 
   constructor(
-    public route: ActivatedRoute,
     public router: Router,
     private logger: Logger
     /* swUpdates: SwUpdatesService */) {

@@ -1,0 +1,35 @@
+<h2 class="title">{{isEditing ? '修改组织' : '新建组织'}}</h2>
+<mat-dialog-content>
+  <form [formGroup]="schoolForm">
+    <div class="form-input-container">
+      <mat-form-field appearance="outline" class="form-input">
+        <mat-label>组织名称</mat-label>
+        <input matInput placeholder="输入组织名称" formControlName="name">
+        <mat-icon matSuffix>apartment</mat-icon>
+        <mat-hint>此名称用于识别组织</mat-hint>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="form-input">
+        <mat-label>组织代码</mat-label>
+        <input matInput placeholder="输入组织代码" formControlName="code">
+        <mat-icon matSuffix>code</mat-icon>
+        <mat-hint>此代码将添加在组织分配的成员识别号码前，作为在本系统中的登录用户名</mat-hint>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="form-input">
+        <mat-label>组织链接</mat-label>
+        <input matInput placeholder="在此输入组织链接" formControlName="url">
+        <mat-icon matSuffix>link</mat-icon>
+        <mat-hint>此链接指向组织官方网站</mat-hint>
+        <mat-error *ngIf="schoolForm.controls.url.hasError('pattern')">链接格式错误</mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="form-input">
+        <mat-label>组织简介</mat-label>
+        <textarea matInput placeholder="在此输入组织简介" formControlName="description" cdkTextareaAutosize></textarea>
+        <mat-hint>组织简介用于说明此组织，以供用户识别</mat-hint>
+      </mat-form-field>
+    </div>
+  </form>
+</mat-dialog-content>
+<div mat-dialog-actions class="dialog-actions">
+  <button mat-button (click)="cancelClose()">取消</button>
+  <button mat-flat-button color="primary" (click)="getSchool()" [disabled]="schoolForm.invalid">保存</button>
+</div>

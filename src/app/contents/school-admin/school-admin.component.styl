@@ -1,0 +1,81 @@
+.info-header
+  margin 30px 0 20px
+  text-align center
+
+.operations
+  text-align right
+  margin-right 40px
+
+  @media (max-width 599px)
+    margin-right 20px
+
+  button
+    margin-left 10px
+
+.content-wrapper
+  margin 20px 40px 40px
+  overflow auto
+
+  @media (max-width 599px)
+    margin 20px 0 40px
+
+  .school-table
+    min-width 640px
+    width 100%
+
+    td.mat-column-star
+      width 20px
+      padding-right 8px
+
+    th.mat-column-position, td.mat-column-position
+      padding-left 8px
+
+    .mat-table-sticky:first-child
+      border-right 1px solid #e0e0e0
+
+    th.mat-header-cell, td.mat-cell
+      padding-left 10px
+      min-width 20px
+
+    th.mat-header-cell:first-of-type, td.mat-cell:first-of-type
+      width 26px
+      min-width 26px
+
+    tr.school-detail-row
+      height 0
+
+    tr.school-row
+      transition background 0.3s
+
+    tr.school-row:not(.school-expanded-row):hover
+      background #f5f5f5
+
+    tr.school-row:not(.school-expanded-row):active
+      background #efefef
+
+    .school-row td
+      border-bottom-width 0
+
+    .school-detail
+      overflow hidden
+      padding-left 60px
+
+      .invitation-code
+        font-family monospace
+        display inline-block
+        height 26px
+        line-height 26px
+        margin-right 5px
+        padding 5px
+        user-select all
+
+      .school-action
+        margin-left 10px
+
+        mat-icon
+          padding-left 5px
+          line-height 34px
+          vertical-align top
+
+      .school-link-container
+        text-align right

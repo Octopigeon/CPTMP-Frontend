@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import {Size} from "./services/env.service";
+import {Size} from "../services/env.service";
 import {MatDrawerMode} from "@angular/material/sidenav";
 
 @Pipe({

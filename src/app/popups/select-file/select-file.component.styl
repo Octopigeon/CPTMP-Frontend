@@ -1,0 +1,28 @@
+.dialog-actions
+  justify-content flex-end
+
+.form-input-container
+  max-width calc(80vw - 48px)
+  display flex
+  flex-direction column
+  width 360px
+
+  .form-input
+    margin 10px 0
+
+.file-picker
+  position relative
+  margin-bottom 20px
+
+  #real-file-picker
+    position absolute
+    height 36px
+    top 0
+    left 0
+    opacity 0
+
+.picked-file
+  transition background 0.3s
+
+  &:hover
+    background #0000000a

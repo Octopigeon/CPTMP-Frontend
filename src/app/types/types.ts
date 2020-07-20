@@ -2,7 +2,21 @@ export interface Resp {
   status: number;
   date: number | string;
   msg: string;
+  total_rows?: number;
   data?: any;
+}
+
+export interface PageResp {
+  status: number;
+  date: number | string;
+  msg: string;
+  total_rows: number;
+  data?: any;
+}
+
+export interface PageInfoQ {
+  page: number;
+  offset: number;
 }
 
 export interface LoginQ {
@@ -15,10 +29,15 @@ export type Role =
   'ROLE_ENTERPRISE_ADMIN' |
   'ROLE_SCHOOL_ADMIN' |
   'ROLE_SCHOOL_TEACHER' |
-  'ROLE_STUDENT_MASTER' |
-  'ROLE_STUDENT_PM' |
-  'ROLE_STUDENT_PO' |
   'ROLE_STUDENT_MEMBER';
+
+export const RoleTable: {[key: string]: string} = {
+  ROLE_SYSTEM_ADMIN: '系统管理员',
+  ROLE_ENTERPRISE_ADMIN: '企业管理员',
+  ROLE_SCHOOL_ADMIN: '组织管理员',
+  ROLE_SCHOOL_TEACHER: '教师',
+  ROLE_STUDENT_MEMBER: '学生'
+}
 
 export interface UserInfo {
   email: string;
@@ -49,6 +68,14 @@ export interface RegisterQ {
   invitation_code: string;
 }
 
+export interface PostRegisterQ{
+  common_id: string;
+  name: string;
+  password: string;
+  email: string;
+  organization_id: number;
+}
+
 export interface RegisterP {
   status_code: number;
   id?: string;
@@ -65,17 +92,122 @@ export interface ModifyUserInfoQ {
   new_user_info: UserInfo;
 }
 
+export interface  ModifyUserBasicInfoQ {
+  name: string;
+  gender: boolean;
+  introduction: string;
+}
+
 export interface ModifyUserInfoP {
   status_code: number;
 }
 
-export interface GetUserInfoQ {
-  id: string;
+export interface Organization {
+  id?: number;
+  name: string;
+  code: string;
+  description?: string;
+  url?: string;
+  invitation_code?: string;
+  created?: number | string;
 }
 
-export interface GetUserInfoP {
-  status_code: number;
-  user_info: UserInfo;
+export interface CreateOrgQ{
+  real_name: string;
+  code: string;
+  website_url: string;
+  description: string;
 }
 
+export interface GetOrgQ{
+  id?: number,
+  gmt_creat: string;
+  name: string;
+  real_name: string ;
+  description: string;
+  website_url: string;
+}
 
+export interface DeleteUserQ {
+  selection: number[];
+}
+export interface Train {
+  id: number;
+  name: string;
+  organization: string;
+  organization_id: number;
+  start_time?: number | string;
+  end_time?: number | string;
+  // TODO should the following be pure text, or html content?
+  // 实训内容?
+  content?: string;
+  // 验收标准
+  standard?: string;
+  // 实训资源 may need another json load process if type is string
+  resource_lib?: string | ResourceFile[];
+  // TODO format? how to display & set it?
+  // 位置信息
+  gps_info?: string;
+}
+
+export interface TrainQ{
+  id?: number;
+  name: string;
+  content: string;
+  organization_id: number;
+  start_time: string;
+  end_time: string;
+  accept_standard: string;
+  resource_library: string;
+  gps_info: string;
+}
+
+export interface CreateTrainQ{
+  name: string;
+  content: string;
+  organization_id: number;
+  start_time: string;
+  end_time: string;
+  accept_standard: string;
+  resource_library: string;
+  gps_info: string;
+}
+
+export interface ResourceFile {
+  file_name: string;
+  file_path: string;
+  file_size: number;
+  file_type: string;
+  created: string | number;
+  original_name: string;
+}
+
+export interface Project {
+  id: number;
+  name: string;
+  level: number;
+  content: string;
+  // like above
+  resource_lib?: string | ResourceFile[];
+}
+
+export interface Team {
+  id: number;
+  name: string;
+  avatar?: string;
+  repo_url?: string;
+  train_project_id: number;
+  train_name: string;
+  project_name: string;
+  member_count?: number;
+  leader_id: number;
+  members?: UserInfo[];
+  // like above
+  resource_lib?: string | ResourceFile[];
+
+  // 团队评分
+  team_grade?: number;
+
+  // 团队评价
+  evaluation?: string;
+}

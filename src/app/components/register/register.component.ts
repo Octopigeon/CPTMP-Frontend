@@ -33,6 +33,11 @@ export class RegisterComponent implements OnInit {
     this.passwordConfirm
   ])
 
+  // TODO send register request
+  register() {
+
+  }
+
   constructor() { }
 
   ngOnInit(): void {
