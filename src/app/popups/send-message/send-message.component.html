@@ -1,0 +1,75 @@
+<h2 class="title">发送消息</h2>
+<mat-dialog-content>
+  <form [formGroup]="messageForm">
+    <div class="form-input-container">
+      <label id="message-broadcast">消息类型: </label>
+      <mat-radio-group
+        aria-labelledby="message-broadcast"
+        formControlName="broadcast">
+        <mat-radio-button [value]="false" class="radio">单人</mat-radio-button>
+        <mat-radio-button [value]="true" [disabled]="permissionLevel === 0" class="radio">广播</mat-radio-button>
+      </mat-radio-group>
+      <mat-form-field appearance="outline" class="form-input"
+                      [@display]="messageForm.controls.broadcast.value ? 'hide' : 'show'">
+        <mat-label>发送目标</mat-label>
+        <input matInput placeholder="搜索用户..." formControlName="target" [matAutocomplete]="autoUser">
+        <mat-icon matSuffix>person</mat-icon>
+        <mat-hint>输入用户的姓名或用户名以选择用户</mat-hint>
+        <mat-autocomplete #autoUser="matAutocomplete" [displayWith]="displayUser">
+          <mat-option *ngFor="let user of filteredUsers$ | async" [value]="user">
+            <img class="auto-complete-avatar" [src]="autoAvatar(user.avatar)" alt="">
+            {{user.username}}({{user.name}})
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="form-input"
+                      [@display]="messageForm.controls.broadcast.value ? 'show' : 'hide'">
+        <mat-label>发送目标</mat-label>
+        <mat-select formControlName="scope">
+          <mat-option *ngFor="let scope of scopes" [value]="scope.value"
+                      [disabled]="scope.level > permissionLevel || (permissionLevel !== 1 && scope.level === 1)">
+            {{scope.name}}
+          </mat-option>
+        </mat-select>
+        <mat-icon matSuffix>cast</mat-icon>
+        <mat-hint>选择这一广播消息发送到的用户范围</mat-hint>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="form-input"
+                      [@display]="showOrganizationPicker() ? 'show' : 'hide'">
+        <mat-label>目标组织</mat-label>
+        <input matInput placeholder="搜索组织..."
+               formControlName="organization"
+               [matAutocomplete]="autoOrganization">
+        <mat-icon matSuffix>apartment</mat-icon>
+        <mat-hint>输入组织名称以选择组织</mat-hint>
+        <mat-autocomplete #autoOrganization="matAutocomplete" [displayWith]="displayOrganization">
+          <mat-option *ngFor="let org of filteredOrganizations$ | async" [value]="org">
+            {{org.name}}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="form-input">
+        <mat-label>消息标题</mat-label>
+        <input matInput placeholder="输入消息标题" formControlName="title">
+        <mat-icon matSuffix>title</mat-icon>
+        <mat-error *ngIf="messageForm.controls.title.hasError('required')">请输入标题</mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="form-input">
+        <mat-label>消息内容</mat-label>
+        <textarea matInput placeholder="在此输入消息" formControlName="message" cdkTextareaAutosize></textarea>
+        <mat-error *ngIf="messageForm.controls.message.hasError('required')">请输入消息内容</mat-error>
+      </mat-form-field>
+      <!-- TODO limit to allow only admin to set this field -->
+      <mat-form-field appearance="outline" class="form-input" *ngIf="permissionLevel > 1">
+        <mat-label>操作链接</mat-label>
+        <input matInput placeholder="在此输入操作链接" formControlName="action">
+        <mat-icon matSuffix>link</mat-icon>
+        <mat-hint>接受者收到消息后可以点击此链接完成操作</mat-hint>
+      </mat-form-field>
+    </div>
+  </form>
+</mat-dialog-content>
+<div mat-dialog-actions class="dialog-actions">
+  <button mat-button (click)="cancelClose()">取消</button>
+  <button mat-flat-button color="primary" (click)="getMessage()" [disabled]="messageForm.invalid">保存</button>
+</div>

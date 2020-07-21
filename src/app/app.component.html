@@ -2,12 +2,12 @@
   <mat-progress-bar mode="indeterminate" color="warn"></mat-progress-bar>
 </div>
 
-<mat-toolbar color="primary" class="app-toolbar no-print" [class.transitioning]="isTransitioning" [class.start]="isStartPage | async">
+<mat-toolbar color="primary" class="app-toolbar no-print" [class.start]="isStartPage | async">
   <mat-toolbar-row>
     <button mat-button class="hamburger" title="Menu" (click)="sidenav.toggle()" [class.start]="isStartPage | async">
       <mat-icon svgIcon="menu"></mat-icon>
     </button>
-    <a class="nav-link home" href="/" [ngSwitch]="windowType | async">
+    <a class="nav-link home" [routerLink]="['/']" [ngSwitch]="windowType | async">
       <img *ngSwitchCase="'phone'" src="assets/logo-white.png" width="40" height="40" title="Home" alt="Home">
       <div *ngSwitchDefault>
         <img src="assets/logo-white.png" width="40" height="40" title="Home" alt="O">
@@ -17,7 +17,13 @@
     <!--    <aio-top-menu *ngIf="isSideBySide" [nodes]="topMenuNodes" [currentNode]="currentNodes?.TopBar"></aio-top-menu>-->
     <search-box *ngIf="!(isStartPage  | async)" class="search-container" #searchBox></search-box>
     <div *ngIf="!(isStartPage | async)" matRipple class="user-container" title="User" matRippleColor="rgba(255, 255, 255, 0.1)">
-      <a href="#" class="user-page">
+      <!-- TODO change routerLink to message component -->
+      <a [routerLink]="['/', 'plat', 'user', 'me']" *ngIf="(messageCount$ | async) !== 0"
+         class="user-page avatar-barged" [matBadge]="messageCount$ | async | number" matBadgeColor="warn">
+        <img [src]="conn.avatar | async" alt="user" class="user-avatar">
+      </a>
+      <a [routerLink]="['/', 'plat', 'user', 'me']" *ngIf="(messageCount$ | async) === 0"
+         class="user-page">
         <img [src]="conn.avatar | async" alt="user" class="user-avatar">
       </a>
     </div>
@@ -30,7 +36,7 @@
   <mat-sidenav #sidenav class="main-sidenav"
                [opened]="!(isStartPage  | async) && (windowType | async) === 'desktop'"
                [mode]="windowType | async | sidebarMode">
-    <nav-menu [nodes]="sidenavNodes" [isWide]="true"></nav-menu>
+    <nav-menu [nodes]="sideNavNodes$ | async" [isWide]="true" [currentNode]="nav.currentNodes | async"></nav-menu>
   </mat-sidenav>
   <mat-sidenav-content>
     <div id="top-of-page"></div>

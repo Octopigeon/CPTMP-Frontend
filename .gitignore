@@ -46,5 +46,5 @@ testem.log
 Thumbs.db
 
 api-test/
-assets/
+./assets/
 src/**/*.css

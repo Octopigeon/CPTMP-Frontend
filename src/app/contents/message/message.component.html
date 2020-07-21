@@ -1,0 +1,38 @@
+<div class="info-header">
+  <h1 class="header-title">消息通知</h1>
+  <p class="header-note">查看、并向他人发送通知</p>
+</div>
+<div class="operations">
+  <button mat-fab color="accent" matTooltip="发送消息" (click)="newMessage()">
+    <mat-icon>rate_review</mat-icon>
+  </button>
+  <button mat-fab color="primary" matTooltip="全部展开" (click)="expandAll()" [disabled]="messages.length === 0">
+    <mat-icon>unfold_more</mat-icon>
+  </button>
+  <button mat-fab color="primary" matTooltip="全部收起" (click)="accordion.closeAll()" [disabled]="messages.length === 0">
+    <mat-icon>unfold_less</mat-icon>
+  </button>
+</div>
+<div class="content-wrapper">
+  <mat-accordion multi *ngIf="messages.length !== 0">
+    <mat-expansion-panel *ngFor="let message of messages" (opened)="markRead(message)">
+      <mat-expansion-panel-header>
+        <mat-panel-title matBadge=" " class="message-title" [class.unread]="message.unread">
+          <span *ngIf="message.sender" class="sender-container">
+            <img [src]="autoAvatar(message.sender.avatar)" alt="Sender avatar" class="message-avatar" [matTooltip]="message.sender.name">
+            {{message.title}}
+          </span>
+          <span *ngIf="!message.sender" class="sender-container">
+            <img src="/assets/avatar.png" alt="System" class="message-avatar" matTooltip="系统消息">
+            {{message.title}}
+          </span>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <p class="message-body">{{message.message}}</p>
+      <mat-action-row *ngIf="message.action">
+        <a mat-stroked-button href="{{message.action}}" (click)="go(message.action, $event)">执行操作</a>
+      </mat-action-row>
+    </mat-expansion-panel>
+  </mat-accordion>
+  <div *ngIf="messages.length === 0" style="text-align: center">你没有任何消息</div>
+</div>

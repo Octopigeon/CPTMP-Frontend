@@ -7,20 +7,6 @@ export type SidebarEntries = Map<string, string>
  */
 
 export const AdminNodes: NavigationNode[] = [{
-  title: "账户设置",
-  tooltip: "控制当前账户的设置",
-  hidden: false,
-  children: [{
-    title: "个人信息",
-    url: "/plat/user/me",
-    tooltip: "查看和修改您的个人信息",
-    hidden: false
-  }, {
-    title: "占位",
-    tooltip: "占位",
-    hidden: false,
-  }]
-}, {
   title: "系统管理",
   tooltip: "对系统进行管理",
   hidden: false,
@@ -84,5 +70,25 @@ export const AdminNodes: NavigationNode[] = [{
       tooltip: "查看团队详细信息",
       hidden: false,
     }]
+  }]
+}, {
+  title: "个人账户",
+  tooltip: "控制当前账户的设置",
+  hidden: false,
+  children: [{
+    title: "个人信息",
+    url: "/plat/user/me",
+    tooltip: "查看和修改您的个人信息",
+    hidden: false
+  }, {
+    title: "消息通知",
+    url: "/plat/user/message",
+    tooltip: "查看您的消息",
+    hidden: false
+  }, {
+    title: "退出登录",
+    url: "/plat/user/logout",
+    tooltip: "退出当前帐户",
+    hidden: false,
   }]
 }]
