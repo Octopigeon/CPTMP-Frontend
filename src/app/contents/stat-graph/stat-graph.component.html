@@ -1,1 +1,11 @@
-<p>stat-graph works!</p>
+<div class="info-header">
+  <h1 class="header-title">活动统计</h1>
+  <p class="header-note">此处显示团队「{{team}}」的活动统计图表</p>
+</div>
+<div class="content-wrapper">
+  <div echarts [options]="options" class="commit-chart"></div>
+  <div cdkDropList class="field-list" (cdkDropListDropped)="sorterDropped($event)">
+    <div class="field-box" *ngFor="let field of orderNames" cdkDrag>{{field[1]}}</div>
+  </div>
+</div>
+

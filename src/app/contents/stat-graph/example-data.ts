@@ -1,6 +1,6 @@
 import {ContributorStat} from "../../types/types";
 
-const EXAMPLE_STAT: ContributorStat[] = [
+export const EXAMPLE_STAT: ContributorStat[] = [
   {
     "total": 10,
     "total_additions": 229,

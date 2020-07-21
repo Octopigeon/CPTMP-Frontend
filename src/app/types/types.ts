@@ -242,7 +242,7 @@ interface _GHAuthorInfo {
   html_url: string;
 }
 
-type GHAuthorInfo = _GHAuthorInfo & AllowUnknown;
+export type GHAuthorInfo = _GHAuthorInfo & AllowUnknown;
 
 export interface ContributorStat {
   // Commit
@@ -251,4 +251,12 @@ export interface ContributorStat {
   total_deletions: number;
   weeks: WeeklyStat[];
   author: GHAuthorInfo;
+}
+
+export interface StatEntry {
+  week: number;
+  member: number;
+  ad: string;
+  data: number;
+  member_info: GHAuthorInfo;
 }
