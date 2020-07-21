@@ -76,6 +76,7 @@ import { environment } from '../environments/environment';
 import {MatBadgeModule} from "@angular/material/badge";
 import { MessageComponent } from './contents/message/message.component';
 import { SendMessageComponent } from './popups/send-message/send-message.component';
+import { StatGraphComponent } from './contents/stat-graph/stat-graph.component';
 
 // These are the hardcoded inline svg sources to be used by the `<mat-icon>` component.
 // tslint:disable: max-line-length
@@ -184,7 +185,8 @@ export const svgIconProviders = [
     LocationPickerComponent,
     JoinRequestComponent,
     MessageComponent,
-    SendMessageComponent
+    SendMessageComponent,
+    StatGraphComponent
   ],
     imports: [
         BrowserModule,

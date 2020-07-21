@@ -220,3 +220,35 @@ export interface Message {
   action?: string;
   unread: boolean;
 }
+
+interface AllowUnknown {
+  [key: string]: any;
+}
+
+export interface WeeklyStat {
+  // Time
+  w: string;
+  // Addition
+  a: number;
+  // Deletion
+  d: number;
+  // Commit
+  c: number;
+}
+
+interface _GHAuthorInfo {
+  login: string;
+  avatar_url: string;
+  html_url: string;
+}
+
+type GHAuthorInfo = _GHAuthorInfo & AllowUnknown;
+
+export interface ContributorStat {
+  // Commit
+  total: number;
+  total_additions: number;
+  total_deletions: number;
+  weeks: WeeklyStat[];
+  author: GHAuthorInfo;
+}
