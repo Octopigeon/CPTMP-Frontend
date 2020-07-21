@@ -132,8 +132,10 @@ export class TrainAdminComponent implements OnInit {
    * @constructor
    */
   JumpToDetail(train: Train): void{
-    this.loc.go(['/plat/train/detail/',train.id]);
+    this.loc.go(['/plat/train/detail/', train.id]);
   }
+
+  trainList: Train[];
 
   constructor(private conn: ConnectionService,
               public msg: MessageService,
@@ -152,11 +154,10 @@ export class TrainAdminComponent implements OnInit {
       page: 1 ,
       offset: 100
     };
-
     this.conn.GetAllTrain(pageInfoQ).subscribe({
       next: resp => {
         if (resp.status === 0) {
-          const trainList: Train[] = [];
+          this.trainList = [];
           const trainId: number[] = [];
           for (const columnRef of resp.data) {
             const trainQ: TrainQ = columnRef as TrainQ;
@@ -164,7 +165,7 @@ export class TrainAdminComponent implements OnInit {
               id: trainQ.id,
               name: trainQ.name,
               content: trainQ.content,
-              organization: '',
+              organization: trainQ.org_name,
               organization_id: trainQ.organization_id,
               start_time: new Date(trainQ.start_time).getTime(),
               end_time: new Date(trainQ.end_time).getTime(),
@@ -172,20 +173,9 @@ export class TrainAdminComponent implements OnInit {
               gps_info: trainQ.gps_info,
               resource_lib: trainQ.resource_library
             };
-            trainList.push(train);
-            trainId.push(train.id);
+            this.trainList.push(train);
           }
-          this.dataSource = new MatTableDataSource<Train>(trainList);
-          this.conn.GetOrgInfoByGroup(trainId).subscribe({
-            next: nresp => {
-              const getOrgQ: GetOrgQ = nresp.data as GetOrgQ;
-
-            },
-            error: eresp => {
-
-            }
-          });
-          console.log(trainList)
+          this.dataSource = new MatTableDataSource<Train>(this.trainList);
         } else {
           this.msg.SendMessage('获取列表失败。').subscribe();
         }

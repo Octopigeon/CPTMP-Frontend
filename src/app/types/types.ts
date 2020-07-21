@@ -95,7 +95,8 @@ export interface ModifyUserInfoQ {
 export interface  ModifyUserBasicInfoQ {
   name: string;
   gender: boolean;
-  introduction: string;
+  introduction?: string;
+  phone_number?: number;
 }
 
 export interface ModifyUserInfoP {
@@ -120,8 +121,8 @@ export interface CreateOrgQ{
 }
 
 export interface GetOrgQ{
-  id?: number,
-  gmt_creat: string;
+  id?: number;
+  gmt_create: string;
   name: string;
   real_name: string ;
   description: string;
@@ -155,6 +156,7 @@ export interface TrainQ{
   name: string;
   content: string;
   organization_id: number;
+  org_name?: string;
   start_time: string;
   end_time: string;
   accept_standard: string;

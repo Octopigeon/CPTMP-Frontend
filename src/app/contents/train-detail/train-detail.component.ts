@@ -86,6 +86,8 @@ export class TrainDetailComponent implements OnInit {
 
   editFile: boolean = true;
 
+  id: string;
+
   projects = {
     1: 'Project1dtnhfvnrtyytryvrncty',
     2: 'Project2tycbtynbtnerrtbvrt',
@@ -201,7 +203,22 @@ export class TrainDetailComponent implements OnInit {
         accept_standard: this.controls.standard?.value,
         resource_library: this.controls.resource_lib?.value,
         gps_info: this.controls.gps_info?.value
-      }
+      };
+      this.conn.UploadTrainInfo(trainQ).subscribe({
+        next: value => {
+          if (value.status !== 0){
+            this.msg.SendMessage('修改实训信息失败').subscribe();
+          }else {
+            this.msg.SendMessage('修改实训信息成功').subscribe();
+          }
+        },
+        error: err1 => {
+          this.msg.SendMessage('修改实训信息失败。未知错误').subscribe();
+        },
+        complete: () => {
+          this.GetData();
+        }
+      });
     }
   }
 
@@ -215,70 +232,73 @@ export class TrainDetailComponent implements OnInit {
 
 
   ngOnInit(): void {
-    console.log(123)
     this.route.paramMap.subscribe(param => {
       const id = param.get('id');
-      this.GetOrgInfo()
       // TODO must have valid id (uncomment following code)
       // if (!id || !id.trim()) {
       //   this.loc.go(['/', 'not-found'])
       // }
       // TODO retrieve id from param, and data from backend (and special handling to new train)
-      if (id === 'new'){
-        this.data = this.newTrain;
-        this.setData();
-        this.editMode = false;
-      }else{
-        //  载入实训的组织列表
-        this.conn.GetTrain(id).subscribe({
-          next: resp => {
-            if (resp.status === 0) {
-              const trainQ = resp.data as TrainQ
-              if(trainQ.id === undefined){
-                this.data = this.err
-              }
-              const train: Train = {
-                id: trainQ.id,
-                name: trainQ.name,
-                content: trainQ.content,
-                organization: '',
-                organization_id: trainQ.organization_id,
-                start_time: new Date(trainQ.start_time).getTime(),
-                end_time: new Date(trainQ.end_time).getTime(),
-                standard: trainQ.accept_standard,
-                gps_info: trainQ.gps_info,
-                resource_lib: trainQ.resource_library
-              }
-              console.log((train.resource_lib))
-              this.conn.GetOrgInfo(trainQ.organization_id).subscribe({
-                next: nresp => {
-                  const getOrgQ: GetOrgQ = nresp.data as GetOrgQ
-                  train.organization = getOrgQ.real_name;
-                },
-                error: eresp => {
-                  train.organization = '错误:未查到相关组织';
-                }
-              });
-              this.data = train
-              this.setData()
-            } else {
-              this.data = this.err
-              this.setData()
-              this.msg.SendMessage('获取实训信息失败。请稍后再试').subscribe()
-            }
-          },
-          error: () => {
-            this.data = this.err
-            this.setData()
-            this.msg.SendMessage('获取实训信息失败。未知错误').subscribe()
-          }
-        })
-      }
-    })
+      this.editMode = (id !== 'new');
+      this.id = id;
+      this.GetData();
+    });
   }
 
 
-  setData(){
+  GetData(){
+    if (!this.editMode){
+      this.data = this.newTrain;
+      this.SetData();
+    }else{
+
+      //  载入实训的组织列表
+      this.GetOrgInfo();
+      this.conn.GetTrain(this.id).subscribe({
+        next: resp => {
+          if (resp.status === 0) {
+            const trainQ = resp.data as TrainQ;
+            if(trainQ.id === undefined){
+              this.data = this.err;
+            }
+            const train: Train = {
+              id: trainQ.id,
+              name: trainQ.name,
+              content: trainQ.content,
+              organization: '',
+              organization_id: trainQ.organization_id,
+              start_time: new Date(trainQ.start_time).getTime(),
+              end_time: new Date(trainQ.end_time).getTime(),
+              standard: trainQ.accept_standard,
+              gps_info: trainQ.gps_info,
+              resource_lib: trainQ.resource_library
+            };
+            this.conn.GetOrgInfo(trainQ.organization_id).subscribe({
+              next: nresp => {
+                const getOrgQ: GetOrgQ = nresp.data as GetOrgQ;
+                train.organization = getOrgQ.real_name;
+              },
+              error: eresp => {
+                train.organization = '错误:未查到相关组织';
+              }
+            });
+            this.data = train;
+            this.SetData();
+          } else {
+            this.data = this.err;
+            this.msg.SendMessage('获取实训信息失败。请稍后再试').subscribe()
+          }
+        },
+        error: () => {
+          this.data = this.err
+          this.msg.SendMessage('获取实训信息失败。未知错误').subscribe()
+        }
+      })
+    }
+  }
+
+
+  SetData(){
     Object.entries(this.controls).forEach(([field, control]) => {
       if (field.endsWith('time')) {
         control.setValue(new Date(this.data[field]));

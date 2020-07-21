@@ -33,6 +33,7 @@ export class PersonalDataComponent implements OnInit {
     realName: new FormControl(''),
     gender: new FormControl(false),
     introduction: new FormControl(''),
+    phone_number: new FormControl(''),
   });
 
   passwordConfirm = (control: FormGroup): ValidationErrors | null => {
@@ -67,9 +68,9 @@ export class PersonalDataComponent implements OnInit {
     const req: ModifyUserBasicInfoQ = {
       name: this.basicDataForm.value.realName,
       gender: (this.basicDataForm.value.gender === 'null') ? null : this.basicDataForm.value.gender,
-      introduction: this.basicDataForm.value.introduction
+      introduction: this.basicDataForm.value.introduction,
+      phone_number: this.basicDataForm.value.phone_number,
     }
-    console.log( req);
     this.conn.UploadUserBasicData(req).subscribe({
       next: resp => {
         this.msg.SendMessage('公开信息修改成功').subscribe()
@@ -143,11 +144,11 @@ export class PersonalDataComponent implements OnInit {
 
   ngOnInit(): void {
     this.conn.user.subscribe(user => {
-      console.log(user.info)
       this.basicDataForm.controls.realName.setValue(user.info.name);
       this.basicDataForm.controls.gender.setValue(
         user.info.gender == null ? 'null' : user.info.gender ? 'true' : 'false');
       this.basicDataForm.controls.introduction.setValue(user.info.introduction);
+      this.basicDataForm.controls.phone_number.setValue(user.info.phone_number);
     })
   }
 }

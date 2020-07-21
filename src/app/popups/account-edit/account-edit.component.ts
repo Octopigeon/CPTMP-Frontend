@@ -1,7 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {FormControl, FormGroup} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {Organization, PostRegisterQ, UserInfo} from "../../types/types";
+import {ModifyUserBasicInfoQ, ModifyUserInfoQ, Organization, PostRegisterQ, UserInfo} from "../../types/types";
 
 @Component({
   selector: 'app-account-edit',
@@ -13,6 +13,8 @@ export class AccountEditComponent implements OnInit {
   isEditing: boolean = false;
 
   gender: string;
+
+  introduction = '';
 
   // TODO change to real fields
   accountForm = new FormGroup({
@@ -32,7 +34,7 @@ export class AccountEditComponent implements OnInit {
   // TODO return user info from form
   getAccount() {
     if ( !this.isEditing ){
-      let regQ: PostRegisterQ = {
+      const regQ: PostRegisterQ = {
         common_id: this.accountForm.controls.common_id.value,
         name: this.accountForm.controls.name.value,
         password: '123',
@@ -40,8 +42,18 @@ export class AccountEditComponent implements OnInit {
         organization_id: 1
       };
       this.dialogRef.close(regQ);
+    }else{
+      const modifyUserBasicInfoQ: ModifyUserBasicInfoQ = {
+        name: this.accountForm.controls.name.value,
+        phone_number: this.accountForm.controls.phone.value,
+        gender: (this.gender === '3') ? null : (this.gender === '1') ? true : false,
+        introduction: this.introduction
+      };
+      this.dialogRef.close(modifyUserBasicInfoQ);
     }
   }
+
+
 
   /***
    * 根据传入数据进行初始化
@@ -56,7 +68,7 @@ export class AccountEditComponent implements OnInit {
       this.accountForm.controls.name.setValue(data.name);
       this.accountForm.controls.phone.setValue(data.phone_number);
       this.gender = (data.gender === null) ? '3' : (data.gender === true) ? '1' : '2';
-      console.log(this.gender)
+      this.introduction = data.introduction ;
     }
   }
 

@@ -9,7 +9,7 @@ import {
   PageInfoQ,
   Resp,
   PostRegisterQ,
-  ChangPwdByForce
+  ChangPwdByForce, ModifyUserBasicInfoQ
 } from "../../types/types";
 import {CollectionViewer, DataSource, ListRange, SelectionModel} from "@angular/cdk/collections";
 import {MatPaginator, PageEvent} from "@angular/material/paginator";
@@ -101,7 +101,7 @@ export class AccountAdminComponent implements OnInit {
         this.msg.SendMessage('删除账号失败。未知错误').subscribe()
       },
       complete: () => {
-        this.dataSource.getRange();    // 删除后更新列表
+        this.dataSource.setData();    // 删除后更新列表
       }
     })
   }
@@ -116,7 +116,6 @@ export class AccountAdminComponent implements OnInit {
     if (event) {
       event.stopPropagation();
     }
-
     const dialogRef = this.dialog.open(AccountEditComponent, {
       data: user
     });
@@ -135,13 +134,31 @@ export class AccountAdminComponent implements OnInit {
             },
             error: () => {
               this.msg.SendMessage('创建账号失败').subscribe();
+            },
+            complete: () => {
+              this.dataSource.setData();
             }
           })
         }
       }else{   // 若传入了用户对象，则对其进行修改
-
+        const modifyUserBasicInfoQ: ModifyUserBasicInfoQ = result as ModifyUserBasicInfoQ;
+        this.conn.UpdateUserInfoByForce(modifyUserBasicInfoQ, user.user_id).subscribe({
+          next: value => {
+            if (value.status !== 0 ){
+              this.msg.SendMessage('修改用户信息失败').subscribe();
+            }else{
+              this.msg.SendMessage('修改用户信息成功').subscribe();
+            }
+          },
+          error: err => {
+            this.msg.SendMessage('修改用户信息失败。未知错误').subscribe();
+          },
+          complete: () => {
+            this.dataSource.setData()
+          }
+        });
       }
-    })
+    });
   }
 
   /***
@@ -167,6 +184,9 @@ export class AccountAdminComponent implements OnInit {
           },
           error: () => {
             this.msg.SendMessage('导入账号失败').subscribe();
+          },
+          complete: () => {
+            this.dataSource.setData();
           }
         })
       }
@@ -269,10 +289,7 @@ export class AccountDataSource extends DataSource<UserInfo> {
     this.paginator.page.subscribe((event: PageEvent) => {
       this.index = event.pageIndex;
       this.size = event.pageSize;
-      this.getRange().subscribe(data => {
-        this.data = data;
-        this.data$.next(this.data);
-      })
+      this.setData()
     })
   }
 
@@ -280,6 +297,13 @@ export class AccountDataSource extends DataSource<UserInfo> {
   public applyFilter(filter: AccountFilter) {
 
 
+  }
+
+  setData(){
+    this.getRange().subscribe(data => {
+      this.data = data;
+      this.data$.next(this.data);
+    })
   }
 
   /***
@@ -312,7 +336,8 @@ export class AccountDataSource extends DataSource<UserInfo> {
             phone_number: getUserInfo.phone_number,
             role_name: getUserInfo.role_name,
             user_id: getUserInfo.user_id,
-            username: getUserInfo.username
+            introduction: getUserInfo.introduction,
+            username: getUserInfo.username,
           });
         }
         observer.next(list);

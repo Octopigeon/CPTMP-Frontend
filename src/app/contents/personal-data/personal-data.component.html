@@ -44,6 +44,18 @@
     <mat-divider></mat-divider>
     <div class="form-input-wrapper">
       <div class="form-label">
+        <label>联系方式</label>
+      </div>
+      <mat-form-field appearance="standard" class="form-input">
+        <mat-label>联系方式</mat-label>
+        <input matInput placeholder="您的常用联系方式" formControlName="phone_number" required>
+        <mat-icon matSuffix>phone</mat-icon>
+        <mat-hint>请使用常用联系方式，以便他人能及时联系到你</mat-hint>
+      </mat-form-field>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="form-input-wrapper">
+      <div class="form-label">
         <label>个人简介</label>
       </div>
       <mat-form-field appearance="standard" class="form-input">

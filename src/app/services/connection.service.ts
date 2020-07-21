@@ -11,7 +11,7 @@ import {
   UserInfo,
   UserInfoL,
   DeleteUserQ,
-  PageResp, PageInfoQ, TrainQ, CreateTrainQ, PostRegisterQ, ChangPwdByForce
+  PageResp, PageInfoQ, TrainQ, CreateTrainQ, PostRegisterQ, ChangPwdByForce, Train
 } from "../types/types";
 
 import {Logger} from "./logger.service";
@@ -82,6 +82,7 @@ export class ConnectionService {
     if (ibody == null){
       return this.client.get<Resp>(url);
     }else{
+      console.log(ibody)
       return this.client.request<Resp>('get', url, {body: ibody});
     }
   }
@@ -420,6 +421,89 @@ export class ConnectionService {
     }
     return result;
   }
+
+  public DeleteOrg(orgId: number[]): Observable<Resp>{
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    const errorList: number[] = [];
+    let length = orgId.length;
+    for (const storageElement of orgId) {
+      const url = API.org + '/' + storageElement;
+      console.log(url);
+      this.delete(url).subscribe({
+        next: response => {
+          if (response.status !== 0) {
+            this.logger.log(`Delete org failed with status code ${response.status}: ${response.msg}.`);
+            errorList.push(storageElement);
+          }
+          length--;
+          if (length <= 0) {
+            if (errorList.length > 0) {
+              let errorMessage = '组织';
+              for (const columnRef of errorList) {
+                errorMessage = errorMessage + columnRef + '、';
+              }
+              errorMessage = errorMessage + '删除失败';
+              observer.error(errorMessage);
+            } else {
+              console.log(errorList.length);
+              observer.next();
+              setTimeout(() => {
+                observer.complete();
+              }, 500);
+            }
+          }
+        },
+        error: error => {
+          this.logger.log(`Delete org failed with network error: `, error);
+          errorList.push(storageElement);
+          length--;
+          if (length <= 0) {
+            if (errorList.length > 0) {
+              let errorMessage = '组织';
+              for (const columnRef of errorList) {
+                errorMessage = errorMessage + columnRef + '、';
+              }
+              errorMessage = errorMessage + '删除失败';
+              observer.error(errorMessage);
+            } else {
+              console.log(errorList.length);
+              observer.next();
+              setTimeout(() => {
+                observer.complete();
+              }, 1000);
+            }
+          }
+        }
+      });
+    }
+    return result;
+  }
+
+  public UploadTrainInfo(trainQ: TrainQ): Observable<Resp>{
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+
+    this.put(API.train, trainQ).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Upload train info failed with status code ${response.status}: ${response.msg}.`);
+          observer.error(response);
+        }else{
+          observer.next(response);
+          setTimeout(() => {
+            observer.complete();
+          }, 500);
+        }
+      },
+      error: error => {
+        this.logger.log(`Upload train info failed with network error: `, error);
+        observer.error(error);
+      }
+    });
+    return result;
+  }
+
   /***
    * 删除用户的连接
    * @param deleteUserQ  删除用的的id数组
@@ -434,12 +518,12 @@ export class ConnectionService {
         if (response.status !== 0) {
           this.logger.log(`Delete User failed with status code ${response.status}: ${response.msg}.`);
           observer.error(response);
-          return result;
+        }else{
+          observer.next(response);
+          setTimeout(() => {
+            observer.complete();
+          }, 500);
         }
-        observer.next(response);
-        setTimeout(() => {
-          observer.complete();
-        }, 500);
       },
       error: error => {
 
@@ -508,8 +592,11 @@ export class ConnectionService {
   public GetOrgInfoByGroup(orgId: number[]): Observable<Resp> {
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
-    const url = API.org + '/name' ;
-    this.get(url, orgId).subscribe({
+    let url = API.org + '/name?org_id=' + orgId[0] ;
+    for ( let i = 1; i < orgId.length; i++){
+      url = url + ',' + orgId[i];
+    }
+    this.get(url).subscribe({
       next: response => {
         if (response.status !== 0) {
           this.logger.log(`Get org info by group failed with status code ${response.status}: ${response.msg}.`);
@@ -526,6 +613,32 @@ export class ConnectionService {
     });
     return result;
   }
+
+  public UpdateUserInfoByForce(modifyUserBasicInfoQ: ModifyUserBasicInfoQ , userId: number): Observable<Resp>{
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    const url = API.user + '/' + userId + '/basic-info'
+    console.log(url)
+    this.put(url, modifyUserBasicInfoQ).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Update user info failed with status code ${response.status}: ${response.msg}.`);
+          observer.error(response);
+        }else{
+          observer.next(response);
+          setTimeout(() => {
+            observer.complete();
+          }, 500);
+        }
+      },
+      error: error => {
+        this.logger.log(`Update user info failed with network error: `, error);
+        observer.error(error);
+      }
+    });
+    return result;
+  }
+
   /***
    * 分页查询所有实训的连接
    * @param pageInfoQ  分页信息
@@ -542,8 +655,38 @@ export class ConnectionService {
           observer.error(response);
           return result;
         }
-        observer.next(response);
-        observer.complete();
+        let trainQList: TrainQ[] = [];
+        let orgId: number[] = [];
+        for (const columnRef of response.data) {
+          const trainQ: TrainQ = columnRef as TrainQ;
+          orgId.push(trainQ.organization_id);
+          trainQList.push(trainQ);
+        }
+        let url = API.org + '/name?org_id=' + orgId[0] ;
+        for ( let i = 1; i < orgId.length; i++){
+          url = url + ',' + orgId[i];
+        }
+        this.get(url).subscribe({
+          next: res => {
+            if (response.status !== 0) {
+              this.logger.log(`Get org info by group failed with status code ${res.status}: ${res.msg}.`);
+              observer.error(res);
+            }else{
+              let i = 0 ;
+              for (const org of res.data) {
+                trainQList[i].org_name = org;
+                i++;
+              }
+              response.data = trainQList;
+              observer.next(response);
+              observer.complete();
+            }
+          },
+          error: error => {
+            this.logger.log(`Get org info by group failed with network error: `, error);
+            observer.error(error);
+          }
+        });
       },
       error: error => {
         this.logger.log(`Get all train failed with network error: `, error);
@@ -816,10 +959,12 @@ export class ConnectionService {
         if (resp.status !== 0) {
           this.logger.log(`Post enterprise-admin reg failed with status code ${resp.status}: ${resp.msg}.`);
           observer.error(resp);
-          return result;
+        }else{
+          observer.next(resp);
+          setTimeout(() => {
+            observer.complete();
+          }, 1000);
         }
-        observer.next(resp);
-        observer.complete();
         },
       error: error => {
         this.logger.log(`Post enterprise-admin reg failed with network error: `, error);

@@ -184,6 +184,8 @@ export class SchoolAdminComponent implements OnInit {
           next: resp => {
             if (resp.status === 0) {
               this.msg.SendMessage('组织信息修改成功').subscribe();
+            }else{
+              this.msg.SendMessage('组织信息修改失败').subscribe();
             }
           },
           error: () => {
@@ -200,10 +202,23 @@ export class SchoolAdminComponent implements OnInit {
    */
   // TODO delete scholl according to selection
   schoolDelete() {
-
-    this.msg.SendMessage('正在删除组织').subscribe()
-
-
+    this.msg.SendMessage('正在删除组织').subscribe();
+    const orgId: number[] = [];
+    for (const selectionElement of this.selection.selected) {
+      orgId.push(selectionElement.id);
+    }
+    console.log(orgId);
+    this.conn.DeleteOrg(orgId).subscribe({
+      next: value => {
+          this.msg.SendMessage('删除组织成功').subscribe();
+      },
+      error: err1 => {
+        this.msg.SendMessage('删除组织失败。未知错误').subscribe();
+      },
+      complete: () => {
+        this.getDate();
+      }
+    });
   }
 
   // TODO send request to regenerate invitation code
@@ -235,6 +250,7 @@ export class SchoolAdminComponent implements OnInit {
         }
         for (const connElement of resp.data) {   // 载入各个组织信息
           const organization: GetOrgQ = connElement as GetOrgQ;
+          console.log(organization.gmt_create)
           const org: Organization = {
             id: organization.id,
             name: organization.real_name,
@@ -242,7 +258,7 @@ export class SchoolAdminComponent implements OnInit {
             description: organization.description,
             url: organization.website_url,
             invitation_code: ' ',
-            created: new Date(organization.gmt_creat).getTime()
+            created: new Date(organization.gmt_create).getTime()
           };
           this.organizationList.push(org);
         }
