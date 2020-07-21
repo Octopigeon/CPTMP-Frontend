@@ -1,15 +1,18 @@
 <div class="project-info">
   <div class="float-operation">
     <!-- TODO add team list routerLink -->
-    <a mat-fab color="primary" matTooltip="查看选择此项目的团队" class="list-button">
+    <a mat-fab color="primary" *ngIf="editMode" matTooltip="查看选择此项目的团队" class="list-button">
       <mat-icon>open_in_new</mat-icon>
     </a>
     <!-- TODO add create team routerLink -->
-    <a mat-fab color="primary" matTooltip="新建团队" class="new-button">
+    <a mat-fab color="primary" *ngIf="editMode" matTooltip="新建团队" class="new-button">
       <mat-icon>add</mat-icon>
     </a>
     <button *ngIf="editMode" mat-fab color="primary" matTooltip="保存更改" class="save-button" (click)="saveChange()">
       <mat-icon>save</mat-icon>
+    </button>
+    <button *ngIf="!editMode" mat-fab color="primary" matTooltip="创建项目" class="save-button" (click)="createProject()">
+      <mat-icon>add</mat-icon>
     </button>
   </div>
   <h1 id="project-name">

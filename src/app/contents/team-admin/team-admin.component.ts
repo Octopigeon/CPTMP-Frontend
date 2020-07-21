@@ -62,15 +62,30 @@ export class TeamAdminComponent implements OnInit {
    * 根据用户选择删除对应团队
    */
   // TODO delete selected team
-  teamDelete() {
-
+  teamDelete(): void{
+    let List: number[] = [];
+    this.msg.SendMessage('正在删除实训……').subscribe();
+    for (const columnRef of this.selection.selected) {
+      List.push(columnRef.id);
+    }
+    this.conn.DeleteTrain(List).subscribe({
+      next: resp => {
+        this.msg.SendMessage('删除成功！').subscribe();
+      },
+      error: err => {
+        this.msg.SendMessage(err).subscribe();
+      },
+      complete: () => {
+        this.dataSource.getRange();
+      }
+    })
   }
 
   /**
    * 创建团队
    */
   teamCreate() {
-
+    this.loc.go(['/plat/team/detail/new']);
   }
 
   /***
@@ -126,6 +141,10 @@ export class TeamDataSource extends DataSource<Team> {
   public data: Team[] = [];
   private readonly data$: BehaviorSubject<Team[]>;
 
+  private index: number = 1;
+
+  private size: number = 10;
+
   private _subscription = new Subscription();
 
   constructor(private conn: ConnectionService,
@@ -135,12 +154,11 @@ export class TeamDataSource extends DataSource<Team> {
     this.data$ = new BehaviorSubject<Team[]>(this.data);
 
     // this should be changed upon each get
-    this.length = 1000;
+    this.length = 10;
     this.paginator.page.subscribe((event: PageEvent) => {
-      const start = event.pageIndex * event.pageSize;
-      const end = start + event.pageSize;
-      console.log(event.pageIndex)
-      this.getRange(start, end).subscribe(data => {
+      this.size = event.pageSize;
+      this.index = event.pageIndex;
+      this.getRange().subscribe(data => {
         this.data = data;
         this.data$.next(this.data);
       })
@@ -152,13 +170,14 @@ export class TeamDataSource extends DataSource<Team> {
   }
 
   // TODO implement real data fetch
-  private getRange(tpage: number, tindex: number): Observable<Team[]> {
+  public getRange(): Observable<Team[]> {
     let observer: Subscriber<Team[]>;
     const result = new Observable<Team[]>(o => observer = o);
     const pageInfoQ: PageInfoQ = {
-      page : tpage + 1,
-      offset: tindex
+      page : this.index + 1,
+      offset: this.size
     };
+    console.log(pageInfoQ);
     const list: Team[] = [];
     this.conn.GetAllTeam(pageInfoQ).subscribe({
       next: value => {
@@ -166,6 +185,8 @@ export class TeamDataSource extends DataSource<Team> {
           this.msg.SendMessage('获取团队信息失败').subscribe();
           observer.error();
         }else{
+          console.log(value);
+          this.length = value.total_rows
           for (const valueElement of value.data) {
             const teamQ: GetTeamQ = valueElement as GetTeamQ;
             list.push({
@@ -181,9 +202,9 @@ export class TeamDataSource extends DataSource<Team> {
               member_count: 1,
               leader_id: 1
             })
-            observer.next(list);
-            observer.complete();
           }
+          observer.next(list);
+          observer.complete();
         }
       },
       error: err => {
@@ -204,7 +225,7 @@ export class TeamDataSource extends DataSource<Team> {
     //     this.data$.next(this.data);
     //   })
     // }))
-    this.getRange(0, this.paginator.pageSize).subscribe(data => {
+    this.getRange().subscribe(data => {
       this.data = data;
       this.data$.next(this.data);
     })

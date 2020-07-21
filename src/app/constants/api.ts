@@ -13,5 +13,6 @@ export const API = {
   train: `${environment.backend}api/train`,  // 与实训有关的API地址
   enterprise_admin: `${environment.backend}api/user/enterprise-admin`,  // 与批量导入企业管理员有关的地址
   search_team: `${environment.backend}api/team/search`,
-  change_password_force: `${environment.backend}api/user/pwd`
+  change_password_force: `${environment.backend}api/user/pwd`,
+  team: `${environment.backend}api/team`,
 }

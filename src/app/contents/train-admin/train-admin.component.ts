@@ -157,6 +157,7 @@ export class TrainAdminComponent implements OnInit {
       next: resp => {
         if (resp.status === 0) {
           const trainList: Train[] = [];
+          const trainId: number[] = [];
           for (const columnRef of resp.data) {
             const trainQ: TrainQ = columnRef as TrainQ;
             const train: Train = {
@@ -171,18 +172,20 @@ export class TrainAdminComponent implements OnInit {
               gps_info: trainQ.gps_info,
               resource_lib: trainQ.resource_library
             };
-            this.conn.GetOrgInfo(trainQ.organization_id).subscribe({
-              next: nresp => {
-                const getOrgQ: GetOrgQ = nresp.data as GetOrgQ;
-                train.organization = getOrgQ.real_name;
-              },
-              error: eresp => {
-                train.organization = '错误:未查到相关组织';
-              }
-            });
             trainList.push(train);
+            trainId.push(train.id);
           }
           this.dataSource = new MatTableDataSource<Train>(trainList);
+          this.conn.GetOrgInfoByGroup(trainId).subscribe({
+            next: nresp => {
+              const getOrgQ: GetOrgQ = nresp.data as GetOrgQ;
+
+            },
+            error: eresp => {
+
+            }
+          });
+          console.log(trainList)
         } else {
           this.msg.SendMessage('获取列表失败。').subscribe();
         }

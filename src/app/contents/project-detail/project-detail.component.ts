@@ -53,6 +53,10 @@ export class ProjectDetailComponent implements OnInit {
 
   constructor(private route: ActivatedRoute, private loc: LocationService, private dialog: MatDialog) { }
 
+  createProject(){
+
+  }
+
   ngOnInit(): void {
     this.route.paramMap.subscribe(param => {
       const id = param.get('id');

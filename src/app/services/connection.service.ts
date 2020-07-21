@@ -78,8 +78,12 @@ export class ConnectionService {
     }
   }
 
-  private get(url: string): Observable<Resp> {
-    return this.client.get<Resp>(url);
+  private get(url: string, ibody?: any): Observable<Resp> {
+    if (ibody == null){
+      return this.client.get<Resp>(url);
+    }else{
+      return this.client.request<Resp>('get', url, {body: ibody});
+    }
   }
 
   private post(url: string, body: any): Observable<Resp> {
@@ -359,6 +363,63 @@ export class ConnectionService {
     return result;
   }
 
+  public DeleteTeam(teamId: number[]): Observable<Resp>{
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+
+    const errorList: number[] = [];
+    let length = teamId.length;
+    for (const storageElement of teamId) {
+      const url = API.team + '/' + storageElement;
+      this.delete(url).subscribe({
+        next: response => {
+          if (response.status !== 0) {
+            this.logger.log(`Delete team failed with status code ${response.status}: ${response.msg}.`);
+            errorList.push(storageElement);
+          }
+          length--;
+          if (length <= 0) {
+            if (errorList.length > 0) {
+              let errorMessage = '团队';
+              for (const columnRef of errorList) {
+                errorMessage = errorMessage + columnRef + '、';
+              }
+              errorMessage = errorMessage + '删除失败';
+              observer.error(errorMessage);
+            } else {
+              console.log(errorList.length);
+              observer.next();
+              setTimeout(() => {
+                observer.complete();
+              }, 1000);
+            }
+          }
+        },
+        error: error => {
+          this.logger.log(`Delete team failed with network error: `, error);
+          errorList.push(storageElement);
+          length--;
+          if (length <= 0) {
+            if (errorList.length > 0) {
+              let errorMessage = '实训';
+              for (const columnRef of errorList) {
+                errorMessage = errorMessage + columnRef + '、';
+              }
+              errorMessage = errorMessage + '删除失败';
+              observer.error(errorMessage);
+            } else {
+              console.log(errorList.length);
+              observer.next();
+              setTimeout(() => {
+                observer.complete();
+              }, 1000);
+            }
+          }
+        }
+      });
+    }
+    return result;
+  }
   /***
    * 删除用户的连接
    * @param deleteUserQ  删除用的的id数组
@@ -437,13 +498,34 @@ export class ConnectionService {
         observer.complete();
       },
       error: error => {
-        this.logger.log(`Get org info all train failed with network error: `, error);
+        this.logger.log(`Get org info failed with network error: `, error);
         observer.error(error);
       }
     });
     return result;
   }
 
+  public GetOrgInfoByGroup(orgId: number[]): Observable<Resp> {
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    const url = API.org + '/name' ;
+    this.get(url, orgId).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Get org info by group failed with status code ${response.status}: ${response.msg}.`);
+          observer.error(response);
+          return result;
+        }
+        observer.next(response);
+        observer.complete();
+      },
+      error: error => {
+        this.logger.log(`Get org info by group failed with network error: `, error);
+        observer.error(error);
+      }
+    });
+    return result;
+  }
   /***
    * 分页查询所有实训的连接
    * @param pageInfoQ  分页信息

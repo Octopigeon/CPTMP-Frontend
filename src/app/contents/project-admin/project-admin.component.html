@@ -6,7 +6,7 @@
   <!-- TODO add link to project detail (new) page -->
   <a mat-fab color="primary" matTooltip="添加项目" aria-label="添加项目" href="/plat/project/detail/new"><mat-icon>add</mat-icon></a>
   <button mat-fab color="warn" (click)="projectDelete()"
-          matTooltip="删除已选项目" aria-label="删除已选项目"><mat-icon>delete</mat-icon></button>
+          matTooltip="删除已选项目" aria-label="删除已选项目" [disabled]="selection.isEmpty()"><mat-icon>delete</mat-icon></button>
 </div>
 <div class="content-wrapper mat-elevation-z8">
   <table mat-table [dataSource]="dataSource" class="project-table">
