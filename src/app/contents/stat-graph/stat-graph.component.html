@@ -4,8 +4,43 @@
 </div>
 <div class="content-wrapper">
   <div echarts [options]="options" class="commit-chart"></div>
-  <div cdkDropList class="field-list" (cdkDropListDropped)="sorterDropped($event)">
-    <div class="field-box" *ngFor="let field of orderNames" cdkDrag>{{field[1]}}</div>
+  <div class="float-member mat-elevation-z3" [@memberPanel]="expandMember ? 'expanded': 'minified'">
+    <div class="member-header">
+      <div class="toggle-container">
+        <mat-slide-toggle
+          [(ngModel)]="expandMember"
+          matTooltip="点击以展开成员信息"></mat-slide-toggle>
+      </div>
+      <div class="title-container">
+        <h2 class="member-title">
+          成员信息
+        </h2>
+      </div>
+    </div>
+    <div class="member-list">
+      <mat-list>
+        <mat-list-item *ngFor="let member of member_info_list" class="member-list-item">
+          <img mat-list-icon class="member-avatar" [src]="member.avatar_url" alt="">
+          <div mat-line>{{member.login}}</div>
+          <div mat-line>
+            <a [href]="member.html_url" target="_blank" rel="noopener" class="member-link">
+              Github主页
+            </a>
+          </div>
+        </mat-list-item>
+      </mat-list>
+    </div>
   </div>
 </div>
-
+<div class="draggable-panel mat-elevation-z3" cdkDrag>
+  <div class="panel-handle" cdkDragHandle matTooltip="点按以拖拽">
+    <div class="handle-dot"></div>
+    <div class="handle-dot"></div>
+    <div class="handle-dot"></div>
+  </div>
+  <h2 class="panel-title">条目排序</h2>
+  <div cdkDropList class="field-list" (cdkDropListDropped)="sorterDropped($event)">
+    <div class="field-box" *ngFor="let field of orderNames" cdkDrag
+         matTooltip="拖拽以更改顺序" matTooltipPosition="left">{{field[1]}}</div>
+  </div>
+</div>

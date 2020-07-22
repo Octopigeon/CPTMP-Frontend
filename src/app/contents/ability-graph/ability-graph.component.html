@@ -1,0 +1,25 @@
+<div class="info-header">
+  <h1 class="header-title">技能分析</h1>
+  <p class="header-note">你完成了实训项目「{{train}}」，下面是你的能力评价</p>
+</div>
+<div class="content-wrapper">
+  <div class="grade-header">
+    <h2 class="ability-header">
+      实训点评
+    </h2>
+    <p>{{name}}，你在实训「{{train}}」中作为「{{team}}」团队的一员，完成了「{{project}}」项目，得到的分数为{{point}}分。</p>
+  </div>
+  <div class="ability-graph">
+    <div class="base-adjust">
+      <label class="adjust-label">分数基准:&nbsp;</label>
+      <mat-slider min="0" [max]="maxBase" step="1" value="0" thumbLabel="true" (valueChange)="updateBase($event)"
+      class="adjust-slider"></mat-slider>
+    </div>
+    <div echarts [options]="options" class="graph"></div>
+  </div>
+  <div class="grade-detail">
+    <p>下面是实训教师给你的评价：</p>
+    <p>{{evaluation}}</p>
+    <p>希望你在本次实训中有所收获！</p>
+  </div>
+</div>

@@ -1,22 +1,40 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {EChartOption} from 'echarts';
 import {ActivatedRoute} from '@angular/router';
 import {EXAMPLE_STAT} from './example-data';
 import {ContributorStat, GHAuthorInfo, StatEntry} from '../../types/types';
 import {hsl2hex} from '../../shared/color-tools';
 import {combineLatest, Observable, of, Subscriber} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {first, map} from 'rxjs/operators';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import SeriesSunburst = echarts.EChartOption.SeriesSunburst;
+import {animate, sequence, state, style, transition, trigger} from '@angular/animations';
+import {MatTooltip} from '@angular/material/tooltip';
+import {EnvService} from '../../services/env.service';
 
 @Component({
   selector: 'app-stat-graph',
   templateUrl: './stat-graph.component.html',
-  styleUrls: ['./stat-graph.component.styl']
+  styleUrls: ['./stat-graph.component.styl'],
+  animations: [
+    trigger('memberPanel', [
+      state('minified', style({width: '64px', height: '64px'})),
+      state('expanded', style({width: '*', height: '*'})),
+      transition('minified => expanded', sequence([
+        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)', style({ width: '*' })),
+        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)', style({ height: '*' })),
+      ])),
+      transition('expanded => minified', sequence([
+        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)', style({ height: '64px' })),
+        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)', style({ width: '64px' })),
+      ]))
+    ]),
+  ],
 })
 export class StatGraphComponent implements OnInit {
 
   team = '队伍名';
+  expandMember = false;
 
   options: EChartOption;
 
@@ -24,8 +42,8 @@ export class StatGraphComponent implements OnInit {
   orderSubscriber: Subscriber<string[]>;
   order$: Observable<string[]>;
   colorTable = {
-    week: (current: string) => hsl2hex(0, 0, 0.6 + 0.2 * Number(current) / this.week_count),
-    ad: (current: string) => current === 'add' ? '#2cbe4e' : '#cb2431',
+    week: (current: string) => hsl2hex(231, 0.99, 0.75 + 0.15 * Number(current) / this.week_count),
+    ad: (current: string) => current === 'add' ? '#33a730' : '#e55245',
     member: (current: string) => {
       const index = Number(current);
       switch (this.member_count) {
@@ -60,6 +78,9 @@ export class StatGraphComponent implements OnInit {
   member_map: {[key: string]: GHAuthorInfo};
   member_list: string[];
   member_count: number;
+  get member_info_list(): GHAuthorInfo[] {
+    return Object.values(this.member_map);
+  }
 
   preprocessData(raw_data: ContributorStat[]) {
     const weekSet = new Set<string>();
@@ -191,10 +212,39 @@ export class StatGraphComponent implements OnInit {
               rotate: 'radial'
             },
             sort: null,
+            // @ts-ignore
+            levels: [{}, {
+              r0: '15%',
+              r: '35%',
+              itemStyle: {
+                borderWidth: 2
+              },
+              label: {
+                rotate: 'tangential'
+              }
+            }, {
+              r0: '35%',
+              r: '70%',
+              label: {
+                align: 'right'
+              }
+            }, {
+              r0: '70%',
+              r: '72%',
+              label: {
+                position: 'outside',
+                padding: 3,
+                silent: false,
+                textBorderWidth: 3,
+              },
+              itemStyle: {
+                borderWidth: 3
+              }
+            }],
             data
           }]
         }
       });
-    })
+    });
   }
 }

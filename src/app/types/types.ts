@@ -260,3 +260,15 @@ export interface StatEntry {
   data: number;
   member_info: GHAuthorInfo;
 }
+
+export interface PersonalGrade {
+  id: number;
+  team_id: number;
+  user_id: number;
+  evaluation: string;
+  manage_point: number;
+  code_point: number;
+  tech_point: number;
+  framework_point: number;
+  communication_point: number;
+}

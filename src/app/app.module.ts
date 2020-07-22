@@ -81,6 +81,8 @@ import {StatGraphComponent} from './contents/stat-graph/stat-graph.component';
 import * as echarts from 'echarts';
 import {NgxEchartsModule} from 'ngx-echarts';
 import {DragDropModule} from '@angular/cdk/drag-drop';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import { AbilityGraphComponent } from './contents/ability-graph/ability-graph.component';
 
 // These are the hardcoded inline svg sources to be used by the `<mat-icon>` component.
 // tslint:disable: max-line-length
@@ -190,7 +192,8 @@ export const svgIconProviders = [
     JoinRequestComponent,
     MessageComponent,
     SendMessageComponent,
-    StatGraphComponent
+    StatGraphComponent,
+    AbilityGraphComponent
   ],
   imports: [
     BrowserModule,
@@ -234,7 +237,8 @@ export const svgIconProviders = [
     NgxEchartsModule.forRoot({
       echarts
     }),
-    DragDropModule
+    DragDropModule,
+    MatButtonToggleModule
   ],
   providers: [
     ErrorHandler,
