@@ -1,11 +1,13 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {Project, ResourceFile, Team} from "../../types/types";
+import {GetOrgQ, Project, ProjectQ, ResourceFile, Team, Train, TrainQ} from "../../types/types";
 import {StatedFormControl} from "../../shared/stated-form-control";
 import {ActivatedRoute} from "@angular/router";
 import {LocationService} from "../../services/location.service";
 import {MatSelectionList} from "@angular/material/list";
 import {SelectFileComponent} from "../../popups/select-file/select-file.component";
 import {MatDialog} from "@angular/material/dialog";
+import {ConnectionService} from "../../services/connection.service";
+import {MessageService} from "../../services/message.service";
 
 @Component({
   selector: 'app-project-detail',
@@ -16,27 +18,23 @@ export class ProjectDetailComponent implements OnInit {
 
   @ViewChild(MatSelectionList) fileSelection: MatSelectionList;
 
-  data: Project = {
+  newProject: Project = {
     id: 1,
     name: "新项目",
     level: 3,
     content: "暂无项目主题",
-    resource_lib: [{
-      file_name: "db7b5936-9ceb-422a-bad3-90366432a07c.jpg",
-      file_path: "/api/storage/2020/7/15/db7b5936-9ceb-422a-bad3-90366432a07c.jpg",
-      file_size: 584778,
-      file_type: "image/jpeg",
-      created: 1594798123238,
-      original_name: "2019101404.jpg"
-    }, {
-      file_name: "21e62a42-c557-43b5-8530-b3abab4ecee8.png",
-      file_path: "/api/storage/2020/7/15/21e62a42-c557-43b5-8530-b3abab4ecee8.png",
-      file_size: 1845323,
-      file_type: "image/png",
-      created: 1594798206653,
-      original_name: "2019101403.png"
-    }],
+    resource_lib: null,
   };
+
+  err: Project = {
+    id: 1,
+    name: "err",
+    level: 3,
+    content: "err",
+    resource_lib: null,
+  };
+
+  data: Project;
 
   controls: {[key: string]: StatedFormControl} = {
     name: new StatedFormControl(''),
@@ -51,29 +49,90 @@ export class ProjectDetailComponent implements OnInit {
   editMode: boolean = true;
   editFile: boolean = true;
 
-  constructor(private route: ActivatedRoute, private loc: LocationService, private dialog: MatDialog) { }
+  constructor(private route: ActivatedRoute,
+              private loc: LocationService,
+              private dialog: MatDialog,
+              private conn: ConnectionService,
+              private msg: MessageService,) { }
 
   createProject(){
-
+    const projectQ: ProjectQ = {
+      name: this.controls.name.value,
+      level: this.controls.level.value,
+      content: this.controls.content.value
+    };
+    this.conn.CreatProject(projectQ).subscribe({
+      next: value => {
+        if(value.status !== 0){
+          this.msg.SendMessage('创建新项目失败').subscribe();
+        }else{
+          this.msg.SendMessage('创建新项目成功').subscribe();
+        }
+      },
+      error: err1 => {
+        this.msg.SendMessage('创建新项目失败。未知错误').subscribe();
+      },
+      complete: () => {
+        this.loc.go(['/plat/project/']);
+      }
+    });
   }
+
+  projectId: string;
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(param => {
-      const id = param.get('id');
+      this.projectId = param.get('id');
 
       // TODO must have valid id (uncomment following code)
       // if (!id || !id.trim()) {
       //   this.loc.go(['/', 'not-found'])
       // }
       // TODO retrieve id from param, and data from backend (and special handling to new project)
-      if (id === 'new'){
+      if (this.projectId === 'new'){
         this.editMode = false;
       }
-      Object.entries(this.controls).forEach(([field, control]) => {
-        control.setValue(this.data[field]);
-      })
+      this.GetData()
     })
   }
+
+  SetData(){
+    Object.entries(this.controls).forEach(([field, control]) => {
+      control.setValue(this.data[field]);
+    });
+  }
+
+  GetData(){
+    if (!this.editMode){
+      this.data = this.newProject;
+      this.SetData();
+    }else{
+      this.conn.GetProject(this.projectId).subscribe({
+        next: resp => {
+          if (resp.status === 0) {
+            const projectQ = resp.data as ProjectQ;
+            const project: Project = {
+              id: projectQ.id,
+              name: projectQ.name,
+              content: projectQ.content,
+              level: projectQ.level,
+              resource_lib: null
+            };
+            this.data = project;
+            this.SetData();
+          } else {
+            this.data = this.err;
+            this.msg.SendMessage('获取实训信息失败。请稍后再试').subscribe()
+          }
+        },
+        error: () => {
+          this.data = this.err
+          this.msg.SendMessage('获取实训信息失败。未知错误').subscribe()
+        }
+      })
+    }
+  }
+
 
   /***
    * 上传项目的对应资源
@@ -107,6 +166,26 @@ export class ProjectDetailComponent implements OnInit {
    */
   saveChange() {
     //TODO save edit changes to server
+    const projectQ: ProjectQ = {
+      name: this.controls.name.value,
+      level: this.controls.level.value,
+      content: this.controls.content.value
+    };
+    this.conn.UploadProjectInfo(this.data.id, projectQ).subscribe({
+      next: value => {
+        if (value.status !== 0 ){
+          this.msg.SendMessage('修改信息失败').subscribe();
+        }else{
+          this.msg.SendMessage('修改信息成功').subscribe();
+        }
+      },
+      error: err1 => {
+        this.msg.SendMessage('修改信息失败。未知错误').subscribe();
+      },
+      complete: () => {
+        this.GetData();
+      }
+    })
   }
 
   capLevel(level: number): number {
@@ -121,6 +200,12 @@ export class ProjectDetailComponent implements OnInit {
 
   range(count: number, begin: number = 0) {
     return [...Array(count).keys()].map(i => i + begin);
+  }
+
+  jumpToTeamList(){
+    const index: string = '0&' + this.data.id;
+    console.log(123)
+    this.loc.go(['/plat/teamList/', index]);
   }
 
 }

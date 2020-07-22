@@ -36,6 +36,7 @@ const routes: Routes = [
   { path: 'plat/projectList', component: ProjectListComponent},  // 转到项目列表界面
   { path: 'plat/org', component: SchoolAdminComponent},  // 转到组织管理界面
   { path: 'plat/team', component: TeamAdminComponent},  //  转到团队管理界面
+  { path: 'plat/teamList/:index', component: TeamListComponent},  //  转到团队管理界面
   { path: 'plat/teamList', component: TeamListComponent},  // 转到团队列表界面
   { path: 'plat/team/detail/:id', component: TeamDetailComponent},  // 转到团队详细信息界面
   { path: 'plat/train', component: TrainAdminComponent},  // 转到实训管理界面

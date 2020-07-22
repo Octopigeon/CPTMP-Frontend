@@ -164,6 +164,16 @@ export interface TrainQ{
   gps_info: string;
 }
 
+export interface File {
+  fileName: string;
+  filePath: string;
+  fileSize: number;
+  fileType: string;
+  fileUrl: string;
+  gmtCreate: string |number;
+  originName: string;
+}
+
 export interface CreateTrainQ{
   name: string;
   content: string;
@@ -199,7 +209,7 @@ export interface Project {
 }
 
 export interface  ProjectQ {
-  id: number;
+  id?: number;
   name: string;
   level: number;
   content: string;

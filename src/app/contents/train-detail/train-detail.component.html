@@ -1,7 +1,7 @@
 <div class="train-info">
   <div class="float-operation">
     <!-- TODO add team list routerLink -->
-    <a mat-fab color="primary" matTooltip="查看实训团队列表" class="save-button">
+    <a *ngIf="editMode" mat-fab color="primary" matTooltip="查看实训团队列表" class="save-button" (click) = "jumpToTeamList()">
       <mat-icon>open_in_new</mat-icon>
     </a>
     <button *ngIf="editMode" mat-fab color="primary" matTooltip="保存更改" class="save-button" (click)="saveChange()">

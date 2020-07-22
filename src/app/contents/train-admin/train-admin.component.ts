@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {GetOrgQ, Organization, PageInfoQ, Train, TrainQ} from "../../types/types";
+import {GetOrgQ, Organization, PageInfoQ, Project, ProjectQ, Train, TrainQ} from "../../types/types";
 import {MatTableDataSource} from "@angular/material/table";
 import {SelectionModel} from "@angular/cdk/collections";
 import {SchoolEditComponent} from "../../popups/school-edit/school-edit.component";
@@ -144,6 +144,41 @@ export class TrainAdminComponent implements OnInit {
 
   ngOnInit(): void {
     this.setDataSource();
+  }
+
+  getDate(){
+    const pageInfoQ: PageInfoQ = {
+      page: 1,
+      offset: 100,
+    }
+    this.conn.GetAllTrain(pageInfoQ).subscribe({
+      next: value => {
+        let trainList: Train[] = [];
+        if (value.status !== 0){
+          this.msg.SendMessage('获取实训信息失败').subscribe();
+        }else{
+          for (const selectionElement of value.data) {
+            const trainQ: TrainQ = selectionElement as TrainQ;
+            trainList.push({
+              id: trainQ.id,
+              name: trainQ.name,
+              organization_id: trainQ.organization_id,
+              organization: trainQ.org_name,
+              start_time: new Date(trainQ.start_time).getTime(),
+              end_time: new Date(trainQ.end_time).getTime(),
+              content: trainQ.content,
+              standard: trainQ.accept_standard,
+              resource_lib: trainQ.resource_library,
+              gps_info: trainQ.gps_info
+            });
+          }
+          this.dataSource = new MatTableDataSource<Train>(trainList);
+        }
+      },
+      error: err => {
+        this.msg.SendMessage('获取实训信息失败').subscribe();
+      }
+    });
   }
 
   /***

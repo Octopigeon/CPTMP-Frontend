@@ -155,6 +155,8 @@ export class TeamDetailComponent implements OnInit {
 
   train_list = Object.entries(this.trains)
 
+  teamId: string;
+
   getProjects(train_id: number): [string, string][] {
     // TODO change to fetch [train_project_id, project_name] according to given train_id
     return Object.entries(this.projects);
@@ -234,7 +236,8 @@ export class TeamDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(param => {
-      const id = param.get('id');
+      this.teamId = param.get('id');
+      this.editMode = (this.teamId !== 'new');
       // TODO must have valid id (uncomment following code)
       // if (!id || !id.trim()) {
       //   this.loc.go(['/', 'not-found'])
@@ -243,27 +246,38 @@ export class TeamDetailComponent implements OnInit {
 
       // we need all trains(_ => {train_id, train_name}),
       // and all projects belongs to specific train (train_id => {train_project_id, project_name})
-
-      Object.entries(this.controls).forEach(([field, control]) => {
-        control.setValue(this.data[field]);
-      })
-      this.leaderID = this.data.leader_id;
-
-      this.projects$ = this.controls.train_id.valueChanges.pipe(
-        startWith(''),
-        distinctUntilChanged(),
-        map(value => this.getProjects(value))
-      );
-
-      // user input can change quite frequently, so debounce it to reduce request amount
-      this.filteredUsers$ = this.userInputControl.valueChanges.pipe(
-        startWith(''),
-        debounceTime(500),
-        distinctUntilChanged(),
-        map(value => this._filterUser(value)),
-        tap(users => this.filteredUsers = users)
-      )
+      this.SetData();
     })
+  }
+
+  GetData(){
+    if ( this.editMode ){
+
+    }else{
+
+    }
+  }
+
+  SetData(){
+    Object.entries(this.controls).forEach(([field, control]) => {
+      control.setValue(this.data[field]);
+    })
+    this.leaderID = this.data.leader_id;
+
+    this.projects$ = this.controls.train_id.valueChanges.pipe(
+      startWith(''),
+      distinctUntilChanged(),
+      map(value => this.getProjects(value))
+    );
+
+    // user input can change quite frequently, so debounce it to reduce request amount
+    this.filteredUsers$ = this.userInputControl.valueChanges.pipe(
+      startWith(''),
+      debounceTime(500),
+      distinctUntilChanged(),
+      map(value => this._filterUser(value)),
+      tap(users => this.filteredUsers = users)
+    )
   }
 
   addFile() {

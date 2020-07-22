@@ -1,5 +1,15 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {CreateTrainQ, GetOrgQ, Organization, PageInfoQ, ResourceFile, Train, TrainQ} from "../../types/types";
+import {
+  CreateTrainQ,
+  GetOrgQ,
+  Organization,
+  PageInfoQ,
+  Project,
+  ProjectQ,
+  ResourceFile, Resp,
+  Train,
+  TrainQ
+} from "../../types/types";
 import {FormControl, FormGroup} from "@angular/forms";
 import {ActivatedRoute} from "@angular/router";
 import {LocationService} from "../../services/location.service";
@@ -11,13 +21,14 @@ import {StatedFormControl} from "../../shared/stated-form-control";
 import {ConnectionService} from "../../services/connection.service";
 import {Logger} from "../../services/logger.service";
 import {COMMA, ENTER} from "@angular/cdk/keycodes";
-import {Observable} from "rxjs";
+import {Observable, Subscriber} from "rxjs";
 import {MatChipInputEvent} from "@angular/material/chips";
 import {MatAutocompleteSelectedEvent} from "@angular/material/autocomplete";
 import {MessageService} from "../../services/message.service";
 import {debounceTime, distinctUntilChanged, map, startWith, tap} from "rxjs/operators";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {GoogleMapsModule} from "@angular/google-maps";
+import {MatTableDataSource} from "@angular/material/table";
 
 
 @Component({
@@ -232,6 +243,7 @@ export class TrainDetailComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.SetProjectData();
     this.route.paramMap.subscribe(param => {
       const id = param.get('id');
       // TODO must have valid id (uncomment following code)
@@ -245,6 +257,21 @@ export class TrainDetailComponent implements OnInit {
     });
   }
 
+  ParseStringToFile(input: string):ResourceFile[]{
+    let out: string[] = input.split('\"')
+    console.log(out);
+    let files: ResourceFile[] = []
+    const file: ResourceFile = {
+      file_name: out[5],
+      file_path: out[9],
+      file_size: Number(out[12]),
+      file_type: out[15],
+      created: Number(out[22]),
+      original_name: out[25]
+    };
+    files.push(file);
+    return files
+  }
 
   GetData(){
     if (!this.editMode){
@@ -271,7 +298,7 @@ export class TrainDetailComponent implements OnInit {
               end_time: new Date(trainQ.end_time).getTime(),
               standard: trainQ.accept_standard,
               gps_info: trainQ.gps_info,
-              resource_lib: trainQ.resource_library
+              resource_lib: this.ParseStringToFile(trainQ.resource_library)
             };
             this.conn.GetOrgInfo(trainQ.organization_id).subscribe({
               next: nresp => {
@@ -379,11 +406,45 @@ export class TrainDetailComponent implements OnInit {
     })
   }
 
-  SetProjectData(){
 
+  SetProjectData(): Observable<SimplifiedProject[]>{
+    let observer: Subscriber<SimplifiedProject[]>;
+    const result = new Observable<SimplifiedProject[]>(o => observer = o);
+    const pageInfoQ: PageInfoQ = {
+      page: 1,
+      offset: 100,
+    };
+    this.conn.GetAllProject(pageInfoQ).subscribe({
+      next: value => {
+        let project: SimplifiedProject[] = [];
+        if (value.status !== 0){
+          this.msg.SendMessage('获取项目信息失败').subscribe();
+        }else{
+          for (const selectionElement of value.data) {
+            const projectQ: ProjectQ = selectionElement as ProjectQ;
+            project.push({
+              project_id: String(projectQ.id),
+              project_name: projectQ.name,
+            });
+          }
+          this.filteredProjects = project;
+        }
+      },
+      error: err => {
+        this.msg.SendMessage('获取项目信息失败').subscribe();
+      }
+    });
+    return result;
   }
 
+  jumpToTeamList(){
+    const index: string = this.data.id + '&0';
+    this.loc.go(['/plat/teamList/', index]);
+  }
 }
+
+
+
 
 interface SimplifiedProject {
   project_id: string;

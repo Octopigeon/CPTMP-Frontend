@@ -174,13 +174,14 @@ export class TeamDataSource extends DataSource<Team> {
     let observer: Subscriber<Team[]>;
     const result = new Observable<Team[]>(o => observer = o);
     const pageInfoQ: PageInfoQ = {
-      page : this.index + 1,
+      page : this.index ,
       offset: this.size
     };
     console.log(pageInfoQ);
     const list: Team[] = [];
     this.conn.GetAllTeam(pageInfoQ).subscribe({
       next: value => {
+        console.log(value)
         if (value.status !== 0){
           this.msg.SendMessage('获取团队信息失败').subscribe();
           observer.error();

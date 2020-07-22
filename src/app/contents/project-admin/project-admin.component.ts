@@ -129,7 +129,7 @@ export class ProjectAdminComponent implements OnInit {
       page: 1,
       offset: 100,
     }
-    this.conn.GetAllObject(pageInfoQ).subscribe({
+    this.conn.GetAllProject(pageInfoQ).subscribe({
       next: value => {
         let project: Project[] = [];
         if (value.status !== 0){

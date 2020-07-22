@@ -11,7 +11,7 @@ import {
   UserInfo,
   UserInfoL,
   DeleteUserQ,
-  PageResp, PageInfoQ, TrainQ, CreateTrainQ, PostRegisterQ, ChangPwdByForce, Train
+  PageResp, PageInfoQ, TrainQ, CreateTrainQ, PostRegisterQ, ChangPwdByForce, Train, ProjectQ
 } from "../types/types";
 
 import {Logger} from "./logger.service";
@@ -786,6 +786,29 @@ export class ConnectionService {
     return result;
   }
 
+  public GetProject(projectId: string): Observable<Resp> {
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    const url = API.train_project + '/' + projectId + '/basic-info';
+    this.get(url).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Get project failed with status code ${response.status}: ${response.msg}.`);
+          observer.error(response);
+        }else{
+          observer.next(response);
+          observer.complete();
+        }
+      },
+      error: error => {
+        this.logger.log(`Get project failed with network error: `, error);
+        observer.error(error);
+      }
+    });
+    return result;
+  }
+
+
   /***
    * 修改实训信息的连接
    * @param trainQ 对应实训的信息
@@ -924,7 +947,7 @@ export class ConnectionService {
 
   }
 
-  public GetAllObject(pageInfoQ: PageInfoQ): Observable<Resp> {
+  public GetAllProject(pageInfoQ: PageInfoQ): Observable<Resp> {
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
     const url = API.project + '?offset=' + pageInfoQ.offset + '&page=' + pageInfoQ.page ;
@@ -946,6 +969,126 @@ export class ConnectionService {
     });
     return result;
   }
+
+  public GetTeam( id: string ): Observable<Resp>{
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    const url = API.train + '?offset=' + pageInfoQ.offset + '&page=' + pageInfoQ.page ;
+    this.get().subscribe({
+      next: resp => {
+        if (resp.status !== 0) {
+          this.logger.log(`Get team info failed with status code ${resp.status}: ${resp.msg}.`);
+          observer.error(resp);
+        }else {
+          observer.next(resp);
+          observer.complete();
+        }
+        },
+      error: error => {
+        this.logger.log(`Get team info failed with network error: `, error);
+        observer.error(error);
+      }
+    });
+    return result;
+  }
+
+  public GetTeamByProject( id: string ): Observable<Resp>{
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    this.get().subscribe({
+      next: resp => {
+        if (resp.status !== 0) {
+          this.logger.log(`Get team info failed with status code ${resp.status}: ${resp.msg}.`);
+          observer.error(resp);
+        }else {
+          observer.next(resp);
+          observer.complete();
+        }
+      },
+      error: error => {
+        this.logger.log(`Get team info failed with network error: `, error);
+        observer.error(error);
+      }
+    });
+    return result;
+  }
+
+  public GetTeamByTrain( id: string ): Observable<Resp>{
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    const url = API.team + '/train/' + id + '?page=1&offset=100';
+    this.get(url).subscribe({
+      next: resp => {
+        if (resp.status !== 0) {
+          this.logger.log(`Get team info failed with status code ${resp.status}: ${resp.msg}.`);
+          observer.error(resp);
+        }else {
+          observer.next(resp);
+          observer.complete();
+        }
+      },
+      error: error => {
+        this.logger.log(`Get team info failed with network error: `, error);
+        observer.error(error);
+      }
+    });
+    return result;
+  }
+
+
+  public CreatProject(projectQ: ProjectQ): Observable<Resp>{
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    const project = {
+      project_name: projectQ.name,
+      project_level: projectQ.level,
+      project_content: projectQ.content
+    };
+    const projectList: any[] = [project];
+    this.post(API.train_project, projectList).subscribe({
+      next: resp => {
+        if (resp.status !== 0) {
+          this.logger.log(`Create project failed with status code ${resp.status}: ${resp.msg}.`);
+          observer.error(resp);
+        }else{
+          observer.next(resp);
+          setTimeout(() => {
+            observer.complete();
+          }, 2000);
+        }
+      },
+      error: error => {
+        this.logger.log(`Create project failed with network error: `, error);
+        observer.error(error);
+      }
+    })
+    return result;
+  }
+
+  public UploadProjectInfo(id: number, projectQ: ProjectQ): Observable<Resp>{
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    const url = API.train_project + '/' + id + '/basic-info';
+    this.put(url, projectQ).subscribe({
+      next: resp => {
+        if (resp.status !== 0) {
+          this.logger.log(`Upload project info failed with status code ${resp.status}: ${resp.msg}.`);
+          observer.error(resp);
+        }else{
+          observer.next(resp);
+          setTimeout(() => {
+            observer.complete();
+          }, 1000);
+        }
+      },
+      error: error => {
+        this.logger.log(`Upload project info failed with network error: `, error);
+        observer.error(error);
+      }
+    });
+    return result;
+  }
+
   /**
    * 批量导入用户的连接
    * @param regQ 导入信息

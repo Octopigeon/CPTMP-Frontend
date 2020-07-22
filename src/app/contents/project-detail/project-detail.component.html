@@ -1,11 +1,11 @@
 <div class="project-info">
   <div class="float-operation">
     <!-- TODO add team list routerLink -->
-    <a mat-fab color="primary" *ngIf="editMode" matTooltip="查看选择此项目的团队" class="list-button">
+    <a mat-fab color="primary" *ngIf="editMode" matTooltip="查看选择此项目的团队" class="list-button" (click)="jumpToTeamList()">
       <mat-icon>open_in_new</mat-icon>
     </a>
     <!-- TODO add create team routerLink -->
-    <a mat-fab color="primary" *ngIf="editMode" matTooltip="新建团队" class="new-button">
+    <a mat-fab color="primary" *ngIf="editMode" matTooltip="新建团队" class="new-button" href="/plat/team/detail/new" >
       <mat-icon>add</mat-icon>
     </a>
     <button *ngIf="editMode" mat-fab color="primary" matTooltip="保存更改" class="save-button" (click)="saveChange()">
@@ -96,7 +96,7 @@
         </mat-list-option>
       </mat-selection-list>
       <div class="resource-action" *ngIf="editFile">
-        <button mat-fab color="primary" matTooltip="添加资源"
+        <button mat-fab color="primary" [disabled]="!editMode" matTooltip="添加资源"
                 (click)="addFile()"><mat-icon>post_add</mat-icon></button>
         <button mat-fab color="warn" [disabled]="files.selectedOptions.selected.length === 0" (click)="deleteFile()"
                 matTooltip="删除选中资源"><mat-icon>delete</mat-icon></button>

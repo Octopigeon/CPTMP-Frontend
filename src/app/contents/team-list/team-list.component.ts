@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import {Team} from "../../types/types";
 import {ActivatedRoute} from "@angular/router";
 import {LocationService} from "../../services/location.service";
+import {ConnectionService} from "../../services/connection.service";
+import {Logger} from "../../services/logger.service";
+import {MessageService} from "../../services/message.service";
 
 @Component({
   selector: 'app-team-list',
@@ -136,16 +139,49 @@ export class TeamListComponent implements OnInit {
   }
 
   constructor(private route: ActivatedRoute,
-              private loc: LocationService) { }
+              private loc: LocationService,
+              private conn: ConnectionService,
+              private logger: Logger,
+              private msg: MessageService,) { }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       // TODO fetch real data according to link parameters
-    })
+      const index = params.get('index');
+      if (index != null){
+        const indexs: string[] = index.split('&');
+        if (indexs[0] !== '0'){
+          this.GetDataByTrain(indexs[0]);
+        }else{
+          this.GetDataByProject(indexs[1]);
+        }
+      }else {
+        this.GetData();
+      }
+    });
   }
 
   JumpToDetail(team: Team){
     this.loc.go(['/plat/team/detail/', team.id]);
+  }
+
+  GetDataByTrain(id: string){
+    this.conn.GetTeamByTrain(id).subscribe({
+      next: value => {
+        console.log(value.data);
+      },
+      error: err => {
+
+      }
+    })
+  }
+
+  GetDataByProject(id: string){
+
+  }
+
+  GetData(){
+
   }
 
 }
