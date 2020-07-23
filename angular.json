@@ -34,7 +34,9 @@
             ],
             "scripts": [],
             "allowedCommonJsDependencies": [
-              "hammerjs"
+              "echarts",
+              "zrender/lib/vml/vml",
+              "zrender/lib/svg/svg"
             ]
           },
           "configurations": {

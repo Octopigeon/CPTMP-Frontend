@@ -5,6 +5,7 @@ import {LocationService} from "../../services/location.service";
 import {MatDialog} from "@angular/material/dialog";
 import {SingleInputComponent} from "../../popups/single-input/single-input.component";
 import {SendMessageComponent} from "../../popups/send-message/send-message.component";
+import {ConnectionService} from "../../services/connection.service";
 
 @Component({
   selector: 'app-message',
@@ -15,12 +16,14 @@ export class MessageComponent implements OnInit {
 
   @ViewChild(MatAccordion) accordion: MatAccordion;
 
+  userId: number;
+
   messages: Message[] = [{
     title: 'message1',
     message: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' +
     'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     action: 'https://github.com',
-    unread: true
+    unread: false
   }, {
     sender: {
       email: '',
@@ -81,11 +84,28 @@ export class MessageComponent implements OnInit {
     dialogRef.afterClosed().subscribe()
   }
 
-  constructor(private loc: LocationService, private dialog: MatDialog) {
+  constructor(private loc: LocationService,
+              private dialog: MatDialog,
+              public conn: ConnectionService,) {
 
   }
 
   ngOnInit(): void {
+    this.conn.user.subscribe(user => {
+      this.userId = user.info.user_id;
+      this.GetData();
+    });
+  }
+
+  GetData(){
+    this.conn.GetReceiverNotice(this.userId).subscribe({
+      next: value => {
+        console.log(value);
+      },
+      error: err => {
+
+      }
+    });
   }
 
 }

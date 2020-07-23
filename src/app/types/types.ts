@@ -223,9 +223,15 @@ export interface GetTeamQ{
   avatar: string;
   evaluation: string;
   train_id: number;
+  train_name?: string;
   project_id: number;
+  project_name?: string;
+  size?: number;
+  team_master: string;
+  team_master_id: number;
   repo_url: string;
   team_grade: number;
+  member?: any[];
 }
 
 export interface Team {
@@ -256,4 +262,56 @@ export interface Message {
   message: string;
   action?: string;
   unread: boolean;
+}
+
+interface AllowUnknown {
+  [key: string]: any;
+}
+
+export interface WeeklyStat {
+  // Time
+  w: string;
+  // Addition
+  a: number;
+  // Deletion
+  d: number;
+  // Commit
+  c: number;
+}
+
+interface _GHAuthorInfo {
+  login: string;
+  avatar_url: string;
+  html_url: string;
+}
+
+export type GHAuthorInfo = _GHAuthorInfo & AllowUnknown;
+
+export interface ContributorStat {
+  // Commit
+  total: number;
+  total_additions: number;
+  total_deletions: number;
+  weeks: WeeklyStat[];
+  author: GHAuthorInfo;
+}
+
+export interface StatEntry {
+  week: number;
+  member: number;
+  ad: string;
+  data: number;
+  member_info: GHAuthorInfo;
+}
+
+export interface PersonalGrade {
+  id: number;
+  team_id: number;
+  user_id: number;
+  evaluation: string;
+  manage_point: number;
+  code_point: number;
+  tech_point: number;
+  framework_point: number;
+  communication_point: number;
 }

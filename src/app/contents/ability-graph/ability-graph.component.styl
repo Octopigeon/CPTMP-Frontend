@@ -1,0 +1,38 @@
+.info-header
+  margin 30px 0 20px
+  text-align center
+
+.content-wrapper
+  position relative
+  margin 20px 40px 40px
+  display grid
+  grid-template "head graph" auto "main graph" 1fr / 1fr 40%
+  grid-gap 16px
+
+  @media (max-width 599px)
+    margin 20px 20px 40px
+    grid-template "head" auto "graph" auto "main" auto / 100%
+
+  .grade-header
+    grid-area head
+
+  .ability-graph
+    grid-area graph
+
+    .base-adjust
+      height 48px
+      display flex
+
+      .adjust-label
+        display inline-block
+        flex auto 0 0
+        line-height 48px
+        margin-right 10px
+
+      .adjust-slider
+        flex auto 1 1
+        padding-top 0
+        padding-bottom 0
+
+  .grade-detail
+    grid-area main

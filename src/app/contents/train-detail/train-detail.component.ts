@@ -48,7 +48,19 @@ export class TrainDetailComponent implements OnInit {
   @ViewChild(MatSelectionList) fileSelection: MatSelectionList;
   @ViewChild('projectInput') projectInput: ElementRef<HTMLInputElement>;
 
-  data: Train;
+  data: Train = {
+    id: null,
+    name: '加载中……',
+    organization_id: 0,
+    organization: '加载中……',
+    start_time: 1594455135343,
+    end_time: 1594455155343,
+    content: '加载中……',
+    standard: '加载中……',
+    resource_lib: [],
+    // picking location currently not implemented
+    gps_info: '加载中……'
+  };
 
   newTrain: Train = {
     id: null,
@@ -102,8 +114,9 @@ export class TrainDetailComponent implements OnInit {
   projects = {
     1: 'Project1dtnhfvnrtyytryvrncty',
     2: 'Project2tycbtynbtnerrtbvrt',
-    3: 'Project3ybnyujmyumncrtydvgbrgb'
-  }
+    3: 'Project3ybnyujmyumncrtydvgbrgb',
+    4: '123'
+  };
 
   separatorKeysCodes: number[] = [ENTER, COMMA];
   projectInputControl = new FormControl();
@@ -127,7 +140,6 @@ export class TrainDetailComponent implements OnInit {
         .filter(([id, name]) => !this.projectIDs.has(id))
         .map(([project_id, project_name]) => { return {project_id, project_name}});
     }
-
     const filterValue = value.toLowerCase()
     return Object.entries(this.projects)
       .filter(([id, name]) => (name.toLowerCase().includes(filterValue) && !this.projectIDs.has(id)))
@@ -243,6 +255,7 @@ export class TrainDetailComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.SetData();
     this.SetProjectData();
     this.route.paramMap.subscribe(param => {
       const id = param.get('id');
@@ -414,7 +427,7 @@ export class TrainDetailComponent implements OnInit {
       page: 1,
       offset: 100,
     };
-    this.conn.GetProject(pageInfoQ).subscribe({
+    this.conn.GetAllProject(pageInfoQ).subscribe({
       next: value => {
         let project: SimplifiedProject[] = [];
         if (value.status !== 0){
@@ -427,7 +440,7 @@ export class TrainDetailComponent implements OnInit {
               project_name: projectQ.name,
             });
           }
-          this.filteredProjects = project;
+          this.projects
         }
       },
       error: err => {
@@ -444,8 +457,7 @@ export class TrainDetailComponent implements OnInit {
 
 
   jumpToProjectList(){
-    const index: string = this.data.id + '&0';
-    this.loc.go(['/plat/ProjectList/', index]);
+    this.loc.go(['/plat/projectList/', this.data.id]);
   }
 }
 

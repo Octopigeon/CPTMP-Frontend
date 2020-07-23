@@ -11,7 +11,7 @@ import {
   UserInfo,
   UserInfoL,
   DeleteUserQ,
-  PageResp, PageInfoQ, TrainQ, CreateTrainQ, PostRegisterQ, ChangPwdByForce, Train, ProjectQ
+  PageResp, PageInfoQ, TrainQ, CreateTrainQ, PostRegisterQ, ChangPwdByForce, Train, ProjectQ, GetTeamQ
 } from "../types/types";
 
 import {Logger} from "./logger.service";
@@ -927,7 +927,7 @@ export class ConnectionService {
   public ChangePassWordByForce(newPassword: ChangPwdByForce): Observable<Resp>{
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
-    this.put(API.change_password_force,newPassword).subscribe({
+    this.put(API.change_password_force, newPassword).subscribe({
       next: response => {
         if (response.status !== 0) {
           this.logger.log(`Change passWord by force failed with status code ${response.status}: ${response.msg}.`);
@@ -945,11 +945,152 @@ export class ConnectionService {
     return result;
   }
 
+
+  public GetTeamMember(teamId: number): Observable<Resp>{
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    const url = API.team + '/' + teamId + '/member';
+    this.get(url).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Get team member failed with status code ${response.status}: ${response.msg}.`);
+          observer.error(response);
+          return result;
+        }
+        observer.next(response);
+        observer.complete();
+      },
+      error: error => {
+        this.logger.log(`Get team member failed with network error: `, error);
+        observer.error(error);
+      }
+    });
+    return result;
+  }
+
+  public GetTeamInfo(teamId: number): Observable<Resp> {
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    const url = API.team + '/' + teamId;
+    this.get(url).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Get team info failed with status code ${response.status}: ${response.msg}.`);
+          observer.error(response);
+          return result;
+        }
+        observer.next(response);
+        observer.complete();
+      },
+      error: error => {
+        this.logger.log(`Get team info failed with network error: `, error);
+        observer.error(error);
+      }
+    })
+    return result;
+  }
+
+  public GetTeamList(pageInfoQ: PageInfoQ): Observable<Resp> {
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    const url = API.search_team + '/name?key_word=&page=' + pageInfoQ.page + '&offset=' + pageInfoQ.offset ;
+    this.get(url).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Get all team failed with status code ${response.status}: ${response.msg}.`);
+          observer.error(response);
+          return result;
+        }
+        const getTeamQList: GetTeamQ[] = [];
+        const teamId: number[] = [];
+        for (const observerElement of response.data) {
+          const getTeamQ: GetTeamQ = observerElement as GetTeamQ;
+          getTeamQList.push(getTeamQ);
+          teamId.push(getTeamQ.id);
+        }
+        let teamBox: boolean[] = [];
+        for (let i = 0 ; i < teamId.length; i++){
+          teamBox.push(false);
+          this.GetTeamMember(teamId[i]).subscribe({
+            next: value => {
+              for (const item of value.data) {
+                const userInfo: UserInfo = item as UserInfo;
+                getTeamQList[i].member = [];
+                getTeamQList[i].member.push({
+                  avatar: userInfo.avatar,
+                  email: userInfo.email,
+                  gender: userInfo.gender,
+                  name: userInfo.name,
+                  phone_number: userInfo.phone_number,
+                  role_name: userInfo.role_name,
+                  user_id: userInfo.user_id,
+                  username: userInfo.username,
+                });
+                teamBox[i] = true;
+              }
+              let ifFinsih = true;
+              for (const observerElement of teamBox) {
+                if (!observerElement) ifFinsih = false;
+              }
+              if(ifFinsih){
+                console.log(teamBox);
+                response.data = getTeamQList;
+                observer.next(response);
+                observer.complete();
+              }
+            },
+            error: err => {
+              teamBox[i] = true;
+              let ifFinsih = true;
+              for (const observerElement of teamBox) {
+                if (!observerElement) ifFinsih = false;
+              }
+              if(ifFinsih) {
+                console.log(teamBox);
+                response.data = getTeamQList;
+                observer.next(response);
+                observer.complete();
+              }
+            }
+          });
+        }
+      },
+      error: error => {
+        this.logger.log(`Get all team failed with network error: `, error);
+        observer.error(error);
+      }
+    });
+    return result;
+
+  }
+
+  public GetReceiverNotice(id: number): Observable<Resp>{
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    const url = API.notice + '/receiver/' + id + '?offset=100&page=1';
+    this.get(url).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Get notice failed with status code ${response.status}: ${response.msg}.`);
+          observer.error(response);
+          return result;
+        }
+        observer.next(response);
+        observer.complete();
+      },
+      error: error => {
+        this.logger.log(`Get notice failed with network error: `, error);
+        observer.error(error);
+      }
+    });
+    return result;
+  }
+
+
   public GetAllTeam(pageInfoQ: PageInfoQ): Observable<Resp> {
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
     const url = API.search_team + '/name?key_word=&page=' + pageInfoQ.page + '&offset=' + pageInfoQ.offset ;
-    console.log(url)
     this.get(url).subscribe({
       next: response => {
         if (response.status !== 0) {

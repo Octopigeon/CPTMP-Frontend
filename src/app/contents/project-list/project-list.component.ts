@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {Project} from "../../types/types";
+import {PageInfoQ, Project, ProjectQ} from "../../types/types";
 import {ActivatedRoute} from "@angular/router";
 import {LocationService} from "../../services/location.service";
+import {ConnectionService} from "../../services/connection.service";
 
 const EXAMPLE_PROJECT: Project[] = [{
   id: 1,
@@ -38,9 +39,13 @@ const EXAMPLE_PROJECT: Project[] = [{
 })
 export class ProjectListComponent implements OnInit {
 
-  projects = EXAMPLE_PROJECT;
+  projects: Project[];
   train = '实训名称';
-  trainId : string;
+  trainId: string;
+
+  checkTrainName(): boolean{
+    return !(this.train === '实训名称');
+  }
 
   capLevel(level: number): number {
     if (level < 0) {
@@ -57,7 +62,8 @@ export class ProjectListComponent implements OnInit {
   }
 
   constructor(private route: ActivatedRoute,
-              private loc: LocationService,) { }
+              private loc: LocationService,
+              public conn: ConnectionService,) { }
 
   /***
    * 根据从后端查询到的数据对页面的数据进行初始化
@@ -66,12 +72,48 @@ export class ProjectListComponent implements OnInit {
     this.route.paramMap.subscribe(params => {
       this.trainId = params.get('id');
       // TODO change projects and train to real info fetched from backend
+      if ( this.trainId == null){
+        const pageInfoQ: PageInfoQ = {
+          page: 1,
+          offset: 100,
+        }
+        this.conn.GetAllProject(pageInfoQ).subscribe({
+          next: value => {
+            let projectList: Project[] = [];
+            for (const item of value.data) {
+              const projectQ: ProjectQ = item as ProjectQ;
+              const project: Project = {
+                id: projectQ.id,
+                name: projectQ.name,
+                content: projectQ.content,
+                level: projectQ.level,
+                resource_lib: projectQ.resource_library
+              }
+              projectList.push(project);
+            }
+            this.projects = projectList;
+          },
+          error: err => {
 
+          }
+        })
+      }else{
+
+      }
     })
   }
 
   JumpToDetail(project: Project){
     this.loc.go(['/plat/project/detail/', project.id]);
+  }
+
+  teamCreate() {
+    this.loc.go(['/plat/team/detail/new']);
+  }
+
+  jumpToTeamList(id: number){
+    const index: string = '0&' + id;
+    this.loc.go(['/plat/teamList/', index]);
   }
 
 }

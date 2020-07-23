@@ -34,7 +34,13 @@ export class ProjectDetailComponent implements OnInit {
     resource_lib: null,
   };
 
-  data: Project;
+  data: Project = {
+    id: null,
+    name: "加载中……",
+    level: 0,
+    content: "加载中……",
+    resource_lib: null,
+  };
 
   controls: {[key: string]: StatedFormControl} = {
     name: new StatedFormControl(''),
@@ -81,6 +87,7 @@ export class ProjectDetailComponent implements OnInit {
   projectId: string;
 
   ngOnInit(): void {
+    this.SetData();
     this.route.paramMap.subscribe(param => {
       this.projectId = param.get('id');
 

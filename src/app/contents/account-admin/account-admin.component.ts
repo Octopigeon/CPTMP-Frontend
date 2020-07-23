@@ -141,6 +141,10 @@ export class AccountAdminComponent implements OnInit {
           })
         }
       }else{   // 若传入了用户对象，则对其进行修改
+        if (result == null){
+          this.msg.SendMessage('修改用户信息取消').subscribe();
+          return;
+        }
         const modifyUserBasicInfoQ: ModifyUserBasicInfoQ = result as ModifyUserBasicInfoQ;
         this.conn.UpdateUserInfoByForce(modifyUserBasicInfoQ, user.user_id).subscribe({
           next: value => {
@@ -213,6 +217,10 @@ export class AccountAdminComponent implements OnInit {
 
     // TODO post data to backend
     dialogRef.afterClosed().subscribe(result => {
+      if (result == null){
+        this.msg.SendMessage('修改密码取消').subscribe();
+        return;
+      }
       const newPassword: ChangPwdByForce = {
         username: user.username,
         new_password: result

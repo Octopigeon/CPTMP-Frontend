@@ -94,16 +94,7 @@ export class TeamAdminComponent implements OnInit {
    * @param team  传入的团队对象信息
    */
   teamEdit(event: Event, team: Team) {
-    if (event) {
-      event.stopPropagation();
-    }
-
-    // const dialogRef = this.dialog.open(AccountEditComponent, {
-    //   data: user
-    // });
-    //
-
-    // dialogRef.afterClosed().subscribe()
+    this.loc.go(['/plat/team/detail/', team.id]);
   }
 
   tableItemCheckBy(index: number, item: Team) {

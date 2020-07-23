@@ -1,6 +1,6 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {MatSelectionList} from "@angular/material/list";
-import {Project, ResourceFile, Team, UserInfo} from "../../types/types";
+import {PageInfoQ, Project, ResourceFile, Team, UserInfo} from "../../types/types";
 import {StatedFormControl} from "../../shared/stated-form-control";
 import {ActivatedRoute} from "@angular/router";
 import {LocationService} from "../../services/location.service";
@@ -14,6 +14,7 @@ import {FormControl} from "@angular/forms";
 import {MatChipInputEvent} from "@angular/material/chips";
 import {MatAutocomplete, MatAutocompleteSelectedEvent} from "@angular/material/autocomplete";
 import {MessageService} from "../../services/message.service";
+import {ConnectionService} from "../../services/connection.service";
 
 @Component({
   selector: 'app-team-detail',
@@ -231,10 +232,12 @@ export class TeamDetailComponent implements OnInit {
   constructor(private route: ActivatedRoute,
               private loc: LocationService,
               private dialog: MatDialog,
-              private msg: MessageService) {
+              private msg: MessageService,
+              private conn: ConnectionService,) {
   }
 
   ngOnInit(): void {
+    this.GetUserInfo();
     this.route.paramMap.subscribe(param => {
       this.teamId = param.get('id');
       this.editMode = (this.teamId !== 'new');
@@ -246,13 +249,25 @@ export class TeamDetailComponent implements OnInit {
 
       // we need all trains(_ => {train_id, train_name}),
       // and all projects belongs to specific train (train_id => {train_project_id, project_name})
+      this.GetData();
       this.SetData();
     })
   }
 
   GetData(){
     if ( this.editMode ){
-
+      this.conn.GetTeamInfo(this.teamId).subscribe({
+        next: value => {
+          if ( value.status !== 0 ){
+            this.msg.SendMessage('队伍信息获取失败').subscribe();
+          }else{
+            console.log(value.data);
+          }
+        },
+        error: err => {
+          this.msg.SendMessage('队伍信息获取失败。未知错误').subscribe();
+        }
+      })
     }else{
 
     }
@@ -326,6 +341,39 @@ export class TeamDetailComponent implements OnInit {
       //     }
       //   });
       // }
+    });
+  }
+
+  GetUserInfo(){
+    const pageInfoQ: PageInfoQ = {
+      page: 1,
+      offset: 100,
+    }
+    this.conn.GetAllUser(pageInfoQ).subscribe({
+      next: value => {
+        if (value.status !== 0){
+          this.msg.SendMessage('获取用户信息列表失败').subscribe();
+        }else{
+          this.allUsers = [];
+          for (const item of value.data) {
+            const getUserInfo: UserInfo = item as UserInfo;
+            this.allUsers.push({
+              avatar: getUserInfo.avatar,
+              email: getUserInfo.email,
+              gender: getUserInfo.gender,
+              name: getUserInfo.name,
+              phone_number: getUserInfo.phone_number,
+              role_name: getUserInfo.role_name,
+              user_id: getUserInfo.user_id,
+              introduction: getUserInfo.introduction,
+              username: getUserInfo.username,
+            });
+          }
+        }
+      },
+      error: err => {
+        this.msg.SendMessage('获取用户信息列表失败。未知错误').subscribe();
+      }
     });
   }
 

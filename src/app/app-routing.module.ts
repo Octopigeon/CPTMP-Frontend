@@ -19,6 +19,8 @@ import {TeamListComponent} from "./contents/team-list/team-list.component";
 import {InviteComponent} from "./components/invite/invite.component";
 import {JoinRequestComponent} from "./components/join-request/join-request.component";
 import {MessageComponent} from "./contents/message/message.component";
+import {StatGraphComponent} from './contents/stat-graph/stat-graph.component';
+import {AbilityGraphComponent} from './contents/ability-graph/ability-graph.component';
 
 
 const routes: Routes = [
@@ -42,6 +44,8 @@ const routes: Routes = [
   { path: 'plat/team/detail/:id', component: TeamDetailComponent},  // 转到团队详细信息界面
   { path: 'plat/train', component: TrainAdminComponent},  // 转到实训管理界面
   { path: 'plat/user/message', component: MessageComponent }, // 转到用户消息页面
+  { path: 'plat/stat/:id', component: StatGraphComponent }, // 转到统计图表页面
+  { path: 'plat/user/ability/:id', component: AbilityGraphComponent }, // 转到能力图表页面
   { path: '', component: LoginComponent, pathMatch: 'full' },  // 转到登陆界面
   { path: '**', component: NotFoundComponent }  // 转到404界面
 ];

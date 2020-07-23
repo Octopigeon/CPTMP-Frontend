@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {PageInfoQ, Team} from "../../types/types";
+import {GetTeamQ, PageInfoQ, Team} from "../../types/types";
 import {ActivatedRoute} from "@angular/router";
 import {LocationService} from "../../services/location.service";
 import {ConnectionService} from "../../services/connection.service";
@@ -16,119 +16,9 @@ export class TeamListComponent implements OnInit {
   train = '实训aaaa';
   project = '项目bbbb';
 
-  teams: Team[] = [{
-    avatar: "",
-    name: `team1`,
-    id: 1,
-    project_name: "projectP",
-    train_name: `Train1`,
-    train_project_id: 1,
-    member_count: 1,
-    leader_id: 1,
-    members: [{
-      avatar: "",
-      email: `user1@mail.com`,
-      gender: true,
-      name: `user1`,
-      phone_number: `123456`,
-      role_name: 'ROLE_ENTERPRISE_ADMIN',
-      user_id: 1,
-      username: `TEST0001`
-    }]
-  }, {
-    avatar: "",
-    name: `team2`,
-    id: 1,
-    project_name: "projectP",
-    train_name: `Train1`,
-    train_project_id: 1,
-    member_count: 1,
-    leader_id: 1,
-    members: [{
-      avatar: "",
-      email: `user1@mail.com`,
-      gender: true,
-      name: `user1`,
-      phone_number: `123456`,
-      role_name: 'ROLE_ENTERPRISE_ADMIN',
-      user_id: 1,
-      username: `TEST0001`
-    }, {
-      avatar: "",
-      email: `user1@mail.com`,
-      gender: true,
-      name: `user2`,
-      phone_number: `123456`,
-      role_name: 'ROLE_ENTERPRISE_ADMIN',
-      user_id: 1,
-      username: `TEST0002`
-    }, {
-      avatar: "",
-      email: `user1@mail.com`,
-      gender: true,
-      name: `user3`,
-      phone_number: `123456`,
-      role_name: 'ROLE_ENTERPRISE_ADMIN',
-      user_id: 1,
-      username: `TEST0003`
-    }]
-  }, {
-    avatar: "",
-    name: `team3`,
-    id: 1,
-    project_name: "projectP",
-    train_name: `Train1`,
-    train_project_id: 1,
-    member_count: 1,
-    leader_id: 1,
-    members: [{
-      avatar: "",
-      email: `user1@mail.com`,
-      gender: true,
-      name: `user1`,
-      phone_number: `123456`,
-      role_name: 'ROLE_ENTERPRISE_ADMIN',
-      user_id: 1,
-      username: `TEST0001`
-    }, {
-      avatar: "",
-      email: `user1@mail.com`,
-      gender: true,
-      name: `user2`,
-      phone_number: `123456`,
-      role_name: 'ROLE_ENTERPRISE_ADMIN',
-      user_id: 1,
-      username: `TEST0002`
-    }]
-  }, {
-    avatar: "",
-    name: `team4`,
-    id: 1,
-    project_name: "projectP",
-    train_name: `Train1`,
-    train_project_id: 1,
-    member_count: 1,
-    leader_id: 1,
-    members: [{
-      avatar: "",
-      email: `user1@mail.com`,
-      gender: true,
-      name: `user1`,
-      phone_number: `123456`,
-      role_name: 'ROLE_ENTERPRISE_ADMIN',
-      user_id: 1,
-      username: `TEST0001`
-    }, {
-      avatar: "",
-      email: `user1@mail.com`,
-      gender: true,
-      name: `user2`,
-      phone_number: `123456`,
-      role_name: 'ROLE_ENTERPRISE_ADMIN',
-      user_id: 1,
-      username: `TEST0002`
-    }]
-  }]
+  teamList: Team[];
+
+  teams: Team[];
 
   autoAvatar(link: string) {
     return this.validLink(link) ? link : '/assets/avatar.png';
@@ -187,14 +77,36 @@ export class TeamListComponent implements OnInit {
     })
   }
 
+
   GetData(){
     const pageInfoQ: PageInfoQ = {
       page: 1,
       offset: 100,
     }
-    this.conn.GetAllTeam(pageInfoQ).subscribe({
+    this.conn.GetTeamList(pageInfoQ).subscribe({
       next: value => {
+        if (value.status !== 0 ){
+          this.msg.SendMessage('获取队伍信息失败').subscribe();
+        }else{
+          this.teamList = [];
+          for (const item of value.data) {
 
+            const getTeamQ: GetTeamQ = item as GetTeamQ;
+            const team: Team = {
+              avatar: getTeamQ.avatar,
+              name: getTeamQ.name,
+              id: getTeamQ.id,
+              project_name: getTeamQ.project_name,
+              train_name: getTeamQ.train_name,
+              train_project_id: getTeamQ.project_id,
+              member_count: getTeamQ.size,
+              leader_id: getTeamQ.team_master_id,
+              members: getTeamQ.member,
+            };
+            this.teamList.push(team);
+          }
+          this.teams = this.teamList;
+        }
       },
       error: err => {
 

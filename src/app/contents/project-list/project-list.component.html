@@ -5,7 +5,7 @@
 <!-- TODO should me make this a changeable filter, or just an indicator (current) -->
 <div class="item-filter">
   <mat-chip-list aria-label="项目">
-    <mat-chip>{{train}}</mat-chip>
+    <mat-chip *ngIf="checkTrainName()">{{train}}</mat-chip>
   </mat-chip-list>
 </div>
 <div class="content-wrapper">
@@ -23,8 +23,8 @@
     <mat-card-actions>
       <!-- TODO bind real action to buttons (maybe change to <a> element) -->
       <button mat-button (click)="JumpToDetail(project)">查看详情</button>
-      <button mat-button>寻找团队</button>
-      <button mat-button>创建团队</button>
+      <button mat-button (click)="jumpToTeamList(project.id)">寻找团队</button>
+      <button mat-button (click)="teamCreate()">创建团队</button>
     </mat-card-actions>
   </mat-card>
 </div>

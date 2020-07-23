@@ -1,0 +1,134 @@
+.info-header
+  margin 30px 0 20px
+  text-align center
+
+.content-wrapper
+  position relative
+  margin 20px 40px 40px
+  overflow hidden
+
+  @media (max-width 599px)
+    margin 20px 0 40px
+
+.field-list
+  width 200px
+  max-width 100%
+  min-height 60px
+  display block
+  overflow hidden
+
+.field-box
+  padding 15px 20px
+  color rgba(0, 0, 0, 0.87)
+  display flex
+  flex-direction row
+  align-items center
+  justify-content space-between
+  box-sizing border-box
+  cursor move
+  font-size 14px
+  transition background 0.3s
+
+  &:hover
+    background #eee
+
+.cdk-drag-preview
+  box-sizing border-box
+  border-radius 4px
+  background #eee
+  box-shadow 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    0 3px 14px 2px rgba(0, 0, 0, 0.12)
+
+.cdk-drag-placeholder
+  opacity 0
+
+.cdk-drag-animating,
+.field-list.cdk-drop-list-dragging .field-box:not(.cdk-drag-placeholder)
+  transition transform 250ms cubic-bezier(0, 0, 0.2, 1)
+
+.field-box:last-child
+  border none
+
+.commit-chart
+  height 75vh
+
+.draggable-panel
+  width 200px
+  //height 250px
+  background white
+  position fixed
+  right 20px
+  bottom 20px
+
+  .panel-handle
+    height 50px
+    width 200px
+    background #eee
+    display flex
+    justify-content center
+    align-items center
+    cursor move
+
+    .handle-dot
+      height 12px
+      width 12px
+      background #ccc
+      border-radius 50%
+      margin 5px
+
+  .panel-title
+    text-align center
+    height 50px
+    line-height 50px
+    margin 0
+
+.member-link
+  text-decoration none
+  color inherit
+  transition color 0.3s
+
+  &:hover
+    color #555
+
+.member-list-item
+  padding-right 50px !important
+  &:not(:last-child)
+    border-bottom 1px solid rgba(0, 0, 0, 0.12)
+
+.float-member
+  background white
+  position absolute
+  top 0
+  left 0
+  overflow hidden
+
+  .member-header
+    height 64px
+    background #eee
+    display flex
+
+    .toggle-container
+      width 64px
+      display flex
+      justify-content center
+      align-items center
+      flex 64px 0 0
+
+    .title-container
+      flex-grow 1
+      flex-shrink 1
+      display flex
+      justify-content flex-start
+      align-items center
+
+      .member-title
+        margin 0
+        height 64px
+        line-height 64px
+        overflow hidden
+
+  .member-list
+    max-height 200px
+    overflow-x hidden
+    overflow-y auto
