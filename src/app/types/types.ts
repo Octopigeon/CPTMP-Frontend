@@ -129,6 +129,16 @@ export interface GetOrgQ{
   website_url: string;
 }
 
+export interface Notice {
+  id?: number;
+  sender_id: number;
+  receiver_id: number;
+  team_id: number;
+  content: string;
+  is_read: boolean;
+  type: string;
+}
+
 export interface DeleteUserQ {
   selection: number[];
 }
@@ -257,11 +267,13 @@ export interface Team {
 
 export interface Message {
   // TODO how to represent system message? (current plan: nullable)
+  id?: number;
   sender?: UserInfo;
   title: string;
   message: string;
   action?: string;
   unread: boolean;
+  notice?: Notice;
 }
 
 interface AllowUnknown {

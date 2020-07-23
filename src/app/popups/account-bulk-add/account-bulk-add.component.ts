@@ -5,6 +5,7 @@ import {PostRegisterQ, RoleTable, UserInfo} from "../../types/types";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatDialogRef} from "@angular/material/dialog";
 import {MessageService} from "../../services/message.service";
+import {ConnectionService} from "../../services/connection.service";
 
 @Component({
   selector: 'app-account-bulk-add',
@@ -19,7 +20,15 @@ export class AccountBulkAddComponent implements OnInit {
   // change to true when data properly processed
   dataSource = new MatTableDataSource<UserInfo>([]);
 
-  postRegisterQ: PostRegisterQ[] = [];
+  postRegisterQ1: PostRegisterQ[];
+
+  postRegisterQ2: PostRegisterQ[];
+
+  postRegisterQ3: PostRegisterQ[];
+
+  postRegisterQ4: PostRegisterQ[];
+
+  inputBox: boolean[];
 
   /***
    * 读取用户传入的vcs文件
@@ -37,27 +46,41 @@ export class AccountBulkAddComponent implements OnInit {
     }).subscribe(content => {
       // FinishTodo process csv into js data (maybe reusable) (should we support excel format?)
       const dates: any[] = this.csvToObject(content);
+      this.postRegisterQ1 = [];
+      this.postRegisterQ2 = [];
+      this.postRegisterQ3 = [];
+      this.postRegisterQ4 = [];
       for (let i = 0; i < dates.length; i++){
         const user: UserInfo = {
           avatar: "",
           email: dates[i][2],
-          gender: (dates[i][3] == '男') ? true : false,
+          gender: (dates[i][3] === '男') ? true : false,
           name: dates[i][1],
           phone_number: dates[i][4],
-          role_name: 'ROLE_ENTERPRISE_ADMIN',
+          role_name: dates[i][5],
           user_id: i + 1,
-          username: 'E-' + dates[i][0]
+          username: dates[i][7] + '-' + dates[i][0]
         };
         let regQ: PostRegisterQ = {
           common_id: dates[i][0],
           name: dates[i][1],
           password: '123',
           email: dates[i][2],
-          organization_id: 1
+          organization_id: dates[i][6]
         };
         this.dataSource.data.push(user);
-        this.postRegisterQ.push(regQ);
+        if (dates[i][5] === 'ROLE_ENTERPRISE_ADMIN'){
+          this.postRegisterQ1.push(regQ);
+        }else if (dates[i][5] === 'ROLE_SCHOOL_ADMIN'){
+          this.postRegisterQ2.push(regQ);
+        }else if (dates[i][5] === 'ROLE_SCHOOL_TEACHER'){
+          this.postRegisterQ3.push(regQ);
+        }else if (dates[i][5] === 'ROLE_STUDENT_MEMBER'){
+          this.postRegisterQ4.push(regQ);
+        }
+
       }
+      console.log(this.postRegisterQ1);
       this.msg.SendMessage('导入信息成功').subscribe()
       this.dataSource.paginator = this.paginator;
     });
@@ -79,6 +102,7 @@ export class AccountBulkAddComponent implements OnInit {
       }
       datas.push(data);
     }
+    console.log(datas)
     return datas;
   }
 
@@ -104,13 +128,71 @@ export class AccountBulkAddComponent implements OnInit {
 
   // FinishTodo return import result
   getResult() {
-      this.dialogRef.close(this.postRegisterQ);
+    this.PostEnterpriseAdminReg();
+    this.PostStudentReg();
+    this.PostTeacherAdminReg();
+    this.PostTeacherReg();
+    //while ( this.inputBox.length < 4){}
+    this.dialogRef.close(this.inputBox);
   }
 
   constructor(public dialogRef: MatDialogRef<AccountBulkAddComponent>,
-              public msg: MessageService) { }
+              public msg: MessageService,
+              private conn: ConnectionService,) { }
 
   ngOnInit(): void {
+    this.inputBox = [];
   }
+
+  public PostEnterpriseAdminReg(){
+    console.log(this.postRegisterQ1);
+    this.conn.PostEnterpriseAdminReg(this.postRegisterQ1).subscribe({
+      next: resp => {
+        this.inputBox.push(true);
+      },
+      error: () => {
+        this.inputBox.push(false);
+      }
+    })
+  }
+
+  public PostTeacherAdminReg(){
+    console.log(this.postRegisterQ2);
+    this.conn.PostTeacherAdminReg(this.postRegisterQ2).subscribe({
+      next: resp => {
+        this.inputBox.push(true);
+      },
+      error: () => {
+        this.inputBox.push(false);
+      }
+    });
+  }
+
+
+  public PostTeacherReg(){
+    console.log(this.postRegisterQ3);
+    this.conn.PostTeacherReg(this.postRegisterQ3).subscribe({
+      next: resp => {
+        this.inputBox.push(true);
+      },
+      error: () => {
+        this.inputBox.push(false);
+      }
+    });
+  }
+
+
+  public PostStudentReg(){
+    console.log(this.postRegisterQ4);
+    this.conn.PostStudentReg(this.postRegisterQ4).subscribe({
+      next: resp => {
+        this.inputBox.push(true);
+      },
+      error: () => {
+        this.inputBox.push(false);
+      }
+    });
+  }
+
 
 }

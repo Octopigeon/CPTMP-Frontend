@@ -51,8 +51,10 @@ const routes: Routes = [
   { path: 'plat/user/message', component: MessageComponent }, // 转到用户消息页面
   { path: 'plat/stat/:id', component: StatGraphComponent }, // 转到统计图表页面
   { path: 'plat/user/ability/:id', component: AbilityGraphComponent }, // 转到能力图表页面
+  { path: 'info/join/:index', component: JoinRequestComponent },
   { path: '', component: LoginComponent, pathMatch: 'full' },  // 转到登陆界面
   { path: '**', component: NotFoundComponent }  // 转到404界面
+
 ];
 
 @NgModule({

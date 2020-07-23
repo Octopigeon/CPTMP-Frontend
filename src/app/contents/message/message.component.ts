@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {Message, Role} from "../../types/types";
+import {Message, Notice, Role} from "../../types/types";
 import {MatAccordion} from "@angular/material/expansion";
 import {LocationService} from "../../services/location.service";
 import {MatDialog} from "@angular/material/dialog";
@@ -54,6 +54,9 @@ export class MessageComponent implements OnInit {
   markRead(message: Message) {
     message.unread = false;
     // TODO inform backend
+    let notice = message.notice;
+    notice.is_read = true;
+    this.conn.UploadNotice(notice).subscribe();
   }
 
   expandAll() {
@@ -100,7 +103,29 @@ export class MessageComponent implements OnInit {
   GetData(){
     this.conn.GetReceiverNotice(this.userId).subscribe({
       next: value => {
-        console.log(value);
+        const message: Message[] = [];
+        for (const item of value.data) {
+          const tnotice: Notice = item as Notice;
+          if(tnotice.team_id !== 0){
+            const str: string[] = tnotice.content.split(':');
+            switch (str[0]) {
+              case '申请加入':
+                const url = '/info/join/' + tnotice.sender_id + '&' + tnotice.team_id;
+                message.push({
+                  id: tnotice.id,
+                  title: str[0],
+                  message: str[1],
+                  unread: !tnotice.is_read,
+                  notice: tnotice,
+                  action: url,
+                });
+                continue;
+              case '邀请加入':
+                continue;
+            }
+          }
+        }
+        this.messages = message;
       },
       error: err => {
 

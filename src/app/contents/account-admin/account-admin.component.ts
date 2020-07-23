@@ -181,18 +181,7 @@ export class AccountAdminComponent implements OnInit {
       if (result == null){
         this.msg.SendMessage('导入被取消').subscribe();
       }else{
-        const regQ: PostRegisterQ[] = result as PostRegisterQ[];
-        this.conn.PostEnterpriseAdminReg(regQ).subscribe({
-          next: resp => {
-            this.msg.SendMessage('导入账号成功').subscribe();
-          },
-          error: () => {
-            this.msg.SendMessage('导入账号失败').subscribe();
-          },
-          complete: () => {
-            this.dataSource.setData();
-          }
-        })
+        console.log(result);
       }
     });
   }

@@ -11,7 +11,7 @@ import {
   UserInfo,
   UserInfoL,
   DeleteUserQ,
-  PageResp, PageInfoQ, TrainQ, CreateTrainQ, PostRegisterQ, ChangPwdByForce, Train, ProjectQ, GetTeamQ
+  PageResp, PageInfoQ, TrainQ, CreateTrainQ, PostRegisterQ, ChangPwdByForce, Train, ProjectQ, GetTeamQ, Notice
 } from "../types/types";
 
 import {Logger} from "./logger.service";
@@ -1252,6 +1252,120 @@ export class ConnectionService {
         },
       error: error => {
         this.logger.log(`Post enterprise-admin reg failed with network error: `, error);
+        observer.error(error);
+      }
+    });
+    return result;
+  }
+
+  public PostTeacherAdminReg(regQ: PostRegisterQ[]): Observable<Resp>{
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    this.post(API.teacher_admin, regQ).subscribe({
+      next: resp => {
+        if (resp.status !== 0) {
+          this.logger.log(`Post teacher-admin reg failed with status code ${resp.status}: ${resp.msg}.`);
+          observer.error(resp);
+        }else{
+          observer.next(resp);
+          setTimeout(() => {
+            observer.complete();
+          }, 1000);
+        }
+      },
+      error: error => {
+        this.logger.log(`Post teacher-admin reg failed with network error: `, error);
+        observer.error(error);
+      }
+    });
+    return result;
+  }
+
+  public PostTeacherReg(regQ: PostRegisterQ[]): Observable<Resp>{
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    this.post(API.teacher, regQ).subscribe({
+      next: resp => {
+        if (resp.status !== 0) {
+          this.logger.log(`Post teacher reg failed with status code ${resp.status}: ${resp.msg}.`);
+          observer.error(resp);
+        }else{
+          observer.next(resp);
+          setTimeout(() => {
+            observer.complete();
+          }, 1000);
+        }
+      },
+      error: error => {
+        this.logger.log(`Post teacher reg failed with network error: `, error);
+        observer.error(error);
+      }
+    });
+    return result;
+  }
+
+  public PostNotice(notice: Notice): Observable<Resp>{
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+
+    this.post(API.notice, notice).subscribe({
+      next: resp => {
+        if (resp.status !== 0) {
+          this.logger.log(`Post notice failed with status code ${resp.status}: ${resp.msg}.`);
+          observer.error(resp);
+        }else{
+          observer.next(resp);
+          observer.complete();
+        }
+      },
+      error: error => {
+        this.logger.log(`Post notice failed with network error: `, error);
+        observer.error(error);
+      }
+    })
+    return result;
+  }
+
+  public UploadNotice(notice: Notice): Observable<Resp>{
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    this.put(API.notice, notice).subscribe({
+      next: resp => {
+        if (resp.status !== 0) {
+          this.logger.log(`Upload notice failed with status code ${resp.status}: ${resp.msg}.`);
+          observer.error(resp);
+        }else{
+          observer.next(resp);
+          setTimeout(() => {
+            observer.complete();
+          }, 1000);
+        }
+      },
+      error: error => {
+        this.logger.log(`Upload notice failed with network error: `, error);
+        observer.error(error);
+      }
+    });
+    return result;
+  }
+
+  public PostStudentReg(regQ: PostRegisterQ[]): Observable<Resp>{
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    this.post(API.student, regQ).subscribe({
+      next: resp => {
+        if (resp.status !== 0) {
+          this.logger.log(`Post student reg failed with status code ${resp.status}: ${resp.msg}.`);
+          observer.error(resp);
+        }else{
+          observer.next(resp);
+          setTimeout(() => {
+            observer.complete();
+          }, 1000);
+        }
+      },
+      error: error => {
+        this.logger.log(`Post student reg failed with network error: `, error);
         observer.error(error);
       }
     });

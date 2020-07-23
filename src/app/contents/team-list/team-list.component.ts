@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {GetTeamQ, PageInfoQ, Team} from "../../types/types";
+import {GetTeamQ, Notice, PageInfoQ, Team, UserInfo} from "../../types/types";
 import {ActivatedRoute} from "@angular/router";
 import {LocationService} from "../../services/location.service";
 import {ConnectionService} from "../../services/connection.service";
@@ -19,6 +19,8 @@ export class TeamListComponent implements OnInit {
   teamList: Team[];
 
   teams: Team[];
+
+  user: UserInfo;
 
   autoAvatar(link: string) {
     return this.validLink(link) ? link : '/assets/avatar.png';
@@ -49,6 +51,9 @@ export class TeamListComponent implements OnInit {
         this.GetData();
       }
     });
+    this.conn.user.subscribe(user => {
+      this.user = user.info;
+    });
   }
 
   JumpToDetail(team: Team){
@@ -77,6 +82,29 @@ export class TeamListComponent implements OnInit {
     })
   }
 
+  JoinTeam(team: Team){
+    const con = '申请加入:' + this.user.name + '同学申请加入您的团队[' + team.name + ']';
+    const notice: Notice = {
+      sender_id: this.user.user_id,
+      receiver_id: team.leader_id,
+      team_id: team.id,
+      content: con,
+      is_read: false,
+      type: '普通',
+    };
+    this.conn.PostNotice(notice).subscribe({
+      next: value => {
+        if ( value.status !== 0){
+          this.msg.SendMessage('提交申请失败').subscribe();
+        }else{
+          this.msg.SendMessage('提交申请成功').subscribe();
+        }
+      },
+      error: err => {
+        this.msg.SendMessage('提交申请失败。未知错误').subscribe();
+      }
+    });
+  }
 
   GetData(){
     const pageInfoQ: PageInfoQ = {
