@@ -21,11 +21,15 @@ import {JoinRequestComponent} from "./components/join-request/join-request.compo
 import {MessageComponent} from "./contents/message/message.component";
 import {StatGraphComponent} from './contents/stat-graph/stat-graph.component';
 import {AbilityGraphComponent} from './contents/ability-graph/ability-graph.component';
+import {ChatComponent} from './components/chat/chat.component';
+import {CameraSignComponent} from './popups/camera-sign/camera-sign.component';
+import {EmptyComponent} from './components/empty/empty.component';
+import {LocationSignComponent} from './popups/location-sign/location-sign.component';
 
 
 const routes: Routes = [
   { path: 'plat/user/me', component: PersonalDataComponent },
-  { path: 'plat/test', component: TrainAdminComponent },
+  { path: 'plat/test', component: EmptyComponent },
   //{ path: 'plat/test', component: TrainAdminComponent, data: {type: 'enterprise'}  },
   // { path: 'activate/:token'},
   { path: 'info/invite', component: InviteComponent },   //  转到邀请加入团队界面

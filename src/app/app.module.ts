@@ -83,6 +83,14 @@ import {NgxEchartsModule} from 'ngx-echarts';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import { AbilityGraphComponent } from './contents/ability-graph/ability-graph.component';
+import { ChatComponent } from './components/chat/chat.component';
+import { ChatMessageComponent } from './components/chat-message/chat-message.component';
+import { AutoAvatarPipe } from './pipes/auto-avatar.pipe';
+import { CameraSignComponent } from './popups/camera-sign/camera-sign.component';
+import {WebcamModule} from 'ngx-webcam';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { EmptyComponent } from './components/empty/empty.component';
+import { LocationSignComponent } from './popups/location-sign/location-sign.component';
 
 // These are the hardcoded inline svg sources to be used by the `<mat-icon>` component.
 // tslint:disable: max-line-length
@@ -193,7 +201,13 @@ export const svgIconProviders = [
     MessageComponent,
     SendMessageComponent,
     StatGraphComponent,
-    AbilityGraphComponent
+    AbilityGraphComponent,
+    ChatComponent,
+    ChatMessageComponent,
+    AutoAvatarPipe,
+    CameraSignComponent,
+    EmptyComponent,
+    LocationSignComponent
   ],
   imports: [
     BrowserModule,
@@ -238,7 +252,9 @@ export const svgIconProviders = [
       echarts
     }),
     DragDropModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    WebcamModule,
+    MatProgressSpinnerModule
   ],
   providers: [
     ErrorHandler,

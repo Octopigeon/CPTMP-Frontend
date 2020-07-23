@@ -272,3 +272,10 @@ export interface PersonalGrade {
   framework_point: number;
   communication_point: number;
 }
+
+export interface ChatMessage {
+  name: string;
+  avatar?: string;
+  message: string;
+  self?: boolean;
+}
