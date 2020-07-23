@@ -1,0 +1,17 @@
+<div class="chat-wrapper">
+  <div class="chat-list" cdk-scrollable #chatList>
+    <app-chat-message *ngFor="let message of chat" [message]="message"></app-chat-message>
+  </div>
+  <div class="chat-input">
+    <mat-form-field appearance="fill" id="chat-input-container">
+      <mat-label><label for="chat-input-field">Send message</label></mat-label>
+      <input matInput placeholder="Write message" id="chat-input-field" [(ngModel)]="userInput"
+             (keyup.enter)="pushMessage()">
+      <button matSuffix mat-icon-button color="primary" class="send-button"
+              aria-label="Send message" [disabled]="!userInput" (click)="pushMessage()">
+        <mat-icon>send</mat-icon>
+      </button>
+      <mat-hint>Only support English currently.</mat-hint>
+    </mat-form-field>
+  </div>
+</div>

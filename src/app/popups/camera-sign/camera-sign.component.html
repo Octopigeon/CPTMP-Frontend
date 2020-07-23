@@ -1,0 +1,37 @@
+<h2 class="title">人脸{{signMode? '识别签到' : '采集'}}</h2>
+<mat-dialog-content>
+  <div class="camera-wrapper" #viewWrapper>
+    <webcam class="camera-preview"
+            [height]="viewWrapper.clientHeight"
+            [width]="viewWrapper.clientWidth"
+            [switchCamera]="switchCamera"
+            [trigger]="trigger"
+            (imageCapture)="processShot($event)"
+            (initError)="this.errored = true"></webcam>
+    <button mat-mini-fab matTooltip="切换摄像头" class="camera-switch-button"
+            (click)="switchCamera.next(true)">
+      <mat-icon>flip_camera_android</mat-icon>
+    </button>
+    <button mat-fab matTooltip="拍照" class="camera-take-button" matTooltipPosition="top"
+            (click)="takeShot()">
+      <mat-icon>camera</mat-icon>
+    </button>
+    <div @hint class="error-hint hint" *ngIf="errored">
+      <p>发生了错误，<wbr>无法访问摄像头。<wbr>请确认您的设备<wbr>具备摄像头，<wbr>且授予了相关权限。</p>
+    </div>
+    <div @hint class="processing-hint hint" *ngIf="processing">
+      <mat-spinner></mat-spinner>
+      <p>请稍候，<wbr>正在处理图像。</p>
+    </div>
+    <div @hint class="finished-hint hint" *ngIf="finished">
+      <p>{{signMode? '签到' : '采集'}}完毕，<wbr>请点击完成退出。</p>
+    </div>
+    <div @hint class="failed-hint hint" *ngIf="failed">
+      <p>{{signMode? '签到' : '采集'}}失败，<wbr>图像不符合要求，<wbr>请重试。</p>
+    </div>
+  </div>
+</mat-dialog-content>
+<div mat-dialog-actions class="dialog-actions">
+  <button mat-button (click)="cancelClose()">取消</button>
+  <button mat-flat-button color="primary" (click)="doneClose()" [disabled]="!finished">完成</button>
+</div>

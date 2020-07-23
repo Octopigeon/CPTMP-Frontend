@@ -1,0 +1,13 @@
+<div class="message-wrapper" [class.chat-self]="message.self">
+  <div class="user-avatar">
+    <img class="avatar-img" [src]="message.avatar | avatar" alt="avatar">
+  </div>
+  <div class="message-content">
+    <div class="message-sender">
+      {{message.name}}
+    </div>
+    <div class="message-body">
+      {{message.message}}
+    </div>
+  </div>
+</div>

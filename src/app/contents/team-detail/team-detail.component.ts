@@ -256,7 +256,7 @@ export class TeamDetailComponent implements OnInit {
 
   GetData(){
     if ( this.editMode ){
-      this.conn.GetTeamInfo(this.teamId).subscribe({
+      this.conn.GetTeamInfo(Number(this.teamId)).subscribe({
         next: value => {
           if ( value.status !== 0 ){
             this.msg.SendMessage('队伍信息获取失败').subscribe();

@@ -1,0 +1,64 @@
+.message-wrapper
+  margin 10px
+  display flex
+
+  .user-avatar
+    width 50px
+    flex auto 0 0
+
+    .avatar-img
+      height 30px
+      width 30px
+      border-radius 15px
+      margin 0 10px
+
+  .message-content
+    flex auto 0 1
+    margin-right 50px
+
+    .message-sender
+      padding-left 5px
+      font-size 12px
+      color #666
+
+    .message-body
+      word-break break-word
+      overflow-wrap break-word
+      background #ddd
+      padding 10px
+      border-radius 5px
+      position relative
+      min-height 20px
+      min-width 10px
+
+      &::before
+        position absolute
+        content ""
+        height 15px
+        width 10px
+        background #ddd
+        top 10px
+        left -5px
+        transform skew(35deg, 20deg)
+
+  &.chat-self
+    flex-direction row-reverse
+
+    .message-content
+      margin-left 50px
+      margin-right 0
+
+      .message-sender
+        text-align right
+        padding-right 5px
+        padding-left 0
+
+      .message-body
+        background #03a9f4
+        color white
+
+        &::before
+          left unset
+          right -5px
+          background #03a9f4
+          transform skew(-35deg, -20deg)

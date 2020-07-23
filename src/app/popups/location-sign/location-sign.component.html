@@ -1,0 +1,26 @@
+<h2 class="title">GPS定位签到</h2>
+<mat-dialog-content>
+  <div class="content-wrapper">
+    <div class="icon">
+      <mat-spinner *ngIf="loading || sending" diameter="48"></mat-spinner>
+      <mat-icon *ngIf="timeout" color="warn">timer</mat-icon>
+      <mat-icon *ngIf="finished" color="primary">done</mat-icon>
+      <mat-icon *ngIf="errored || failed" color="warn">wrong_location</mat-icon>
+    </div>
+    <div class="info">
+      <p *ngIf="loading">正在获取定位...</p>
+      <p *ngIf="timeout">
+        定位超时。<wbr>这可能是由于GPS信号不佳。<wbr>请前往空旷处，<wbr>并点击右侧按钮重试。
+        <button mat-icon-button matTooltip="重试"><mat-icon>refresh</mat-icon></button>
+      </p>
+      <p *ngIf="sending">正在发送位置信息...</p>
+      <p *ngIf="finished">签到成功。</p>
+      <p *ngIf="errored">无法获取位置。<wbr>请确认您的设备可以定位，<wbr>并已授予权限。</p>
+      <p *ngIf="failed">签到失败，<wbr>位置不符合要求。</p>
+    </div>
+  </div>
+</mat-dialog-content>
+<div mat-dialog-actions class="dialog-actions">
+  <button mat-button (click)="cancelClose()">取消</button>
+  <button mat-flat-button color="primary" (click)="doneClose()" [disabled]="!finished">完成</button>
+</div>
