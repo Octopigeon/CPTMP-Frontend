@@ -414,7 +414,7 @@ export class TrainDetailComponent implements OnInit {
       page: 1,
       offset: 100,
     };
-    this.conn.GetAllProject(pageInfoQ).subscribe({
+    this.conn.GetProject(pageInfoQ).subscribe({
       next: value => {
         let project: SimplifiedProject[] = [];
         if (value.status !== 0){
@@ -440,6 +440,12 @@ export class TrainDetailComponent implements OnInit {
   jumpToTeamList(){
     const index: string = this.data.id + '&0';
     this.loc.go(['/plat/teamList/', index]);
+  }
+
+
+  jumpToProjectList(){
+    const index: string = this.data.id + '&0';
+    this.loc.go(['/plat/ProjectList/', index]);
   }
 }
 

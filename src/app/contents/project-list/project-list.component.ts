@@ -40,6 +40,7 @@ export class ProjectListComponent implements OnInit {
 
   projects = EXAMPLE_PROJECT;
   train = '实训名称';
+  trainId : string;
 
   capLevel(level: number): number {
     if (level < 0) {
@@ -63,7 +64,9 @@ export class ProjectListComponent implements OnInit {
    */
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
+      this.trainId = params.get('id');
       // TODO change projects and train to real info fetched from backend
+
     })
   }
 

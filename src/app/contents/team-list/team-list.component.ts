@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {Team} from "../../types/types";
+import {PageInfoQ, Team} from "../../types/types";
 import {ActivatedRoute} from "@angular/router";
 import {LocationService} from "../../services/location.service";
 import {ConnectionService} from "../../services/connection.service";
@@ -177,11 +177,29 @@ export class TeamListComponent implements OnInit {
   }
 
   GetDataByProject(id: string){
+    this.conn.GetTeamByProject(id).subscribe({
+      next: value => {
 
+      },
+      error: err => {
+
+      }
+    })
   }
 
   GetData(){
+    const pageInfoQ: PageInfoQ = {
+      page: 1,
+      offset: 100,
+    }
+    this.conn.GetAllTeam(pageInfoQ).subscribe({
+      next: value => {
 
+      },
+      error: err => {
+
+      }
+    });
   }
 
 }

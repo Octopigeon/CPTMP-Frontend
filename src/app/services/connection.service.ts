@@ -874,6 +874,28 @@ export class ConnectionService {
     return result;
   }
 
+  public GetAllProject(pageInfoQ: PageInfoQ): Observable<Resp> {
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    const url = API.project + '/search/name?page=' + pageInfoQ.page + '&offset=' + pageInfoQ.offset + '&key_word=';
+    console.log(url)
+    this.get(url).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Get all project failed with status code ${response.status}: ${response.msg}.`);
+          observer.error(response);
+          return result;
+        }
+        observer.next(response);
+        observer.complete();
+      },
+      error: error => {
+        this.logger.log(`Get all  project failed with network error: `, error);
+        observer.error(error);
+      }
+    });
+    return result;
+  }
 
   /**
    * 分页查询所有用户的连接
@@ -947,34 +969,11 @@ export class ConnectionService {
 
   }
 
-  public GetAllProject(pageInfoQ: PageInfoQ): Observable<Resp> {
-    let observer: Subscriber<Resp>;
-    const result = new Observable<Resp>(o => observer = o);
-    const url = API.project + '?offset=' + pageInfoQ.offset + '&page=' + pageInfoQ.page ;
-    console.log(url);
-    this.get(url).subscribe({
-      next: response => {
-        if (response.status !== 0) {
-          this.logger.log(`Get all object failed with status code ${response.status}: ${response.msg}.`);
-          observer.error(response);
-          return result;
-        }
-        observer.next(response);
-        observer.complete();
-      },
-      error: error => {
-        this.logger.log(`Get all object failed with network error: `, error);
-        observer.error(error);
-      }
-    });
-    return result;
-  }
-
-  public GetTeam( id: string ): Observable<Resp>{
+  public GetTeam(pageInfoQ: PageInfoQ): Observable<Resp>{
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
     const url = API.train + '?offset=' + pageInfoQ.offset + '&page=' + pageInfoQ.page ;
-    this.get().subscribe({
+    this.get(url).subscribe({
       next: resp => {
         if (resp.status !== 0) {
           this.logger.log(`Get team info failed with status code ${resp.status}: ${resp.msg}.`);
@@ -995,7 +994,8 @@ export class ConnectionService {
   public GetTeamByProject( id: string ): Observable<Resp>{
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
-    this.get().subscribe({
+    const url = API.team + '/train/' + id + '?page=1&offset=100';
+    this.get(url).subscribe({
       next: resp => {
         if (resp.status !== 0) {
           this.logger.log(`Get team info failed with status code ${resp.status}: ${resp.msg}.`);

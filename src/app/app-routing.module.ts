@@ -34,6 +34,7 @@ const routes: Routes = [
   { path: 'plat/account', component: AccountAdminComponent, data: {type: 'enterprise'} },   // 转到用户管理界面
   { path: 'plat/project', component: ProjectAdminComponent},   // 转到项目管理界面
   { path: 'plat/projectList', component: ProjectListComponent},  // 转到项目列表界面
+  { path: 'plat/projectList/:id', component: ProjectListComponent},  // 转到项目列表界面
   { path: 'plat/org', component: SchoolAdminComponent},  // 转到组织管理界面
   { path: 'plat/team', component: TeamAdminComponent},  //  转到团队管理界面
   { path: 'plat/teamList/:index', component: TeamListComponent},  //  转到团队管理界面

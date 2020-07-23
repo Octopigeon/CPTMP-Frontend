@@ -204,7 +204,6 @@ export class ProjectDetailComponent implements OnInit {
 
   jumpToTeamList(){
     const index: string = '0&' + this.data.id;
-    console.log(123)
     this.loc.go(['/plat/teamList/', index]);
   }
 
