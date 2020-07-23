@@ -91,6 +91,7 @@ import {WebcamModule} from 'ngx-webcam';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { EmptyComponent } from './components/empty/empty.component';
 import { LocationSignComponent } from './popups/location-sign/location-sign.component';
+import { CareerPlanComponent } from './contents/career-plan/career-plan.component';
 
 // These are the hardcoded inline svg sources to be used by the `<mat-icon>` component.
 // tslint:disable: max-line-length
@@ -207,7 +208,8 @@ export const svgIconProviders = [
     AutoAvatarPipe,
     CameraSignComponent,
     EmptyComponent,
-    LocationSignComponent
+    LocationSignComponent,
+    CareerPlanComponent
   ],
   imports: [
     BrowserModule,
