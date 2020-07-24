@@ -93,6 +93,8 @@ import { EmptyComponent } from './components/empty/empty.component';
 import { LocationSignComponent } from './popups/location-sign/location-sign.component';
 import { CareerPlanComponent } from './contents/career-plan/career-plan.component';
 import { BotChatComponent } from './popups/bot-chat/bot-chat.component';
+import { JobOffersComponent } from './contents/job-offers/job-offers.component';
+import { OfferAddComponent } from './popups/offer-add/offer-add.component';
 
 // These are the hardcoded inline svg sources to be used by the `<mat-icon>` component.
 // tslint:disable: max-line-length
@@ -211,7 +213,9 @@ export const svgIconProviders = [
     EmptyComponent,
     LocationSignComponent,
     CareerPlanComponent,
-    BotChatComponent
+    BotChatComponent,
+    JobOffersComponent,
+    OfferAddComponent
   ],
   imports: [
     BrowserModule,

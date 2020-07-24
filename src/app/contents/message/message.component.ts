@@ -132,6 +132,15 @@ export class MessageComponent implements OnInit {
                   action: inviteUrl,
                 });
                 continue;
+              default:
+                message.push({
+                  id: tnotice.id,
+                  title: str[0],
+                  message: str[1],
+                  unread: !tnotice.is_read,
+                  notice: tnotice,
+                  action: null,
+                });
             }
           }
         }

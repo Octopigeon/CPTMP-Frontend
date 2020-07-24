@@ -80,7 +80,6 @@ export class TeamListComponent implements OnInit {
               leader_id: getTeamQ.team_master_id,
               members: getTeamQ.member,
             };
-            console.log(team)
             this.teamList.push(team);
           }
           this.teams = this.teamList;

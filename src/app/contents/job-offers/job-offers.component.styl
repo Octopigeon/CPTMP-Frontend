@@ -1,0 +1,47 @@
+.info-header
+  margin 30px 0 20px
+  text-align center
+
+.content-wrapper
+  margin 20px 40px 40px
+  width calc(100% - 80px)
+  position relative
+  display grid
+  grid-template-columns 1fr 1fr 1fr
+  grid-gap 10px
+
+  @media (max-width 1023px)
+    grid-template-columns 1fr 1fr
+
+  @media (max-width 599px)
+    grid-template-columns 1fr
+    margin 20px 10px 40px
+    width calc(100% - 20px)
+
+  .introduction
+    word-break break-all
+
+  .mat-card
+    display grid
+    grid-row span 3
+    grid-template-rows auto 1fr auto
+    grid-template-rows subgrid
+
+  .intro-image-wrapper
+    max-height 400px
+    overflow-x hidden
+    overflow-y auto
+
+    .intro-image
+      width 100%
+
+  .offer-company, .offer-job
+    cursor default
+
+  .del-button
+    float right
+
+.admin-button
+  position fixed
+  right 20px
+  bottom 20px

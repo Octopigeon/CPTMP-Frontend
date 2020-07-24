@@ -111,4 +111,9 @@ export const AdminNodes: NavigationNode[] = [{
   tooltip: "咨询你感兴趣的职业方向",
   hidden: false,
   url: "/plat/career",
+},{
+  title: '企业招聘',
+  tooltip: "寻找一次好的机会",
+  hidden: false,
+  url: "/plat/ads",
 }]

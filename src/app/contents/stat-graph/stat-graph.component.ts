@@ -11,6 +11,7 @@ import SeriesSunburst = echarts.EChartOption.SeriesSunburst;
 import {animate, sequence, state, style, transition, trigger} from '@angular/animations';
 import {MatTooltip} from '@angular/material/tooltip';
 import {EnvService} from '../../services/env.service';
+import {ConnectionService} from "../../services/connection.service";
 
 @Component({
   selector: 'app-stat-graph',
@@ -32,6 +33,10 @@ import {EnvService} from '../../services/env.service';
   ],
 })
 export class StatGraphComponent implements OnInit {
+
+  contributor: ContributorStat[] = [];
+
+  teamId: number;
 
   team = '队伍名';
   expandMember = false;
@@ -166,20 +171,32 @@ export class StatGraphComponent implements OnInit {
     this.orderSubscriber.next(this.orderNames.map(([field, _]) => field));
   }
 
-  constructor(private route: ActivatedRoute) { }
+  constructor(private route: ActivatedRoute,
+              private conn: ConnectionService,) { }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(param => {
       // set up order change notification
+      this.teamId = Number(param.get('id'));
       this.order$ = new Observable<string[]>(subscriber => {
         subscriber.next(this.orderNames.map(([field, _]) => field));
         this.orderSubscriber = subscriber;
       })
 
+      this.conn.GetGitInfo(this.teamId).subscribe({
+        next: value => {
+          this.contributor = value.contributor_dtolist;
+          console.log(this.contributor);
+        },
+        error: err => {
+
+        }
+      })
+
       // data should be update upon each new data fetched or data order change
       combineLatest([
         // TODO fetch data from backend
-        of(EXAMPLE_STAT).pipe(
+        of(this.contributor).pipe(
           map(raw => this.preprocessData(raw)),
         ),
         this.order$

@@ -4,6 +4,7 @@ export interface Resp {
   msg: string;
   total_rows?: number;
   data?: any;
+  contributor_dtolist?: ContributorStat[];
 }
 
 export interface PageResp {
@@ -172,15 +173,17 @@ export interface TrainQ{
   accept_standard: string;
   resource_library: string;
   gps_info: string;
+  limits?: number;
 }
 
-export interface File {
+
+export interface FileQ {
   fileName: string;
   filePath: string;
   fileSize: number;
   fileType: string;
   fileUrl: string;
-  gmtCreate: string |number;
+  gmtCreate: number;
   originName: string;
 }
 
@@ -265,6 +268,15 @@ export interface Team {
   evaluation?: string;
 }
 
+export  interface JobOfferQ {
+  id?: number;
+  photo: string;
+  title: string;
+  start_time: string;
+  end_time: string;
+  website_url: string;
+}
+
 export interface Message {
   // TODO how to represent system message? (current plan: nullable)
   id?: number;
@@ -333,4 +345,11 @@ export interface ChatMessage {
   avatar?: string;
   message: string;
   self?: boolean;
+}
+
+export interface JobOffer {
+  id: number;
+  company: string;
+  intro_image: string;
+  action_link: string;
 }

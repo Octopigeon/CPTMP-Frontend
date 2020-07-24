@@ -20,4 +20,5 @@ export const API = {
   change_password_force: `${environment.backend}api/user/pwd`,
   team: `${environment.backend}api/team`,
   notice: `${environment.backend}api/notice`,
+  recruitment: `${environment.backend}api/recruitment`
 }

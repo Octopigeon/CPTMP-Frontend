@@ -1,6 +1,6 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {
-  CreateTrainQ,
+  CreateTrainQ, FileQ,
   GetOrgQ,
   Organization,
   PageInfoQ,
@@ -29,6 +29,7 @@ import {debounceTime, distinctUntilChanged, map, startWith, tap} from "rxjs/oper
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {GoogleMapsModule} from "@angular/google-maps";
 import {MatTableDataSource} from "@angular/material/table";
+import {JsonObject} from "@angular/compiler-cli/ngcc/src/packages/entry_point";
 
 
 @Component({
@@ -118,6 +119,8 @@ export class TrainDetailComponent implements OnInit {
     4: '123'
   };
 
+  projectList: SimplifiedProject[];
+
   separatorKeysCodes: number[] = [ENTER, COMMA];
   projectInputControl = new FormControl();
   filteredProjects$: Observable<SimplifiedProject[]>;
@@ -136,14 +139,12 @@ export class TrainDetailComponent implements OnInit {
     // TODO change to real fetch (with entry count limit)
     if (!value) {
       // its meaningful to give some projects to choose even if keyword is empty
-      return Object.entries(this.projects)
-        .filter(([id, name]) => !this.projectIDs.has(id))
-        .map(([project_id, project_name]) => { return {project_id, project_name}});
+      return this.projectList
+        .filter(project => !this.projectIDs.has(project.project_id));
     }
     const filterValue = value.toLowerCase()
-    return Object.entries(this.projects)
-      .filter(([id, name]) => (name.toLowerCase().includes(filterValue) && !this.projectIDs.has(id)))
-      .map(([project_id, project_name]) => { return {project_id, project_name}});
+    return this.projectList
+      .filter(project => (project.project_name.toLowerCase().includes(filterValue) && !this.projectIDs.has(project.project_id)));
   }
 
   removeProject(project: SimplifiedProject) {
@@ -216,6 +217,7 @@ export class TrainDetailComponent implements OnInit {
         }
       })
     }else{  // 若传入了实训对象，则为对当前对象的修改进行保存
+      const gps: string = '{\"longitude\":' + this.location.lng + ',\"latitude\":' + this.location.lat + '}';
       const trainQ: TrainQ = {
         id: this.data.id,
         name: this.controls.name?.value,
@@ -225,7 +227,7 @@ export class TrainDetailComponent implements OnInit {
         content: this.controls.content?.value,
         accept_standard: this.controls.standard?.value,
         resource_library: this.controls.resource_lib?.value,
-        gps_info: this.controls.gps_info?.value
+        gps_info: gps,
       };
       this.conn.UploadTrainInfo(trainQ).subscribe({
         next: value => {
@@ -301,6 +303,21 @@ export class TrainDetailComponent implements OnInit {
             if(trainQ.id === undefined){
               this.data = this.err;
             }
+            const object: JsonObject = JSON.parse(trainQ.resource_library);
+            const FileList: ResourceFile[] = [];
+            // @ts-ignore
+            for (const item of object.resourceLib) {
+              // @ts-ignore
+              const file: FileQ = item as FileQ;
+              FileList.push({
+                file_name: file.fileName,
+                file_path: file.filePath,
+                file_size: file.fileSize,
+                file_type: file.fileType,
+                created: file.gmtCreate,
+                original_name: file.originName,
+              });
+            }
             const train: Train = {
               id: trainQ.id,
               name: trainQ.name,
@@ -311,7 +328,7 @@ export class TrainDetailComponent implements OnInit {
               end_time: new Date(trainQ.end_time).getTime(),
               standard: trainQ.accept_standard,
               gps_info: trainQ.gps_info,
-              resource_lib: this.ParseStringToFile(trainQ.resource_library)
+              resource_lib: FileList,
             };
             this.conn.GetOrgInfo(trainQ.organization_id).subscribe({
               next: nresp => {
@@ -440,7 +457,7 @@ export class TrainDetailComponent implements OnInit {
               project_name: projectQ.name,
             });
           }
-          this.projects
+          this.projectList = project;
         }
       },
       error: err => {
@@ -459,7 +476,13 @@ export class TrainDetailComponent implements OnInit {
   jumpToProjectList(){
     this.loc.go(['/plat/projectList/', this.data.id]);
   }
+
+  test(file: ResourceFile){
+    console.log(file);
+  }
+
 }
+
 
 
 

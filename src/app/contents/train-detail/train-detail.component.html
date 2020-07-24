@@ -177,7 +177,7 @@
     </mat-list>
     <div class="file-edit-wrapper" *ngIf="editFile">
       <mat-selection-list #files>
-        <mat-list-option *ngFor="let file of data.resource_lib" [value]="file">
+        <mat-list-option *ngFor="let file of data.resource_lib" [value]="file" (click)="test(file)">
           <mat-icon mat-list-icon>insert_drive_file</mat-icon>
           <div mat-line>{{file.original_name}}</div>
           <div mat-line> {{file.file_size | fileSize}} · {{file.created | date}} </div>

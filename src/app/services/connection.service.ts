@@ -11,7 +11,17 @@ import {
   UserInfo,
   UserInfoL,
   DeleteUserQ,
-  PageResp, PageInfoQ, TrainQ, CreateTrainQ, PostRegisterQ, ChangPwdByForce, Train, ProjectQ, GetTeamQ, Notice
+  PageResp,
+  PageInfoQ,
+  TrainQ,
+  CreateTrainQ,
+  PostRegisterQ,
+  ChangPwdByForce,
+  Train,
+  ProjectQ,
+  GetTeamQ,
+  Notice,
+  JobOfferQ
 } from "../types/types";
 
 import {Logger} from "./logger.service";
@@ -87,7 +97,7 @@ export class ConnectionService {
     }
   }
 
-  private post(url: string, body: any): Observable<Resp> {
+  private post(url: string, body?: any): Observable<Resp> {
     return this.client.post<Resp>(url, body);
   }
 
@@ -1009,6 +1019,101 @@ export class ConnectionService {
         observer.error(error);
       }
     })
+    return result;
+  }
+
+  public GetGitInfo(teamId: number): Observable<Resp>{
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    const url = API.team + '/' + teamId + '/contributor/statics';
+    console.log(url);
+    this.get(url).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Get git info failed with status code ${response.status}: ${response.msg}.`);
+          observer.error(response);
+        }else {
+          observer.next(response);
+          observer.complete();
+        }
+      },
+      error: error => {
+        this.logger.log(`Get git info failed with network error: `, error);
+        observer.error(error);
+      }
+    })
+    return result;
+  }
+
+  public DeleteRecruitment(id: number): Observable<Resp>{
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    const url = API.recruitment + '/' + id;
+    this.delete(url).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Delete recruitment failed with status code ${response.status}: ${response.msg}.`);
+          observer.error(response);
+          return result;
+        }else{
+          observer.next(response);
+          setTimeout(() => {
+            observer.complete();
+          }, 2000);
+        }
+      },
+      error: error => {
+        this.logger.log(`Delete recruitment failed with network error: `, error);
+        observer.error(error);
+      }
+    });
+    return result;
+  }
+
+  public CreateRecruitment(jobOfferQ: JobOfferQ): Observable<Resp>{
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    this.post(API.recruitment, jobOfferQ).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Create recruitment failed with status code ${response.status}: ${response.msg}.`);
+          observer.error(response);
+          return result;
+        }else{
+          observer.next(response);
+          setTimeout(() => {
+            observer.complete();
+          }, 2000);
+        }
+      },
+      error: error => {
+        this.logger.log(`Create recruitment failed with network error: `, error);
+        observer.error(error);
+      }
+    });
+    return result;
+  }
+
+  public GetAllRecruitment(): Observable<Resp>{
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    const url = API.recruitment + '?offset=100&page=1';
+    this.get(url).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Get all recruitment failed with status code ${response.status}: ${response.msg}.`);
+          observer.error(response);
+          return result;
+        }else{
+          observer.next(response);
+          observer.complete();
+        }
+      },
+      error: error => {
+        this.logger.log(`Get all recruitment failed with network error: `, error);
+        observer.error(error);
+      }
+    });
     return result;
   }
 
