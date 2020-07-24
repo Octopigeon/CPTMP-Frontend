@@ -1,11 +1,13 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {Organization, UserInfo} from "../../types/types";
+import {Organization, PageInfoQ, UserInfo} from "../../types/types";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {Observable} from "rxjs";
 import {debounceTime, distinctUntilChanged, map, startWith, tap} from "rxjs/operators";
 import {MatAutocompleteSelectedEvent} from "@angular/material/autocomplete";
+import {ConnectionService} from "../../services/connection.service";
+import {MessageService} from "../../services/message.service";
 
 const ALL_USERS: UserInfo[] = [{
   avatar: "",
@@ -145,7 +147,10 @@ export class SendMessageComponent implements OnInit {
   }
 
   constructor(public dialogRef: MatDialogRef<SendMessageComponent>,
+              private conn: ConnectionService,
+              private msg: MessageService,
               @Inject(MAT_DIALOG_DATA) public data: Organization) {
+
 
     // user input can change quite frequently, so debounce it to reduce request amount
     this.filteredOrganizations$ = this.messageForm.controls.organization.valueChanges.pipe(
@@ -205,5 +210,39 @@ export class SendMessageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+  }
+
+  GetUserInfo(){
+    const pageInfoQ: PageInfoQ = {
+      page: 1,
+      offset: 100,
+    }
+    this.conn.GetAllUser(pageInfoQ).subscribe({
+      next: value => {
+        if (value.status !== 0){
+          this.msg.SendMessage('获取用户信息列表失败').subscribe();
+        }else{
+          this.filteredUsers = [];
+          for (const item of value.data) {
+            const getUserInfo: UserInfo = item as UserInfo;
+            this.filteredUsers.push({
+              avatar: getUserInfo.avatar,
+              email: getUserInfo.email,
+              gender: getUserInfo.gender,
+              name: getUserInfo.name,
+              phone_number: getUserInfo.phone_number,
+              role_name: getUserInfo.role_name,
+              user_id: getUserInfo.user_id,
+              introduction: getUserInfo.introduction,
+              username: getUserInfo.username,
+            });
+          }
+        }
+      },
+      error: err => {
+        this.msg.SendMessage('获取用户信息列表失败。未知错误').subscribe();
+      }
+    });
   }
 }

@@ -186,13 +186,13 @@ export class TeamDataSource extends DataSource<Team> {
               name: teamQ.name,
               evaluation: teamQ.evaluation,
               id: teamQ.id,
-              project_name: '123',
+              project_name: teamQ.project_name,
               repo_url: teamQ.repo_url,
               team_grade: teamQ.team_grade,
               train_name: `Train`,
               train_project_id: teamQ.train_id,
-              member_count: 1,
-              leader_id: 1
+              member_count: teamQ.size,
+              leader_id: teamQ.team_master_id,
             })
           }
           observer.next(list);

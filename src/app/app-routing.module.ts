@@ -54,7 +54,7 @@ const routes: Routes = [
   { path: 'plat/user/ability/:id', component: AbilityGraphComponent }, // 转到能力图表页面
   { path: 'info/join/:index', component: JoinRequestComponent },
   { path: 'info/invite/:index', component: InviteComponent },   //  转到邀请加入团队界面
-  { path: 'plat/careerPlan', component: CareerPlanComponent },
+  { path: 'plat/career', component: CareerPlanComponent },
   { path: 'plat/chat/:index', component: ChatMessageComponent},
   { path: '', component: LoginComponent, pathMatch: 'full' },  // 转到登陆界面
   { path: '**', component: NotFoundComponent }  // 转到404界面

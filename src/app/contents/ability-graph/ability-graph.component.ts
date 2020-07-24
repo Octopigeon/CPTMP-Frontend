@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import {PersonalGrade} from '../../types/types';
+import {GetTeamQ, PersonalGrade, UserInfo} from '../../types/types';
 import {ActivatedRoute} from '@angular/router';
 import SeriesRadar = echarts.EChartOption.SeriesRadar;
 import {EChartOption} from 'echarts';
 import {combineLatest, Observable, of, Subscriber} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
 import Format = echarts.EChartOption.Tooltip.Format;
+import {ConnectionService} from "../../services/connection.service";
 
 const EXAMPLE_GRADE: PersonalGrade = {
   code_point: 91,
@@ -57,64 +58,84 @@ export class AbilityGraphComponent implements OnInit {
   baseSubscriber: Subscriber<number>;
   maxBase: number = 100;
 
-  constructor(private route: ActivatedRoute) { }
+  me :UserInfo;
+
+  constructor(private route: ActivatedRoute,
+              private conn: ConnectionService,) { }
 
   updateBase(value: number) {
     value ? this.baseSubscriber.next(value) : undefined;
   }
+
+  setCombineLatest(){
+    combineLatest([
+      // TODO change to fetched real data
+      of(EXAMPLE_GRADE)
+        .pipe(
+          tap(grade => this.evaluation = grade.evaluation),
+          map((grade): number[] => Object.keys(this.indicator).map(key => grade[key]))
+        ),
+      this.base$
+    ]).subscribe(([grade, base]) => {
+      this.point = grade.reduce((total, current) => total + current, 0) / grade.length;
+      this.maxBase = grade.reduce((min, current) => current < min ? current : min, 100);
+      this.options = {
+        tooltip: {
+          formatter: (params) => {
+            const values = (params as Format).value as number[];
+            return '<b>能力评价</b><br />' +
+              Object.values(this.indicator)
+                .map((name, index): [string, number] => [name, values[index]])
+                .map(([name, value]) => `${name}: ${value + base}分`)
+                .join('<br />');
+          }
+        },
+        radar: {
+          name: {
+            textStyle: {
+              color: '#fff',
+              backgroundColor: '#999',
+              borderRadius: 3,
+              padding: [3, 5]
+            }
+          },
+          indicator: Object.values(this.indicator).map(name => {
+            return {name, max: 100 - base}
+          })
+        },
+        series: [{
+          type: 'radar',
+          data: [{
+            value: grade.map(i => i - base),
+            name: '能力评价'
+          }]
+        }]
+      };
+    });
+  }
+
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       this.base$ = new Observable<number>(subscriber => {
         subscriber.next(0);
         this.baseSubscriber = subscriber;
-      })
-
-      combineLatest([
-        // TODO change to fetched real data
-        of(EXAMPLE_GRADE)
-          .pipe(
-            tap(grade => this.evaluation = grade.evaluation),
-            map((grade): number[] => Object.keys(this.indicator).map(key => grade[key]))
-          ),
-        this.base$
-      ]).subscribe(([grade, base]) => {
-        this.point = grade.reduce((total, current) => total + current, 0) / grade.length;
-        this.maxBase = grade.reduce((min, current) => current < min ? current : min, 100);
-        this.options = {
-          tooltip: {
-            formatter: (params) => {
-              const values = (params as Format).value as number[];
-              return '<b>能力评价</b><br />' +
-                Object.values(this.indicator)
-                .map((name, index): [string, number] => [name, values[index]])
-                .map(([name, value]) => `${name}: ${value + base}分`)
-                .join('<br />');
-            }
-          },
-          radar: {
-            name: {
-              textStyle: {
-                color: '#fff',
-                backgroundColor: '#999',
-                borderRadius: 3,
-                padding: [3, 5]
-              }
-            },
-            indicator: Object.values(this.indicator).map(name => {
-              return {name, max: 100 - base}
-            })
-          },
-          series: [{
-            type: 'radar',
-            data: [{
-                value: grade.map(i => i - base),
-                name: '能力评价'
-            }]
-          }]
-        };
-      })
+      });
     })
+    this.conn.user.subscribe(user => {
+      this.me = user.info;
+      this.conn.findTeamInfoByUserId(this.me.user_id).subscribe( team =>{
+        const getTeamQ: GetTeamQ = team.data[0] as GetTeamQ;
+        this.conn.GetMyRemark(getTeamQ.id).subscribe({
+          next: value => {
+            console.log(value);
+          },
+          error: err => {
+
+          }
+        })
+      });
+    });
   }
 
 }

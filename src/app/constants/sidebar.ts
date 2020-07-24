@@ -110,5 +110,5 @@ export const AdminNodes: NavigationNode[] = [{
   title: "职业规划",
   tooltip: "咨询你感兴趣的职业方向",
   hidden: false,
-  url: "/plat/careerPlan",
+  url: "/plat/career",
 }]

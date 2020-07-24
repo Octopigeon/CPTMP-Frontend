@@ -3,6 +3,9 @@
     <button *ngIf="editMode" mat-fab color="primary" matTooltip="保存更改" class="save-button" (click)="saveChange()">
       <mat-icon>save</mat-icon>
     </button>
+    <button *ngIf="!editMode" mat-fab color="primary" matTooltip="创建团队" class="save-button" (click)="createTeam()">
+      <mat-icon>add</mat-icon>
+    </button>
   </div>
   <div class="team-title">
     <div class="avatar-container">
@@ -18,7 +21,7 @@
             <input matInput placeholder="输入新团队名" [formControl]="controls.name">
           </mat-form-field>
         </span>
-        <button *ngIf="editMode"
+        <button
                 mat-icon-button [matTooltip]="controls.name.editing ? '完成' : '修改'" class="edit-button"
                 (click)="controls.name.switchEdit()">
           <mat-icon>{{controls.name.editing ? 'check' : 'edit'}}</mat-icon>

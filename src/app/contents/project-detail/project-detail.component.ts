@@ -67,7 +67,7 @@ export class ProjectDetailComponent implements OnInit {
       level: this.controls.level.value,
       content: this.controls.content.value
     };
-    this.conn.CreatProject(projectQ).subscribe({
+    this.conn.CreateProject(projectQ).subscribe({
       next: value => {
         if(value.status !== 0){
           this.msg.SendMessage('创建新项目失败').subscribe();

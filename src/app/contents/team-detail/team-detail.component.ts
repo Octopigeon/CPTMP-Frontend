@@ -1,6 +1,6 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {MatSelectionList} from "@angular/material/list";
-import {PageInfoQ, Project, ResourceFile, Team, UserInfo} from "../../types/types";
+import {GetTeamQ, PageInfoQ, Project, ResourceFile, Team, UserInfo} from "../../types/types";
 import {StatedFormControl} from "../../shared/stated-form-control";
 import {ActivatedRoute} from "@angular/router";
 import {LocationService} from "../../services/location.service";
@@ -28,41 +28,18 @@ export class TeamDetailComponent implements OnInit {
 
   data: Team = {
     avatar: "",
-    name: `team1`,
+    name: `新队伍`,
     evaluation: '',
-    id: 1,
+    id: 0,
     project_name: "projectP",
     repo_url: "https://github.com",
     team_grade: null,
-    train_name: `Train1`,
+    train_name: `trainT`,
     train_project_id: 1,
     member_count: 1,
     leader_id: 1,
-    members: [{
-      avatar: "",
-      email: `user1@mail.com`,
-      gender: true,
-      name: `user1`,
-      phone_number: `123456`,
-      role_name: 'ROLE_ENTERPRISE_ADMIN',
-      user_id: 1,
-      username: `TEST0001`
-    }],
-    resource_lib: [{
-      file_name: "db7b5936-9ceb-422a-bad3-90366432a07c.jpg",
-      file_path: "/api/storage/2020/7/15/db7b5936-9ceb-422a-bad3-90366432a07c.jpg",
-      file_size: 584778,
-      file_type: "image/jpeg",
-      created: 1594798123238,
-      original_name: "2019101404.jpg"
-    }, {
-      file_name: "21e62a42-c557-43b5-8530-b3abab4ecee8.png",
-      file_path: "/api/storage/2020/7/15/21e62a42-c557-43b5-8530-b3abab4ecee8.png",
-      file_size: 1845323,
-      file_type: "image/png",
-      created: 1594798206653,
-      original_name: "2019101403.png"
-    }]
+    members: [],
+    resource_lib: []
   }
 
   trains = {
@@ -158,6 +135,8 @@ export class TeamDetailComponent implements OnInit {
 
   teamId: string;
 
+  me: UserInfo;
+
   getProjects(train_id: number): [string, string][] {
     // TODO change to fetch [train_project_id, project_name] according to given train_id
     return Object.entries(this.projects);
@@ -249,25 +228,71 @@ export class TeamDetailComponent implements OnInit {
 
       // we need all trains(_ => {train_id, train_name}),
       // and all projects belongs to specific train (train_id => {train_project_id, project_name})
-      this.GetData();
-      this.SetData();
+      this.conn.user.subscribe(user => {
+        this.me = user.info;
+        this.GetData();
+        this.SetData();
+      });
+    });
+  }
+
+  createTeam(){
+    const teamQ: GetTeamQ = {
+      name: this.controls.name.value,
+      evaluation: this.controls.evaluation.value,
+      repo_url: this.controls.repo_url.value,
+      team_grade: 0,
+      train_id: this.controls.train_id.value,
+      project_id: this.controls.project_id.value,
+      avatar: this.data.avatar
+    };
+    console.log(teamQ);
+    this.conn.CreateTeam(teamQ).subscribe({
+      next: value => {
+        if ( value.status !== 0){
+          this.msg.SendMessage('创建队伍失败').subscribe();
+        }else{
+          this.msg.SendMessage('创建队伍成功').subscribe();
+        }
+      },
+      error: err => {
+        this.msg.SendMessage('创建队伍失败。未知错误').subscribe();
+      },
+      complete: () => {
+
+      }
     })
   }
 
   GetData(){
     if ( this.editMode ){
-      this.conn.GetTeamInfo(Number(this.teamId)).subscribe({
-        next: value => {
-          if ( value.status !== 0 ){
-            this.msg.SendMessage('队伍信息获取失败').subscribe();
-          }else{
-            console.log(value.data);
+      if ( this.teamId === 'me' ){
+        this.conn.GetTeamInfoByUserId(this.me.user_id).subscribe({
+          next: value => {
+            if ( value.status !== 0 ){
+              this.msg.SendMessage('队伍信息获取失败').subscribe();
+            }else{
+              console.log(value.data);
+            }
+          },
+          error: err => {
+            this.msg.SendMessage('队伍信息获取失败。未知错误').subscribe();
           }
-        },
-        error: err => {
-          this.msg.SendMessage('队伍信息获取失败。未知错误').subscribe();
-        }
-      })
+        });
+      }else{
+        this.conn.GetTeamInfo(Number(this.teamId)).subscribe({
+          next: value => {
+            if ( value.status !== 0 ){
+              this.msg.SendMessage('队伍信息获取失败').subscribe();
+            }else{
+              console.log(value.data);
+            }
+          },
+          error: err => {
+            this.msg.SendMessage('队伍信息获取失败。未知错误').subscribe();
+          }
+        });
+      }
     }else{
 
     }

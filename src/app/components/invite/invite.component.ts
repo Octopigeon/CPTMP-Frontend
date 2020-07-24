@@ -16,7 +16,6 @@ export class InviteComponent implements OnInit {
 
   me: UserInfo;
 
-  isEmpty = true;
 
   autoAvatar(link: string) {
     return this.validLink(link) ? link : '/assets/avatar.png';
@@ -39,10 +38,13 @@ export class InviteComponent implements OnInit {
       const id: string[] = index.split('&');
       this.GetTeamInfo(Number(id[1]));
     });
+    this.conn.user.subscribe(user => {
+      this.me = user.info;
+    });
   }
 
   accept(){
-    const member: number[] = [this.me.user_id]
+    const member: number[] = [this.me.user_id];
     this.conn.AddTeamMember(this.data.id, member).subscribe({
       next: value => {
         if ( value.status !== 0 ){
@@ -109,10 +111,6 @@ export class InviteComponent implements OnInit {
     });
   }
 
-  GetUserInfo(id: number){
-
-  }
-
   GetTeamInfo(id: number){
     this.conn.GetTeamInfo(id).subscribe({
       next: value => {
@@ -131,7 +129,6 @@ export class InviteComponent implements OnInit {
           leader_id: getTeamQ.team_master_id,
           members: getTeamQ.member,
         };
-        this.isEmpty = false;
         this.data = teamData;
       },
       error: err => {

@@ -63,23 +63,64 @@ export class TeamListComponent implements OnInit {
   GetDataByTrain(id: string){
     this.conn.GetTeamByTrain(id).subscribe({
       next: value => {
-        console.log(value.data);
+        if (value.status !== 0 ){
+          this.msg.SendMessage('获取队伍信息失败').subscribe();
+        }else{
+          this.teamList = [];
+          for (const item of value.data) {
+            const getTeamQ: GetTeamQ = item as GetTeamQ;
+            const team: Team = {
+              avatar: getTeamQ.avatar,
+              name: getTeamQ.name,
+              id: getTeamQ.id,
+              project_name: getTeamQ.project_name,
+              train_name: getTeamQ.train_name,
+              train_project_id: getTeamQ.project_id,
+              member_count: getTeamQ.size,
+              leader_id: getTeamQ.team_master_id,
+              members: getTeamQ.member,
+            };
+            console.log(team)
+            this.teamList.push(team);
+          }
+          this.teams = this.teamList;
+        }
       },
       error: err => {
 
       }
-    })
+    });
   }
 
   GetDataByProject(id: string){
     this.conn.GetTeamByProject(id).subscribe({
       next: value => {
+        if (value.status !== 0 ){
+          this.msg.SendMessage('获取队伍信息失败').subscribe();
+        }else{
+          this.teamList = [];
+          for (const item of value.data) {
 
+            const getTeamQ: GetTeamQ = item as GetTeamQ;
+            const team: Team = {
+              avatar: getTeamQ.avatar,
+              name: getTeamQ.name,
+              id: getTeamQ.id,
+              project_name: getTeamQ.project_name,
+              train_name: getTeamQ.train_name,
+              train_project_id: getTeamQ.project_id,
+              member_count: getTeamQ.size,
+              leader_id: getTeamQ.team_master_id,
+              members: getTeamQ.member,
+            };
+            this.teamList.push(team);
+          }
+          this.teams = this.teamList;
+        }
       },
       error: err => {
-
       }
-    })
+    });
   }
 
   JoinTeam(team: Team){

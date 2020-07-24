@@ -228,7 +228,7 @@ export interface  ProjectQ {
 }
 
 export interface GetTeamQ{
-  id: number;
+  id?: number;
   name: string;
   avatar: string;
   evaluation: string;
@@ -237,8 +237,8 @@ export interface GetTeamQ{
   project_id: number;
   project_name?: string;
   size?: number;
-  team_master: string;
-  team_master_id: number;
+  team_master?: string;
+  team_master_id?: number;
   repo_url: string;
   team_grade: number;
   member?: any[];
