@@ -90,7 +90,7 @@ export class TeamListComponent implements OnInit {
       team_id: team.id,
       content: con,
       is_read: false,
-      type: '普通',
+      type: 'Message',
     };
     this.conn.PostNotice(notice).subscribe({
       next: value => {

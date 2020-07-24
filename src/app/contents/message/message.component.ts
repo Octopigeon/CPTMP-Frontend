@@ -22,7 +22,7 @@ export class MessageComponent implements OnInit {
     title: 'message1',
     message: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' +
     'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-    action: 'https://github.com',
+    action: '/info/invite/1&1',
     unread: false
   }, {
     sender: {
@@ -36,13 +36,13 @@ export class MessageComponent implements OnInit {
     title: 'message2',
     message: '啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊' +
       '啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊',
-    action: 'https://github.com',
+    action: '/info/join/1&1',
     unread: true
   }, {
     title: 'message3',
     message: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' +
       'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-    action: 'https://github.com',
+    action: '/plat/chat/1',
     unread: false
   }, {
     title: 'message4',
@@ -106,21 +106,31 @@ export class MessageComponent implements OnInit {
         const message: Message[] = [];
         for (const item of value.data) {
           const tnotice: Notice = item as Notice;
-          if(tnotice.team_id !== 0){
-            const str: string[] = tnotice.content.split(':');
+          console.log(tnotice);
+          if (tnotice.team_id !== 0){
+            const str: string[] = tnotice.content.split(':' );
             switch (str[0]) {
               case '申请加入':
-                const url = '/info/join/' + tnotice.sender_id + '&' + tnotice.team_id;
+                const joinUrl = '/info/join/' + tnotice.sender_id + '&' + tnotice.team_id;
                 message.push({
                   id: tnotice.id,
                   title: str[0],
                   message: str[1],
                   unread: !tnotice.is_read,
                   notice: tnotice,
-                  action: url,
+                  action: joinUrl,
                 });
                 continue;
               case '邀请加入':
+                const inviteUrl = '/info/invite/' + tnotice.sender_id + '&' + tnotice.team_id;
+                message.push({
+                  id: tnotice.id,
+                  title: str[0],
+                  message: str[1],
+                  unread: !tnotice.is_read,
+                  notice: tnotice,
+                  action: inviteUrl,
+                });
                 continue;
             }
           }

@@ -13,7 +13,7 @@
     您被邀请加入团队「{{data.name}}」
   </h1>
   <div class="action">
-    <button mat-raised-button>拒绝</button>
-    <button mat-raised-button color="accent">加入</button>
+    <button mat-raised-button (click)="refuse()">拒绝</button>
+    <button mat-raised-button color="accent" (click)="accept()">加入</button>
   </div>
 </div>

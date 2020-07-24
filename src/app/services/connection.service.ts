@@ -977,16 +977,109 @@ export class ConnectionService {
         if (response.status !== 0) {
           this.logger.log(`Get team info failed with status code ${response.status}: ${response.msg}.`);
           observer.error(response);
+
+        }else{
+          const getTeamQ: GetTeamQ = response.data as GetTeamQ;
+          this.GetTeamMember(getTeamQ.id).subscribe({
+            next: value => {
+              for (const item of value.data) {
+                const userInfo: UserInfo = item as UserInfo;
+                getTeamQ.member = [];
+                getTeamQ.member.push({
+                  avatar: userInfo.avatar,
+                  email: userInfo.email,
+                  gender: userInfo.gender,
+                  name: userInfo.name,
+                  phone_number: userInfo.phone_number,
+                  role_name: userInfo.role_name,
+                  user_id: userInfo.user_id,
+                  username: userInfo.username,
+                });
+              }
+              response.data = getTeamQ;
+              observer.next(response);
+              observer.complete();
+            },
+            error: err => {
+              this.logger.log(`Get team info failed with status code ${response.status}: ${response.msg}.`);
+            }
+          });
+        }
+      },
+      error: error => {
+        this.logger.log(`Get team info failed with network error: `, error);
+        observer.error(error);
+      }
+    });
+    return result;
+  }
+
+  public GetUserInfoById(userId: number[]): Observable<Resp> {
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    let url = API.user  + '/basic-info?user_id=' + userId[0];
+    for (let i = 1; i < userId.length ; i++){
+      url = url + ',' + userId[i];
+    }
+    this.get(url).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Get user info failed with status code ${response.status}: ${response.msg}.`);
+          observer.error(response);
           return result;
         }
         observer.next(response);
         observer.complete();
       },
       error: error => {
-        this.logger.log(`Get team info failed with network error: `, error);
+        this.logger.log(`Get user info failed with network error: `, error);
         observer.error(error);
       }
-    })
+    });
+    return result;
+  }
+
+  public AddTeamMember(teamId: number, memberId: number[]): Observable<Resp> {
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    const url = API.team + '/' + teamId + '/member';
+    this.post(url, memberId).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Add team member failed with status code ${response.status}: ${response.msg}.`);
+          observer.error(response);
+        }else{
+          observer.next(response);
+          observer.complete();
+        }
+      },
+      error: error => {
+        this.logger.log(`Add team member failed with network error: `, error);
+        observer.error(error);
+      }
+    });
+    return result;
+  }
+
+  public DeleteTeamMember(teamId: number, memberId: number[]): Observable<Resp> {
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    const url = API.team + '/' + teamId + '/member';
+    this.delete(url, memberId).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Delete team member failed with status code ${response.status}: ${response.msg}.`);
+          observer.error(response);
+        }else {
+          observer.next(response);
+          observer.complete();
+        }
+      },
+      error: error => {
+        this.logger.log(`Delete team member failed with network error: `, error);
+        observer.error(error);
+      }
+    });
     return result;
   }
 
@@ -1033,7 +1126,6 @@ export class ConnectionService {
                 if (!observerElement) ifFinsih = false;
               }
               if(ifFinsih){
-                console.log(teamBox);
                 response.data = getTeamQList;
                 observer.next(response);
                 observer.complete();
@@ -1046,7 +1138,6 @@ export class ConnectionService {
                 if (!observerElement) ifFinsih = false;
               }
               if(ifFinsih) {
-                console.log(teamBox);
                 response.data = getTeamQList;
                 observer.next(response);
                 observer.complete();
@@ -1315,7 +1406,9 @@ export class ConnectionService {
           observer.error(resp);
         }else{
           observer.next(resp);
-          observer.complete();
+          setTimeout(() => {
+            observer.complete();
+          }, 1000);
         }
       },
       error: error => {
