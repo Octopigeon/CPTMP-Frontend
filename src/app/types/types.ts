@@ -279,3 +279,10 @@ export interface ChatMessage {
   message: string;
   self?: boolean;
 }
+
+export interface JobOffer {
+  id: number;
+  company: string;
+  intro_image: string;
+  action_link: string;
+}

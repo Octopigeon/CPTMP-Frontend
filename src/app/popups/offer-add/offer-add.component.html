@@ -1,0 +1,26 @@
+<h2 class="title">添加招聘信息</h2>
+<mat-dialog-content>
+  <form [formGroup]="offerForm">
+    <div class="form-input-container">
+      <mat-form-field appearance="outline" class="form-input">
+        <mat-label>公司名称</mat-label>
+        <input matInput placeholder="公司名称" formControlName="company">
+        <mat-icon matSuffix>domain</mat-icon>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="form-input">
+        <mat-label>介绍图链接</mat-label>
+        <input matInput placeholder="介绍图链接" formControlName="image">
+        <mat-icon matSuffix>image</mat-icon>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="form-input">
+        <mat-label>详细链接</mat-label>
+        <input matInput placeholder="详细链接" formControlName="action">
+        <mat-icon matSuffix>link</mat-icon>
+      </mat-form-field>
+    </div>
+  </form>
+</mat-dialog-content>
+<div mat-dialog-actions class="dialog-actions">
+  <button mat-button (click)="cancelClose()">取消</button>
+  <button mat-flat-button color="primary" (click)="getOffer()" [disabled]="offerForm.invalid">保存</button>
+</div>

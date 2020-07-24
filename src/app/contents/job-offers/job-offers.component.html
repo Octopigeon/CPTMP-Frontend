@@ -1,0 +1,23 @@
+<div class="info-header">
+  <h1 class="header-title">招聘看板</h1>
+  <p class="header-note">想求职？看这里</p>
+</div>
+<div class="content-wrapper">
+  <mat-card class="team-card" *ngFor="let offer of offers">
+    <mat-card-header>
+      <mat-card-title class="offer-company" matTooltip="公司" matTooltipPosition="right">{{offer.company}}</mat-card-title>
+    </mat-card-header>
+    <div class="intro-image-wrapper" mat-card-image *ngIf="offer.intro_image">
+      <img [src]="offer.intro_image" alt="" class="intro-image">
+    </div>
+    <mat-card-actions>
+      <a mat-button [href]="offer.action_link" target="_blank" rel="noopener">查看详情</a>
+      <button mat-button color="warn" (click)="deleteOffer(offer)" class="del-button" *ngIf="admin">删除</button>
+    </mat-card-actions>
+  </mat-card>
+</div>
+<div class="admin-button" *ngIf="admin">
+  <button mat-fab color="primary" matTooltip="添加条目" (click)="addOffer()">
+    <mat-icon>add</mat-icon>
+  </button>
+</div>
