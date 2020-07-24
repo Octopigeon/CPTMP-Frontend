@@ -52,6 +52,7 @@ const routes: Routes = [
   { path: 'plat/stat/:id', component: StatGraphComponent }, // 转到统计图表页面
   { path: 'plat/user/ability/:id', component: AbilityGraphComponent }, // 转到能力图表页面
   { path: 'info/join/:index', component: JoinRequestComponent },
+  { path: 'plat/careerPlan', component: CareerPlanComponent },
   { path: '', component: LoginComponent, pathMatch: 'full' },  // 转到登陆界面
   { path: '**', component: NotFoundComponent }  // 转到404界面
 
