@@ -7,6 +7,7 @@ import {combineLatest, Observable, of, Subscriber} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
 import Format = echarts.EChartOption.Tooltip.Format;
 import {ConnectionService} from "../../services/connection.service";
+import {MessageService} from "../../services/message.service";
 
 const EXAMPLE_GRADE: PersonalGrade = {
   code_point: 91,
@@ -33,6 +34,8 @@ const EXAMPLE_GRADE: PersonalGrade = {
   styleUrls: ['./ability-graph.component.styl']
 })
 export class AbilityGraphComponent implements OnInit {
+
+  personalGrade: PersonalGrade;
 
   // TODO set these to real value
   name = '姓名';
@@ -61,7 +64,8 @@ export class AbilityGraphComponent implements OnInit {
   me :UserInfo;
 
   constructor(private route: ActivatedRoute,
-              private conn: ConnectionService,) { }
+              private conn: ConnectionService,
+              private msg: MessageService,) { }
 
   updateBase(value: number) {
     value ? this.baseSubscriber.next(value) : undefined;
@@ -70,7 +74,7 @@ export class AbilityGraphComponent implements OnInit {
   setCombineLatest(){
     combineLatest([
       // TODO change to fetched real data
-      of(EXAMPLE_GRADE)
+      of(this.personalGrade)
         .pipe(
           tap(grade => this.evaluation = grade.evaluation),
           map((grade): number[] => Object.keys(this.indicator).map(key => grade[key]))
@@ -126,12 +130,18 @@ export class AbilityGraphComponent implements OnInit {
       this.me = user.info;
       this.conn.findTeamInfoByUserId(this.me.user_id).subscribe( team =>{
         const getTeamQ: GetTeamQ = team.data[0] as GetTeamQ;
-        this.conn.GetMyRemark(getTeamQ.id).subscribe({
+        this.conn.GetMyRemark(getTeamQ.id,this.me.user_id).subscribe({
           next: value => {
-            console.log(value);
+            this.personalGrade = value.data as PersonalGrade;
+            console.log(this.personalGrade);
+            this.name  = this.me.name;
+            this.team = getTeamQ.name;
+            this.train = getTeamQ.train_name;
+            this.project = getTeamQ.project_name;
+            this.setCombineLatest();
           },
           error: err => {
-
+            this.msg.SendMessage('获取评价失败').subscribe();
           }
         })
       });

@@ -8,6 +8,9 @@ import {ConnectionService} from "./services/connection.service";
 import {NavigationService} from "./services/navigation.service";
 import {NavigationNode} from "./types/nav.model";
 import {of, ReplaySubject, Subject} from "rxjs";
+import {AccountBulkAddComponent} from "./popups/account-bulk-add/account-bulk-add.component";
+import {MatDialog} from "@angular/material/dialog";
+import {BotChatComponent} from "./popups/bot-chat/bot-chat.component";
 
 @Component({
   selector: 'cptmp-root',
@@ -33,7 +36,8 @@ export class AppComponent implements OnInit {
               private loc: LocationService,
               private logger: Logger,
               public conn: ConnectionService,
-              public nav: NavigationService) {
+              public nav: NavigationService,
+              private dialog: MatDialog) {
 
   }
 
@@ -41,6 +45,10 @@ export class AppComponent implements OnInit {
     this.sideNavNodes$.subscribe(nodes => this.nav.updateNavigationView(nodes))
     // TODO change according to user type
     this.sideNavNodes$.next(AdminNodes);
+  }
+
+  openChatBot(){
+    const dialogRef = this.dialog.open(BotChatComponent);
   }
 
 }

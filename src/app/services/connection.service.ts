@@ -990,10 +990,10 @@ export class ConnectionService {
     return result;
   }
 
-  public GetMyRemark(teamId:number): Observable<Resp>{
+  public GetMyRemark(teamId: number,userId: number): Observable<Resp>{
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
-    const url = API.student + '/me/team/' + teamId + '/remark';
+    const url = API.remark + '/'+ userId+'/team/' + teamId + '/remark';
     this.get(url).subscribe({
       next: response => {
         if (response.status !== 0) {

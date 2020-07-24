@@ -16,6 +16,7 @@ export const API = {
   teacher: `${environment.backend}api/user/teacher`,  // 与批量导入企业管理员有关的地址
   student: `${environment.backend}api/user/student`,  // 与批量导入企业管理员有关的地址
   search_team: `${environment.backend}api/team/search`,
+  remark: `${environment.backend}api/student`,
   change_password_force: `${environment.backend}api/user/pwd`,
   team: `${environment.backend}api/team`,
   notice: `${environment.backend}api/notice`,

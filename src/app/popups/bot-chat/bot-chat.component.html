@@ -1,0 +1,12 @@
+<h2 class="title">帮助Bot</h2>
+<mat-dialog-content>
+  <div class="bot-wrapper">
+<!--    <div class="bot-container" *ngIf="!loading" #botContainer></div>-->
+    <iframe src='https://webchat.botframework.com/embed/cptmpbot?s=G33lU6_D2lM.zhyuyU-5X6T544L98XXi3pwRO8efIgmkMTl15lSEwUQ'
+            class="bot-container" (load)="botLoaded()"></iframe>
+    <div @hint class="loading-overlay" *ngIf="loading">
+      <mat-spinner></mat-spinner>
+      <p>正在加载...</p>
+    </div>
+  </div>
+</mat-dialog-content>
