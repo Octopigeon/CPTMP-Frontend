@@ -6,7 +6,8 @@ export const environment = {
   production: false,
   backend: '/',
   // currently only allow localhost to load
-  google_map_key: 'AIzaSyBLnHmlaxo_wzKhip_KPfPOGjAFC7najhY'
+  google_map_key: 'AIzaSyBLnHmlaxo_wzKhip_KPfPOGjAFC7najhY',
+  chat_bot_key: 'G33lU6_D2lM.zhyuyU-5X6T544L98XXi3pwRO8efIgmkMTl15lSEwUQ',
 };
 
 /*

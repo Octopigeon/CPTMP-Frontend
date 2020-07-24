@@ -17,6 +17,10 @@ const Scripts: {[key: string]: Script} = {
   google_map : {
     name: 'google_map',
     src: `https://maps.googleapis.com/maps/api/js?key=${environment.google_map_key}`
+  },
+  web_chat : {
+    name: 'web_chat',
+    src: 'https://cdn.botframework.com/botframework-webchat/latest/webchat-minimal.js'
   }
 }
 

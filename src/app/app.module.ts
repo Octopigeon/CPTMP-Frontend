@@ -92,6 +92,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { EmptyComponent } from './components/empty/empty.component';
 import { LocationSignComponent } from './popups/location-sign/location-sign.component';
 import { CareerPlanComponent } from './contents/career-plan/career-plan.component';
+import { BotChatComponent } from './popups/bot-chat/bot-chat.component';
 
 // These are the hardcoded inline svg sources to be used by the `<mat-icon>` component.
 // tslint:disable: max-line-length
@@ -209,7 +210,8 @@ export const svgIconProviders = [
     CameraSignComponent,
     EmptyComponent,
     LocationSignComponent,
-    CareerPlanComponent
+    CareerPlanComponent,
+    BotChatComponent
   ],
   imports: [
     BrowserModule,
