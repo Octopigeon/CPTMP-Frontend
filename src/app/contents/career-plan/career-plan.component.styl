@@ -3,18 +3,21 @@
   text-align center
 
 .content-wrapper
+  margin 20px 40px 40px
+  position relative
+
+  @media (max-width 599px)
+    margin 20px 0 40px
+
+.tech-panels
   max-width 1024px
-  width calc(100% - 80px)
+  width 100%
   margin 20px auto 40px
   position relative
   display flex
   flex-direction row
   flex-wrap wrap
   justify-content center
-
-  @media (max-width 599px)
-    margin 20px auto 40px
-    width calc(100% - 40px)
 
   .tech-panel
     width 100px
@@ -29,7 +32,7 @@
       box-shadow 0 5px 5px -3px rgba(0, 0, 0, 0.2),0 8px 10px 1px rgba(0, 0, 0, 0.14),0 3px 14px 2px rgba(0, 0, 0, 0.12)
 
     &.chosen
-      background #e1f5fe
+      background white
 
     .tech-icon
       margin 20px 10px 0
@@ -49,7 +52,8 @@
       justify-content center
 
       p
-        margin 0
+        margin 0 5px
+        text-align center
         line-height 20px
         user-select none
 
@@ -58,4 +62,16 @@
       top -3px
       right 0
 
+.button-container
+  width 100%
+  max-width 1024px
+  margin 0 auto
+  display flex
+  justify-content flex-end
+
+.ability-graph
+  width 100%
+
+  .graph
+    width 100%
 

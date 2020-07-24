@@ -3,18 +3,27 @@
   <p class="header-note">点击选择你感兴趣的方向，以获取职业建议</p>
 </div>
 <div class="content-wrapper">
-  <div class="tech-panel mat-elevation-z3" *ngFor="let i of na" mat-ripple
-       (click)="$event ? selection.toggle(i) : null"
-       [class.chosen]="selection.isSelected(i)">
-    <div class="tech-icon">
-      <div style="background: green; border-radius: 50%" class="icon-image"></div>
+  <div class="tech-panels">
+    <div class="tech-panel mat-elevation-z3" *ngFor="let tech of techs" mat-ripple
+         (click)="$event ? selection.toggle(tech.mark) : null"
+         [class.chosen]="selection.isSelected(tech.mark)">
+      <div class="tech-icon">
+        <img [src]="tech.file" class="icon-image" alt="">
+      </div>
+      <div class="name-wrapper">
+        <p>{{tech.name}}</p>
+      </div>
+      <mat-checkbox class="tech-checker"
+                    [checked]="selection.isSelected(tech.mark)"
+                    (click)="$event.stopPropagation()"
+                    (change)="$event ? selection.toggle(tech.mark) : null"></mat-checkbox>
     </div>
-    <div class="name-wrapper">
-      <p>name here</p>
-    </div>
-    <mat-checkbox class="tech-checker"
-                  [checked]="selection.isSelected(i)"
-                  (click)="$event.stopPropagation()"
-                  (change)="$event ? selection.toggle(i) : null"></mat-checkbox>
+  </div>
+  <div class="button-container">
+    <button mat-flat-button color="primary" class="submit-button"
+            [disabled]="selection.isEmpty()" (click)="generateAdvice()">生成评价</button>
+  </div>
+  <div class="ability-graph" *ngIf="generated" @graph>
+    <div echarts [options]="options" class="graph"></div>
   </div>
 </div>
