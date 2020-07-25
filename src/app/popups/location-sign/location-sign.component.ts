@@ -24,7 +24,7 @@ export class LocationSignComponent implements OnInit {
         (position) => {
           this.loading = false;
           this.sending = true;
-          this.reportLocation(position.coords);
+          this.reportLocation(this.cloneCoordinates(position.coords));
         },
         (error) => {
           this.loading = false;
@@ -40,6 +40,19 @@ export class LocationSignComponent implements OnInit {
         })
     } else {
       this.errored = true;
+    }
+  }
+
+  // convert property getter/setters to plain properties
+  cloneCoordinates(loc: Coordinates) {
+    return {
+      accuracy: loc.accuracy,
+      altitude: loc.altitude,
+      altitudeAccuracy: loc.altitudeAccuracy,
+      heading: loc.heading,
+      latitude: loc.latitude,
+      longitude: loc.longitude,
+      speed: loc.speed,
     }
   }
 
