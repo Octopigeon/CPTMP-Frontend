@@ -4,6 +4,7 @@ import {WebcamImage} from 'ngx-webcam';
 import {delay} from 'rxjs/operators';
 import {animate, style, transition, trigger} from '@angular/animations';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {Message} from "../../types/types";
 
 @Component({
   selector: 'app-camera-sign',
@@ -38,7 +39,7 @@ export class CameraSignComponent implements OnInit {
   failed: boolean = false;
 
   constructor(public dialogRef: MatDialogRef<CameraSignComponent>,
-              @Inject(MAT_DIALOG_DATA) public data?: any) {
+              @Inject(MAT_DIALOG_DATA) public data?: Message) {
     // TODO change to real data type, and do inits (set signMode)
   }
 

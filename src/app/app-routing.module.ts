@@ -28,6 +28,7 @@ import {LocationSignComponent} from './popups/location-sign/location-sign.compon
 import {CareerPlanComponent} from './contents/career-plan/career-plan.component';
 import {ChatMessageComponent} from "./components/chat-message/chat-message.component";
 import {JobOffersComponent} from './contents/job-offers/job-offers.component';
+import {LocationPickerComponent} from "./components/location-picker/location-picker.component";
 
 
 
@@ -59,6 +60,7 @@ const routes: Routes = [
   { path: 'plat/chat/:index', component: ChatMessageComponent},
   { path: 'plat/career', component: CareerPlanComponent }, // 转到职业推荐界面
   { path: 'plat/ads', component: JobOffersComponent },
+  { path: 'info/location/:index', component: LocationSignComponent },
   { path: '', component: LoginComponent, pathMatch: 'full' },  // 转到登陆界面
   { path: '**', component: NotFoundComponent }  // 转到404界面
 

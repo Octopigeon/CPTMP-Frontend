@@ -21,7 +21,7 @@ import {
   ProjectQ,
   GetTeamQ,
   Notice,
-  JobOfferQ
+  JobOfferQ, ResourceFile
 } from "../types/types";
 
 import {Logger} from "./logger.service";
@@ -1289,7 +1289,30 @@ export class ConnectionService {
     return result;
   }
 
-
+  public DeleteTeamMember(userId: number, teamId:number): Observable<Resp> {
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    const url = API.team + '/' + teamId + '/member?user_id=' + userId;
+    this.delete(url).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Delete team member failed with status code ${response.status}: ${response.msg}.`);
+          observer.error(response);
+          return result;
+        }else{
+          observer.next(response);
+          setTimeout(() => {
+            observer.complete();
+          }, 1000);
+        }
+      },
+      error: error => {
+        this.logger.log(`Delete team member failed with network error: `, error);
+        observer.error(error);
+      }
+    });
+    return result;
+  }
 
   public GetTeamInfo(teamId: number): Observable<Resp> {
     let observer: Subscriber<Resp>;
@@ -1384,25 +1407,37 @@ export class ConnectionService {
     return result;
   }
 
-  public DeleteTeamMember(teamId: number, memberId: number[]): Observable<Resp> {
+  public DeleteTrainFile(File: ResourceFile,trainId: number):Observable<Resp>{
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
-    const url = API.team + '/' + teamId + '/member';
-    this.delete(url, memberId).subscribe({
+    const url = API.train + '/' + trainId + '/resource-lib' +
+      '?fileName=' + File.file_name +
+      '&filePath=' + File.file_path +
+      '&fileSize=' + File.file_size +
+      '&fileType=' + File.file_type +
+      '&fileUrl=' ;
+    return result;
+  }
+
+  public PostSignin(senderId:number, trainId:number, type:string): Observable<Resp> {
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    const url = API.notice + '/signin?sender_id=' + senderId + '&train_id=' + trainId + '&type=' + type;
+    this.post(url,null).subscribe({
       next: response => {
         if (response.status !== 0) {
-          this.logger.log(`Delete team member failed with status code ${response.status}: ${response.msg}.`);
+          this.logger.log(`Post signin failed with status code ${response.status}: ${response.msg}.`);
           observer.error(response);
-        }else {
+        }else{
           observer.next(response);
           observer.complete();
         }
       },
       error: error => {
-        this.logger.log(`Delete team member failed with network error: `, error);
+        this.logger.log(`Post signin member failed with network error: `, error);
         observer.error(error);
       }
-    });
+    })
     return result;
   }
 

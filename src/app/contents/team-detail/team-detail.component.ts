@@ -155,6 +155,20 @@ export class TeamDetailComponent implements OnInit {
     if (index >= 0) {
       this.users.splice(index, 1);
       this.userIDs.delete(user.user_id);
+      this.conn.DeleteTeamMember(user.user_id,this.data.id).subscribe({
+        next: value => {
+          if(value.status !== 0 ){
+            this.msg.SendMessage('删除成员失败').subscribe();
+          }else {
+            this.msg.SendMessage('删除成员成功').subscribe();
+          }
+        },
+        error: err => {
+          this.msg.SendMessage('删除成员失败。未知错误').subscribe();
+        },complete: () => {
+          this.GetData();
+        }
+      })
       if (user.user_id === this.data.leader_id) {
         if (this.users.length === 0) {
           this.leaderID = undefined;
@@ -255,6 +269,7 @@ export class TeamDetailComponent implements OnInit {
       evaluation: this.controls.evaluation.value,
       repo_url: this.controls.repo_url.value,
       team_grade: 0,
+      team_master_id: this.me.user_id,
       train_id: this.controls.train_id.value,
       project_id: this.controls.project_id.value,
       avatar: this.data.avatar

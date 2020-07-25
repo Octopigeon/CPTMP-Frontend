@@ -2,6 +2,7 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {of} from 'rxjs';
 import {delay} from 'rxjs/operators';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {Message} from "../../types/types";
 
 @Component({
   selector: 'app-location-sign',
@@ -62,7 +63,7 @@ export class LocationSignComponent implements OnInit {
   }
 
   constructor(public dialogRef: MatDialogRef<LocationSignComponent>,
-              @Inject(MAT_DIALOG_DATA) public data?: any) { }
+              @Inject(MAT_DIALOG_DATA) public data?: Message) { }
 
   ngOnInit(): void {
     this.detectLocation();

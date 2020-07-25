@@ -32,6 +32,12 @@
       <mat-action-row *ngIf="message.action">
         <a mat-stroked-button href="{{message.action}}" (click)="go(message.action, $event)">执行操作</a>
       </mat-action-row>
+      <mat-action-row *ngIf="isOpenGps(message)">
+        <a mat-stroked-button  (click)="openGps(message)">进行定位签到</a>
+      </mat-action-row>
+      <mat-action-row *ngIf="isOpenFace(message)">
+        <a mat-stroked-button (click)="openFace(message)">进行识别签到</a>
+      </mat-action-row>
     </mat-expansion-panel>
   </mat-accordion>
   <div *ngIf="messages.length === 0" style="text-align: center">你没有任何消息</div>

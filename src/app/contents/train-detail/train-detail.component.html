@@ -199,6 +199,8 @@
               (click)="editLoc = !editLoc">
         <mat-icon>{{editLoc ? 'check' : 'edit'}}</mat-icon>
       </button>
+      <button mat-button color="primary" class="send-button" (click)="OpenGps()">开启GPS定位签到</button>
+      <button mat-button color="primary" class="send-button"  (click)="OpenFace()">开启人脸识别签到</button>
     </h2>
     <div class="use-radius">
       启用打卡范围:

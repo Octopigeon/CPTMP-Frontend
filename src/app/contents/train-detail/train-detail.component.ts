@@ -8,7 +8,7 @@ import {
   ProjectQ,
   ResourceFile, Resp,
   Train,
-  TrainQ
+  TrainQ, UserInfo
 } from "../../types/types";
 import {FormControl, FormGroup} from "@angular/forms";
 import {ActivatedRoute} from "@angular/router";
@@ -111,6 +111,8 @@ export class TrainDetailComponent implements OnInit {
   editFile: boolean = true;
 
   id: string;
+
+  me: UserInfo;
 
   projects = {
     1: 'Project1dtnhfvnrtyytryvrncty',
@@ -229,6 +231,8 @@ export class TrainDetailComponent implements OnInit {
   radius: number = 100;
   useRadius: boolean = true;
 
+
+
   /***
    * 保存对当前页面的修改或创建新的实训
    */
@@ -287,6 +291,7 @@ export class TrainDetailComponent implements OnInit {
     }
   }
 
+
   constructor(private route: ActivatedRoute,
               private loc: LocationService,
               private dialog: MatDialog,
@@ -309,6 +314,9 @@ export class TrainDetailComponent implements OnInit {
       this.editMode = (id !== 'new');
       this.id = id;
       this.GetData();
+    });
+    this.conn.user.subscribe(user => {
+      this.me = user.info;
     });
   }
 
@@ -343,6 +351,7 @@ export class TrainDetailComponent implements OnInit {
             if(trainQ.id === undefined){
               this.data = this.err;
             }
+            console.log(trainQ.resource_library);
             const object: JsonObject = JSON.parse(trainQ.resource_library);
             const FileList: ResourceFile[] = [];
             // @ts-ignore
@@ -543,6 +552,36 @@ export class TrainDetailComponent implements OnInit {
 
   test(file: ResourceFile){
     console.log(file);
+  }
+
+  OpenGps(){
+    this.conn.PostSignin(this.me.user_id,this.data.id,'定位').subscribe({
+      next: value => {
+        if(value.status !==0 ){
+          this.msg.SendMessage('开启GPS签到失败').subscribe();
+        }else{
+          this.msg.SendMessage('开启GPS签到成功').subscribe();
+        }
+      },
+      error: err1 => {
+        this.msg.SendMessage('开启GPS签到失败。位置错误').subscribe();
+      }
+    })
+  }
+
+  OpenFace(){
+    this.conn.PostSignin(this.me.user_id,this.data.id,'识别').subscribe({
+      next: value => {
+        if(value.status !==0 ){
+          this.msg.SendMessage('开启人脸识别签到失败').subscribe();
+        }else{
+          this.msg.SendMessage('开启人脸识别签到成功').subscribe();
+        }
+      },
+      error: err1 => {
+        this.msg.SendMessage('开启人脸识别签到失败。位置错误').subscribe();
+      }
+    })
   }
 
 }

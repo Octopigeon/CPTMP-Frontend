@@ -132,7 +132,6 @@ export class AccountBulkAddComponent implements OnInit {
     this.PostStudentReg();
     this.PostTeacherAdminReg();
     this.PostTeacherReg();
-    //while ( this.inputBox.length < 4){}
     this.dialogRef.close(this.inputBox);
   }
 
@@ -145,7 +144,6 @@ export class AccountBulkAddComponent implements OnInit {
   }
 
   public PostEnterpriseAdminReg(){
-    console.log(this.postRegisterQ1);
     this.conn.PostEnterpriseAdminReg(this.postRegisterQ1).subscribe({
       next: resp => {
         this.inputBox.push(true);
@@ -157,7 +155,6 @@ export class AccountBulkAddComponent implements OnInit {
   }
 
   public PostTeacherAdminReg(){
-    console.log(this.postRegisterQ2);
     this.conn.PostTeacherAdminReg(this.postRegisterQ2).subscribe({
       next: resp => {
         this.inputBox.push(true);
@@ -170,7 +167,6 @@ export class AccountBulkAddComponent implements OnInit {
 
 
   public PostTeacherReg(){
-    console.log(this.postRegisterQ3);
     this.conn.PostTeacherReg(this.postRegisterQ3).subscribe({
       next: resp => {
         this.inputBox.push(true);
@@ -183,7 +179,6 @@ export class AccountBulkAddComponent implements OnInit {
 
 
   public PostStudentReg(){
-    console.log(this.postRegisterQ4);
     this.conn.PostStudentReg(this.postRegisterQ4).subscribe({
       next: resp => {
         this.inputBox.push(true);

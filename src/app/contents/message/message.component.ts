@@ -6,6 +6,9 @@ import {MatDialog} from "@angular/material/dialog";
 import {SingleInputComponent} from "../../popups/single-input/single-input.component";
 import {SendMessageComponent} from "../../popups/send-message/send-message.component";
 import {ConnectionService} from "../../services/connection.service";
+import {AccountEditComponent} from "../../popups/account-edit/account-edit.component";
+import {LocationSignComponent} from "../../popups/location-sign/location-sign.component";
+import {CameraSignComponent} from "../../popups/camera-sign/camera-sign.component";
 
 @Component({
   selector: 'app-message',
@@ -100,13 +103,35 @@ export class MessageComponent implements OnInit {
     });
   }
 
+  isOpenGps(message: Message): boolean{
+    return (message.title === '定位签到');
+  }
+
+  isOpenFace(message: Message): boolean{
+    return (message.title === '识别签到');
+  }
+
+  openGps(message: Message){
+    const dialogRef = this.dialog.open(LocationSignComponent, {
+      data: message
+    });
+    dialogRef.afterClosed().subscribe();
+  }
+
+  openFace(message: Message){
+    const dialogRef = this.dialog.open(CameraSignComponent, {
+      data: message
+    });
+    dialogRef.afterClosed().subscribe();
+
+  }
+
   GetData(){
     this.conn.GetReceiverNotice(this.userId).subscribe({
       next: value => {
         const message: Message[] = [];
         for (const item of value.data) {
           const tnotice: Notice = item as Notice;
-          console.log(tnotice);
           if (tnotice.team_id !== 0){
             const str: string[] = tnotice.content.split(':' );
             switch (str[0]) {
@@ -130,6 +155,26 @@ export class MessageComponent implements OnInit {
                   unread: !tnotice.is_read,
                   notice: tnotice,
                   action: inviteUrl,
+                });
+                continue;
+              case '定位签到':
+                message.push({
+                  id: tnotice.id,
+                  title: str[0],
+                  message: str[1],
+                  unread: !tnotice.is_read,
+                  notice: tnotice,
+                  action: null,
+                });
+                continue;
+              case '识别签到':
+                message.push({
+                  id: tnotice.id,
+                  title: str[0],
+                  message: str[1],
+                  unread: !tnotice.is_read,
+                  notice: tnotice,
+                  action: null,
                 });
                 continue;
               default:
