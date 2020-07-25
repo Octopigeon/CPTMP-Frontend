@@ -14,7 +14,7 @@ export class EmptyComponent implements OnInit {
   constructor(private dialog: MatDialog) { }
 
   click() {
-    this.dialog.open(BotChatComponent).afterClosed().subscribe()
+    this.dialog.open(LocationSignComponent).afterClosed().subscribe()
   }
 
   ngOnInit(): void {
