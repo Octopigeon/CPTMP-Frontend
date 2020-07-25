@@ -15,7 +15,12 @@
       </div>
     </a>
     <!--    <aio-top-menu *ngIf="isSideBySide" [nodes]="topMenuNodes" [currentNode]="currentNodes?.TopBar"></aio-top-menu>-->
-    <search-box *ngIf="!(isStartPage  | async)" class="search-container" #searchBox  (click)="openChatBot()"></search-box>
+<!--    <search-box *ngIf="!(isStartPage  | async)" class="search-container" #searchBox  (click)="openChatBot()"></search-box>-->
+    <div class="placeholder"></div>
+    <button mat-icon-button *ngIf="!(isStartPage  | async)" matTooltip="帮助"
+            (click)="openChatBot()" class="help-button">
+      <mat-icon>help_outline</mat-icon>
+    </button>
     <div *ngIf="!(isStartPage | async)" matRipple class="user-container" title="User" matRippleColor="rgba(255, 255, 255, 0.1)">
       <!-- TODO change routerLink to message component -->
       <a [routerLink]="['/', 'plat', 'user', 'me']" *ngIf="(messageCount$ | async) !== 0"
