@@ -120,6 +120,8 @@ export class TeamDetailComponent implements OnInit {
 
   privileged: boolean = true;
 
+
+
   editFile: boolean = true;
 
   train_list = Object.entries(this.trains)
@@ -177,6 +179,10 @@ export class TeamDetailComponent implements OnInit {
         }
       }
     }
+  }
+
+  Privileged():boolean{
+    return !(this.me.role_name === 'ROLE_STUDENT_MEMBER')
   }
 
   // no need to handle add by input event
@@ -551,5 +557,13 @@ export class TeamDetailComponent implements OnInit {
 
   OpenGit(){
     this.loc.go(['/plat/stat/', this.data.id]);
+  }
+
+  EditMode(): boolean{
+    return ((this.data.leader_id === this.me.user_id) && this.editMode) || (this.me.role_name !== 'ROLE_STUDENT_MEMBER')
+  }
+
+  CreateMode(): boolean{
+    return (!this.editMode) || (this.data.leader_id === this.me.user_id) || (this.me.role_name !== 'ROLE_STUDENT_MEMBER')
   }
 }

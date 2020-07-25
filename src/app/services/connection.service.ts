@@ -1573,8 +1573,9 @@ export class ConnectionService {
                   user_id: userInfo.user_id,
                   username: userInfo.username,
                 });
-                teamBox[i] = true;
+
               }
+              teamBox[i] = true;
               let ifFinsih = true;
               for (const observerElement of teamBox) {
                 if (!observerElement) ifFinsih = false;
@@ -1737,8 +1738,9 @@ export class ConnectionService {
                   user_id: userInfo.user_id,
                   username: userInfo.username,
                 });
-                teamBox[i] = true;
+
               }
+              teamBox[i] = true;
               let ifFinsih = true;
               for (const observerElement of teamBox) {
                 if (!observerElement) ifFinsih = false;
@@ -1809,8 +1811,9 @@ export class ConnectionService {
                   user_id: userInfo.user_id,
                   username: userInfo.username,
                 });
-                teamBox[i] = true;
+
               }
+              teamBox[i] = true;
               let ifFinsih = true;
               for (const observerElement of teamBox) {
                 if (!observerElement) ifFinsih = false;

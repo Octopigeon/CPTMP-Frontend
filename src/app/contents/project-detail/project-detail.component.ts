@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {FileQ, GetOrgQ, Project, ProjectQ, ResourceFile, Team, Train, TrainQ} from "../../types/types";
+import {FileQ, GetOrgQ, Project, ProjectQ, ResourceFile, Team, Train, TrainQ, UserInfo} from "../../types/types";
 import {StatedFormControl} from "../../shared/stated-form-control";
 import {ActivatedRoute} from "@angular/router";
 import {LocationService} from "../../services/location.service";
@@ -87,6 +87,8 @@ export class ProjectDetailComponent implements OnInit {
     });
   }
 
+  me: UserInfo
+
   projectId: string;
 
   ngOnInit(): void {
@@ -104,6 +106,9 @@ export class ProjectDetailComponent implements OnInit {
       }
       this.GetData()
     })
+    this.conn.user.subscribe(user => {
+      this.me = user.info;
+    });
   }
 
   SetData(){
@@ -199,6 +204,21 @@ export class ProjectDetailComponent implements OnInit {
     // TODO handle file delete.
   }
 
+  EditMode():boolean{
+    return (this.me.role_name !== 'ROLE_STUDENT_MEMBER') && this.editMode
+  }
+
+  EditFile():boolean{
+    if(this.EditMode()){
+      return this.editFile;
+    }else{
+      return !this.editFile;
+    }
+  }
+
+  CreateMode(){
+    return ((this.me.role_name !== 'ROLE_STUDENT_MEMBER') && !this.editMode)
+  }
 
   down(file: ResourceFile){
     console.log(123)

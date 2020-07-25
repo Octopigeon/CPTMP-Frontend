@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {JobOffer, JobOfferQ} from '../../types/types';
+import {JobOffer, JobOfferQ, UserInfo} from '../../types/types';
 import {MatDialog} from '@angular/material/dialog';
 import {ChangeAvatarComponent} from '../../popups/change-avatar/change-avatar.component';
 import {OfferAddComponent} from '../../popups/offer-add/offer-add.component';
@@ -15,6 +15,8 @@ export class JobOffersComponent implements OnInit {
 
   admin: boolean = true;
 
+  me: UserInfo;
+
   offers: JobOffer[];
 
   constructor(private dialog: MatDialog,
@@ -22,6 +24,10 @@ export class JobOffersComponent implements OnInit {
               public msg: MessageService,) { }
 
   ngOnInit(): void {
+    this.conn.user.subscribe(user => {
+      this.me = user.info;
+      this.admin = (this.me.role_name === 'ROLE_SYSTEM_ADMIN');
+    });
     this.GetData();
   }
 

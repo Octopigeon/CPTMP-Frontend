@@ -1,6 +1,6 @@
 <div class="project-info">
   <div class="float-operation">
-    <button *ngIf="editMode" mat-fab color="primary" matTooltip="保存更改" class="save-button" (click)="saveChange()">
+    <button *ngIf="EditMode()" mat-fab color="primary" matTooltip="保存更改" class="save-button" (click)="saveChange()">
       <mat-icon>save</mat-icon>
     </button>
     <button *ngIf="!editMode" mat-fab color="primary" matTooltip="创建团队" class="save-button" (click)="createTeam()">
@@ -10,7 +10,7 @@
   <div class="team-title">
     <div class="avatar-container">
       <img alt="avatar" class="team-avatar" [src]="autoAvatar(data.avatar)">
-      <div class="avatar-overlay" (click)="changeAvatar()" matRipple>更换头像</div>
+      <div class="avatar-overlay" *ngIf="EditMode()" (click)="changeAvatar()" matRipple>更换头像</div>
     </div>
     <div class="title-info-container">
       <h1 id="team-name">
@@ -23,7 +23,7 @@
         </span>
         <button
                 mat-icon-button [matTooltip]="controls.name.editing ? '完成' : '修改'" class="edit-button"
-                (click)="controls.name.switchEdit()">
+                (click)="controls.name.switchEdit()" *ngIf="CreateMode()">
           <mat-icon>{{controls.name.editing ? 'check' : 'edit'}}</mat-icon>
         </button>
       </h1>
@@ -43,9 +43,9 @@
             <input matInput placeholder="输入团队仓库地址" [formControl]="controls.repo_url">
           </mat-form-field>
         </span>
-        <button *ngIf="editMode"
+        <button *ngIf="EditMode()"
                 mat-icon-button [matTooltip]="controls.repo_url.editing ? '完成' : '修改'" class="edit-button"
-                (click)="controls.repo_url.switchEdit()">
+                (click)="controls.repo_url.switchEdit()" >
           <mat-icon>{{controls.repo_url.editing ? 'check' : 'edit'}}</mat-icon>
         </button>
       </p>
@@ -66,9 +66,9 @@
       </mat-form-field>
     </span>
     <!-- this can only be modified upon creation -->
-    <button *ngIf="createMode"
+    <button *ngIf="CreateMode()"
             mat-icon-button [matTooltip]="controls.train_id.editing ? '完成' : '修改'" class="edit-button"
-            (click)="controls.train_id.switchEdit()">
+            (click)="controls.train_id.switchEdit()" >
       <mat-icon>{{controls.train_id.editing ? 'check' : 'edit'}}</mat-icon>
     </button>
   </p>
@@ -86,24 +86,24 @@
       </mat-form-field>
     </span>
     <!-- this can only be modified upon creation -->
-    <button *ngIf="createMode"
+    <button *ngIf="CreateMode()"
             mat-icon-button class="edit-button"
             [matTooltip]="!controls.train_id.value ? '请先指定实训' : controls.project_id.editing ? '完成' : '修改'"
             (click)="controls.project_id.switchEdit()"
-            [disabled]="!controls.train_id.value">
+            [disabled]="!controls.train_id.value" >
       <mat-icon>{{controls.project_id.editing ? 'check' : 'edit'}}</mat-icon>
     </button>
   </p>
   <div id="team-member">
     <h3 class="content-title">
       团队成员
-      <button *ngIf="privileged"
+      <button *ngIf="EditMode()"
               mat-icon-button [matTooltip]="userEditing ? '完成' : '修改'" class="edit-button"
-              (click)="userEditing = !userEditing">
+              (click)="userEditing = !userEditing" >
         <mat-icon>{{userEditing ? 'check' : 'edit'}}</mat-icon>
       </button>
       <button mat-icon-button matTooltip="复制团队邀请链接" class="edit-button"
-              [cdkCopyToClipboard]="getInviteLink()">
+              [cdkCopyToClipboard]="getInviteLink()" *ngIf="EditMode()">
         <mat-icon>content_copy</mat-icon>
       </button>
     </h3>
@@ -158,7 +158,7 @@
       </mat-form-field>
     </span>
     <!-- this can only be modified by privileged users -->
-    <button *ngIf="privileged"
+    <button *ngIf="Privileged()"
             mat-icon-button [matTooltip]="controls.team_grade.editing ? '完成' : '修改'" class="edit-button"
             (click)="controls.team_grade.switchEdit()">
       <mat-icon>{{controls.team_grade.editing ? 'check' : 'edit'}}</mat-icon>
@@ -169,7 +169,7 @@
     <h3 class="content-title">
       团队评价
       <!-- this can only be modified by privileged users -->
-      <button *ngIf="privileged"
+      <button *ngIf="Privileged()"
               mat-icon-button [matTooltip]="controls.evaluation.editing ? '完成' : '修改'" class="edit-button"
               (click)="controls.evaluation.switchEdit()">
         <mat-icon>{{controls.evaluation.editing ? 'check' : 'edit'}}</mat-icon>
@@ -190,7 +190,7 @@
   <div id="project-resource" *ngIf="false">
     <h2 class="resource-title">
       团队文档
-      <button *ngIf="editMode"
+      <button *ngIf="EditMode()"
               mat-icon-button [matTooltip]="editFile ? '完成' : '修改'" class="edit-button"
               (click)="editFile = !editFile">
         <mat-icon>{{editFile ? 'check' : 'edit'}}</mat-icon>
