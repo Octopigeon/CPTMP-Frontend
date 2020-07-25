@@ -3,12 +3,13 @@ import {FormControl, FormGroup, FormGroupDirective, NgForm, ValidationErrors, Va
 import {ConnectionService} from "../../services/connection.service";
 import {LocationService} from "../../services/location.service";
 import {ErrorStateMatcher} from "@angular/material/core";
-import {ChangePasswordQ, ModifyUserBasicInfoQ} from "../../types/types";
+import {ChangePasswordQ, Message, ModifyUserBasicInfoQ, Notice, UserInfo} from "../../types/types";
 import {MessageService} from "../../services/message.service";
 import {MatDialog} from "@angular/material/dialog";
 import {ChangeAvatarComponent} from "../../popups/change-avatar/change-avatar.component";
 import {Logger} from "../../services/logger.service";
 import {Observable} from "rxjs";
+import {CameraSignComponent} from "../../popups/camera-sign/camera-sign.component";
 
 /** This component will finish following operations:
  * Check personal info
@@ -123,7 +124,6 @@ export class PersonalDataComponent implements OnInit {
    */
   changeAvatar() {
     const dialogRef = this.dialog.open(ChangeAvatarComponent);
-
     dialogRef.afterClosed().subscribe(result => {
       this.logger.log('The dialog was closed');
       if (result) {
@@ -140,6 +140,14 @@ export class PersonalDataComponent implements OnInit {
         });
       }
     });
+  }
+
+  updateFaceInfo(){
+    const dialogRef = this.dialog.open(CameraSignComponent, {
+      data: null
+    });
+    dialogRef.afterClosed().subscribe();
+
   }
 
   ngOnInit(): void {

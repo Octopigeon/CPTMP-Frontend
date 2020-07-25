@@ -75,6 +75,15 @@
 <div class="credential-info round-panel">
   <h2 class="desc-title">安全中心</h2>
   <p class="desc-note">使用强密码、定期修改密码有助于保护您的账户安全</p>
+  <div class="form-input-wrapper">
+    <div class="form-label">
+      <label>上传面部信息</label>
+    </div>
+    <div class="form-input">
+      <button mat-flat-button color="primary" class="avatar-change-button" (click)="updateFaceInfo()">上传信息</button>
+    </div>
+
+  </div>
   <form class="intro-info-form" [formGroup]="passwordChangeForm"
         #passwordChangeFormDirective="ngForm" (ngSubmit)="submitPasswordChangeForm(passwordChangeFormDirective)">
     <div class="form-input-wrapper">
@@ -113,15 +122,6 @@
       </mat-form-field>
     </div>
     <mat-divider></mat-divider>
-    <div class="form-input-wrapper">
-      <div class="form-label">
-        <label>上传面部信息</label>
-      </div>
-      <div class="form-input">
-        <button mat-flat-button color="primary" class="avatar-change-button" (click)="changeAvatar()">更改头像</button>
-      </div>
-
-    </div>
     <p class="submit-container">
       <button mat-fab color="primary" aria-label="submit modification" type="submit"
               matTooltip="上传信息" matTooltipPosition="left">

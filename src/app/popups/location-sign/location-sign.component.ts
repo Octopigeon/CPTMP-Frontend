@@ -2,7 +2,8 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {of} from 'rxjs';
 import {delay} from 'rxjs/operators';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {Message} from "../../types/types";
+import {GpsInfo, Message, Team} from "../../types/types";
+import {ConnectionService} from "../../services/connection.service";
 
 @Component({
   selector: 'app-location-sign',
@@ -17,6 +18,8 @@ export class LocationSignComponent implements OnInit {
   sending: boolean = false;
   failed: boolean = false;
   wait: number = 10000;
+
+  team: Team;
 
   detectLocation() {
     if (navigator.geolocation) {
@@ -67,21 +70,38 @@ export class LocationSignComponent implements OnInit {
     // TODO report to backend
     const data = JSON.stringify(loc);
     console.log(data);
-    of(true).pipe(delay(10000)).subscribe(result => {
-      this.sending = false;
-      if (result) {
-        this.finished = true;
-      } else {
+    const gps: GpsInfo = {
+      user_id: this.data.notice.receiver_id,
+      team_id: this.team.id,
+      train_id: this.team.train_id,
+      longitude: loc.longitude,
+      latitude: loc.latitude,
+    }
+    this.conn.GpsSignin(gps).subscribe({
+      next: value => {
+        this.sending = false;
+        if(value.msg === 'sign in successfully'){
+          this.finished = true;
+        }else {
+          this.failed = true;
+        }
+      },
+      error: err => {
         this.failed = true;
       }
-    })
+    });
   }
 
   constructor(public dialogRef: MatDialogRef<LocationSignComponent>,
-              @Inject(MAT_DIALOG_DATA) public data?: Message) { }
+              private conn: ConnectionService,
+              @Inject(MAT_DIALOG_DATA) public data?: Message,) { }
 
   ngOnInit(): void {
-    this.detectLocation();
+
+    this.conn.GetTeamInfoByUserId(this.data.notice.receiver_id).subscribe(value => {
+      this.team = value.data as Team;
+      this.detectLocation();
+    });
   }
 
   cancelClose() {

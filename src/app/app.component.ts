@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {EnvService} from "./services/env.service";
-import {AdminNodes} from "./constants/sidebar";
+import {AdminNodes, masterNodes, studentNodes, teacherNodes} from "./constants/sidebar";
 import {LocationService} from "./services/location.service";
 import {map, shareReplay, tap} from "rxjs/operators";
 import {Logger} from "./services/logger.service";
@@ -49,9 +49,28 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.sideNavNodes$.subscribe(nodes => this.nav.updateNavigationView(nodes))
     // TODO change according to user type
-    this.sideNavNodes$.next(AdminNodes);
+
+
+
     this.conn.user.subscribe(user => {
       this.me = user.info;
+      switch ( this.me.role_name){
+        case 'ROLE_SYSTEM_ADMIN':
+          this.sideNavNodes$.next(AdminNodes);
+          break;
+        case 'ROLE_ENTERPRISE_ADMIN':
+          this.sideNavNodes$.next(masterNodes);
+          break;
+        case 'ROLE_SCHOOL_ADMIN':
+          this.sideNavNodes$.next(masterNodes);
+          break;
+        case 'ROLE_SCHOOL_TEACHER':
+          this.sideNavNodes$.next(teacherNodes);
+          break;
+        case 'ROLE_STUDENT_MEMBER':
+          this.sideNavNodes$.next(studentNodes);
+          break;
+      }
       this.conn.GetReceiverNotice(this.me.user_id).subscribe({
         next: value => {
           this.message = 0;

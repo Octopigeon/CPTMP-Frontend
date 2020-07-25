@@ -279,6 +279,14 @@ export  interface JobOfferQ {
   website_url: string;
 }
 
+export interface GpsInfo {
+  user_id: number;
+  team_id: number;
+  train_id: number;
+  longitude: number;
+  latitude: number;
+}
+
 export interface Message {
   // TODO how to represent system message? (current plan: nullable)
   id?: number;

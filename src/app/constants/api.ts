@@ -21,6 +21,9 @@ export const API = {
   team: `${environment.backend}api/team`,
   notice: `${environment.backend}api/notice`,
   recruitment: `${environment.backend}api/recruitment`,
+  gps: `${environment.backend}api/signin/gps`,
+  face: `${environment.backend}api/face`,
+  facesignin: `${environment.backend}api/signin/face`,
   storage: `${environment.backend}`
 
 }

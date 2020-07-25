@@ -21,7 +21,7 @@ import {
   ProjectQ,
   GetTeamQ,
   Notice,
-  JobOfferQ, ResourceFile
+  JobOfferQ, ResourceFile, GpsInfo
 } from "../types/types";
 
 import {Logger} from "./logger.service";
@@ -342,6 +342,54 @@ export class ConnectionService {
       },
       error: error => {
         this.logger.log(`Upload train file failed with network error: `, error);
+        observer.error(error);
+      }
+    });
+    return result;
+  }
+
+  public UploadFaceInfo(UserId: number, file: File): Observable<Resp> {
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    let formData = new FormData();
+    formData.append('file', file, file.name);
+    const url = API.face + '/' + UserId
+    this.post(url, formData).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Upload face info failed with status code ${response.status}: ${response.msg}.`);
+          observer.error(response);
+          return;
+        }
+        observer.next(response);
+        observer.complete();
+      },
+      error: error => {
+        this.logger.log(`Upload face info failed with network error: `, error);
+        observer.error(error);
+      }
+    });
+    return result;
+  }
+
+  public FaceSignin(userId: number, teamId: number, trainId: number, file: File): Observable<Resp> {
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    let formData = new FormData();
+    formData.append('file', file, file.name);
+    const url = API.facesignin + '?user_id=' + userId + '&team_id=' + teamId + '&train_id=' + trainId;
+    this.post(url, formData).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Face signin failed with status code ${response.status}: ${response.msg}.`);
+          observer.error(response);
+          return;
+        }
+        observer.next(response);
+        observer.complete();
+      },
+      error: error => {
+        this.logger.log(`Face signin failed with network error: `, error);
         observer.error(error);
       }
     });
@@ -1102,11 +1150,31 @@ export class ConnectionService {
     return result;
   }
 
+  public GpsSignin(gps: GpsInfo): Observable<Resp>{
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    this.post(API.gps, gps).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Sign in failed with status code ${response.status}: ${response.msg}.`);
+          observer.error(response);
+        }else {
+          observer.next(response);
+          observer.complete();
+        }
+      },
+      error: error => {
+        this.logger.log(`Sign in failed with network error: `, error);
+        observer.error(error);
+      }
+    });
+    return result;
+  }
+
   public GetGitInfo(teamId: number): Observable<Resp>{
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
     const url = API.team + '/' + teamId + '/contributor/statics';
-    console.log(url);
     this.get(url).subscribe({
       next: response => {
         if (response.status !== 0) {
