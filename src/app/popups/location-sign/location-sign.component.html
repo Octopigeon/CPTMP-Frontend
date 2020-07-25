@@ -11,7 +11,7 @@
       <p *ngIf="loading">正在获取定位...</p>
       <p *ngIf="timeout">
         定位超时。<wbr>这可能是由于GPS信号不佳。<wbr>请前往空旷处，<wbr>并点击右侧按钮重试。
-        <button mat-icon-button matTooltip="重试"><mat-icon>refresh</mat-icon></button>
+        <button mat-icon-button matTooltip="重试" (click)="retry()"><mat-icon>refresh</mat-icon></button>
       </p>
       <p *ngIf="sending">正在发送位置信息...</p>
       <p *ngIf="finished">签到成功。</p>

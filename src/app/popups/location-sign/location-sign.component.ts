@@ -44,6 +44,8 @@ export class LocationSignComponent implements OnInit {
 
   retry() {
     this.wait *= 2;
+    this.loading = true;
+    this.timeout = false;
     this.detectLocation();
   }
 
