@@ -181,87 +181,95 @@ export class StatGraphComponent implements OnInit {
       this.order$ = new Observable<string[]>(subscriber => {
         subscriber.next(this.orderNames.map(([field, _]) => field));
         this.orderSubscriber = subscriber;
+        this.GetData();
       })
+    });
+  }
 
-      this.conn.GetGitInfo(this.teamId).subscribe({
-        next: value => {
-          this.contributor = value.contributor_dtolist;
-          console.log(this.contributor);
-        },
-        error: err => {
+  GetData(){
+    this.conn.GetGitInfo(this.teamId).subscribe({
+      next: value => {
+        this.contributor = value.contributor_dtolist as ContributorStat[];
+        this.SetData();
+      },
+      error: err => {
 
-        }
-      })
+      }
+    })
 
-      // data should be update upon each new data fetched or data order change
-      combineLatest([
-        // TODO fetch data from backend
-        of(this.contributor).pipe(
-          map(raw => this.preprocessData(raw)),
-        ),
-        this.order$
-      ]).pipe(
-        map(([data, order]):
-        [SeriesSunburst.DataObject[], string[]] => [this.generateData(data, order), order]),
-      ).subscribe(([data, order]) => {
-        const orderMap = Object.entries(order).reduce((v: {[key: string]: number}, [index, entry]) => {
-          v[entry] = Number(index) + 1;
-          return v;
-        }, {});
-        this.options = {
-          tooltip: {
-            formatter: (params): string => {
-              // this sunburst specified field is missing in type definition
-              // @ts-ignore
-              const path = params.treePathInfo as {name: string, value: number}[];
-              const len = path.length - 1;
-              const week = orderMap['week'] > len ? '整个项目' : path[orderMap['week']].name;
-              const member = orderMap['member'] > len ? '整个团队' : `成员${path[orderMap['member']].name}`;
-              const ad = orderMap['ad'] > len ? '提交' : path[orderMap['ad']].name;
+    // data should be update upon each new data fetched or data order change
+  }
 
-              return `在${week}中${member}共${ad}了${path[path.length - 1].value}行代码`;
-            }
-          },
-          series: [{
-            type: 'sunburst',
-            radius: [0, '90%'],
-            label: {
-              rotate: 'radial'
-            },
-            sort: null,
+  SetData(){
+    combineLatest([
+      // TODO fetch data from backend
+      of(this.contributor).pipe(
+        map(raw => this.preprocessData(raw)),
+      ),
+      this.order$
+    ]).pipe(
+      map(([data, order]):
+      [SeriesSunburst.DataObject[], string[]] => [this.generateData(data, order), order]),
+    ).subscribe(([data, order]) => {
+      const orderMap = Object.entries(order).reduce((v: {[key: string]: number}, [index, entry]) => {
+        v[entry] = Number(index) + 1;
+        return v;
+      }, {});
+      this.options = {
+        tooltip: {
+          formatter: (params): string => {
+            // this sunburst specified field is missing in type definition
             // @ts-ignore
-            levels: [{}, {
-              r0: '15%',
-              r: '35%',
-              itemStyle: {
-                borderWidth: 2
-              },
-              label: {
-                rotate: 'tangential'
-              }
-            }, {
-              r0: '35%',
-              r: '70%',
-              label: {
-                align: 'right'
-              }
-            }, {
-              r0: '70%',
-              r: '72%',
-              label: {
-                position: 'outside',
-                padding: 3,
-                silent: false,
-                textBorderWidth: 3,
-              },
-              itemStyle: {
-                borderWidth: 3
-              }
-            }],
-            data
-          }]
-        }
-      });
+            const path = params.treePathInfo as {name: string, value: number}[];
+            const len = path.length - 1;
+            const week = orderMap['week'] > len ? '整个项目' : path[orderMap['week']].name;
+            const member = orderMap['member'] > len ? '整个团队' : `成员${path[orderMap['member']].name}`;
+            const ad = orderMap['ad'] > len ? '提交' : path[orderMap['ad']].name;
+
+            return `在${week}中${member}共${ad}了${path[path.length - 1].value}行代码`;
+          }
+        },
+        series: [{
+          type: 'sunburst',
+          radius: [0, '90%'],
+          label: {
+            rotate: 'radial'
+          },
+          sort: null,
+          // @ts-ignore
+          levels: [{}, {
+            r0: '15%',
+            r: '35%',
+            itemStyle: {
+              borderWidth: 2
+            },
+            label: {
+              rotate: 'tangential'
+            }
+          }, {
+            r0: '35%',
+            r: '70%',
+            label: {
+              align: 'right'
+            }
+          }, {
+            r0: '70%',
+            r: '72%',
+            label: {
+              position: 'outside',
+              padding: 3,
+              silent: false,
+              textBorderWidth: 3,
+            },
+            itemStyle: {
+              borderWidth: 3
+            }
+          }],
+          data
+        }]
+      }
     });
   }
 }
+
+

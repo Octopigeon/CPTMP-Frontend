@@ -22,6 +22,10 @@ export class TeamListComponent implements OnInit {
 
   user: UserInfo;
 
+  trainOpen = false;
+
+  projectOpen = false;
+
   autoAvatar(link: string) {
     return this.validLink(link) ? link : '/assets/avatar.png';
   }
@@ -49,6 +53,8 @@ export class TeamListComponent implements OnInit {
         }
       }else {
         this.GetData();
+        this.trainOpen = false;
+        this.projectOpen = false;
       }
     });
     this.conn.user.subscribe(user => {
@@ -80,6 +86,9 @@ export class TeamListComponent implements OnInit {
               leader_id: getTeamQ.team_master_id,
               members: getTeamQ.member,
             };
+            this.trainOpen = true;
+            this.projectOpen = false;
+            this.train = team.train_name;
             this.teamList.push(team);
           }
           this.teams = this.teamList;
@@ -112,6 +121,9 @@ export class TeamListComponent implements OnInit {
               leader_id: getTeamQ.team_master_id,
               members: getTeamQ.member,
             };
+            this.projectOpen = true;
+            this.trainOpen = false;
+            this.project = team.project_name;
             this.teamList.push(team);
           }
           this.teams = this.teamList;

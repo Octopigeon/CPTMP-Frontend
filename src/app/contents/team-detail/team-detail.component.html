@@ -56,12 +56,12 @@
     实训:
     <span class="train-wrapper">
       <span *ngIf="!controls.train_id.editing">
-        {{trains[controls.train_id.value] ? trains[controls.train_id.value] : '未选择'}}
+        {{trains.get(controls.train_id.value) ? trains.get(controls.train_id.value) : '未选择'}}
       </span>
       <mat-form-field *ngIf="controls.train_id.editing" class="wide-form-input">
         <mat-label>选择实训</mat-label>
-        <mat-select [formControl]="controls.train_id">
-          <mat-option *ngFor="let org of train_list" [value]="org[0]">{{org[1]}}</mat-option>
+        <mat-select [formControl]="controls.train_id" (selectionChange)="GetProject(controls.train_id.value)">
+          <mat-option *ngFor="let org of trains|keyvalue" [value]="org.key">{{org.value}}</mat-option>
         </mat-select>
       </mat-form-field>
     </span>
@@ -76,12 +76,12 @@
     项目:
     <span class="team-wrapper">
       <span *ngIf="!controls.project_id.editing">
-        {{trains[controls.project_id.value] ? trains[controls.project_id.value] : '未选择'}}
+        {{projects.get(controls.project_id.value) ? projects.get(controls.project_id.value) : '未选择'}}
       </span>
       <mat-form-field *ngIf="controls.project_id.editing" class="wide-form-input">
         <mat-label>选择实训项目</mat-label>
         <mat-select [formControl]="controls.project_id">
-          <mat-option *ngFor="let org of projects$ | async" [value]="org[0]">{{org[1]}}</mat-option>
+          <mat-option *ngFor="let org of projects | keyvalue" [value]="org.key">{{org.value}}</mat-option>
         </mat-select>
       </mat-form-field>
     </span>

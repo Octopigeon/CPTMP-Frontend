@@ -1,6 +1,6 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {MatSelectionList} from "@angular/material/list";
-import {GetTeamQ, PageInfoQ, Project, ResourceFile, Team, UserInfo} from "../../types/types";
+import {GetTeamQ, Notice, PageInfoQ, Project, ProjectQ, ResourceFile, Team, TrainQ, UserInfo} from "../../types/types";
 import {StatedFormControl} from "../../shared/stated-form-control";
 import {ActivatedRoute} from "@angular/router";
 import {LocationService} from "../../services/location.service";
@@ -42,18 +42,9 @@ export class TeamDetailComponent implements OnInit {
     resource_lib: []
   }
 
-  trains = {
-    1: 'Train1netyyhtrnnfyetn',
-    2: 'Train2neytnmtrmneywm',
-    3: 'Train3netynetymtyntryn',
-    4: 'Train4netynetynrdtbtxgbr'
-  }
+  trains = new Map<number, string>();
 
-  projects = {
-    1: 'Project1dtnhfvnrtyytryvrncty',
-    2: 'Project2tycbtynbtnerrtbvrt',
-    3: 'Project3ybnyujmyumncrtydvgbrgb'
-  }
+  projects = new Map<number, string>();
   /***
    * 初始化页面信息
    */
@@ -63,7 +54,7 @@ export class TeamDetailComponent implements OnInit {
   filteredUsers: UserInfo[];
   // should be sync with users
   userIDs = new Set(this.data.members.map(u => u.user_id));
-  users: UserInfo[] = this.data.members;
+  users: UserInfo[];
   userEditing: boolean = false;
   leaderID: number;
 
@@ -139,6 +130,7 @@ export class TeamDetailComponent implements OnInit {
 
   getProjects(train_id: number): [string, string][] {
     // TODO change to fetch [train_project_id, project_name] according to given train_id
+    this.GetProject(train_id)
     return Object.entries(this.projects);
   }
 
@@ -193,6 +185,26 @@ export class TeamDetailComponent implements OnInit {
     if (this.users.findIndex(u => u.user_id === user.user_id) < 0) {
       this.users.push(user);
       this.userIDs.add(user.user_id);
+      const notice: Notice = {
+        sender_id: this.data.leader_id,
+        receiver_id: user.user_id,
+        team_id: this.data.id,
+        content:'邀请加入:'+ this.data.name + '团队邀请你加入',
+        is_read: false,
+        type: 'Message',
+      };
+      this.conn.PostNotice(notice).subscribe({
+        next: value => {
+          if ( value.status !== 0){
+            this.msg.SendMessage('提交邀请失败').subscribe();
+          }else{
+            this.msg.SendMessage('提交邀请成功').subscribe();
+          }
+        },
+        error: err => {
+          this.msg.SendMessage('提交邀请失败。未知错误').subscribe();
+        }
+      });
       if (this.users.length === 0) {
         this.leaderID = user.user_id;
       }
@@ -217,6 +229,7 @@ export class TeamDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.GetUserInfo();
+    this.GetTrain();
     this.route.paramMap.subscribe(param => {
       this.teamId = param.get('id');
       this.editMode = (this.teamId !== 'new');
@@ -272,7 +285,27 @@ export class TeamDetailComponent implements OnInit {
             if ( value.status !== 0 ){
               this.msg.SendMessage('队伍信息获取失败').subscribe();
             }else{
-              console.log(value.data);
+              const getTeamQ: GetTeamQ = value.data as GetTeamQ;
+              console.log(getTeamQ);
+              const team: Team = {
+                avatar: getTeamQ.avatar,
+                name: getTeamQ.name,
+                id: getTeamQ.id,
+                train_id: getTeamQ.train_id,
+                project_name: getTeamQ.project_name,
+                train_name: getTeamQ.train_name,
+                train_project_id: getTeamQ.project_id,
+                member_count: getTeamQ.size,
+                leader_id: getTeamQ.team_master_id,
+                members: getTeamQ.member,
+                evaluation: getTeamQ.evaluation,
+                repo_url: getTeamQ.repo_url,
+                team_grade: getTeamQ.team_grade,
+              };
+              this.data = team;
+              this.users = this.data.members;
+              this.GetProject(team.id);
+              this.SetData();
             }
           },
           error: err => {
@@ -285,7 +318,26 @@ export class TeamDetailComponent implements OnInit {
             if ( value.status !== 0 ){
               this.msg.SendMessage('队伍信息获取失败').subscribe();
             }else{
-              console.log(value.data);
+              const getTeamQ: GetTeamQ = value.data as GetTeamQ;
+              const team: Team = {
+                avatar: getTeamQ.avatar,
+                name: getTeamQ.name,
+                id: getTeamQ.id,
+                train_id: getTeamQ.train_id,
+                project_name: getTeamQ.project_name,
+                train_name: getTeamQ.train_name,
+                train_project_id: getTeamQ.project_id,
+                member_count: getTeamQ.size,
+                leader_id: getTeamQ.team_master_id,
+                members: getTeamQ.member,
+                evaluation: getTeamQ.evaluation,
+                repo_url: getTeamQ.repo_url,
+                team_grade: getTeamQ.team_grade,
+              };
+              this.data = team;
+              this.users = this.data.members;
+              this.GetProject(team.id);
+              this.SetData();
             }
           },
           error: err => {
@@ -298,9 +350,55 @@ export class TeamDetailComponent implements OnInit {
     }
   }
 
+  GetTrain(){
+    const pageInfoQ: PageInfoQ = {
+      page: 1,
+      offset: 100,
+    }
+    this.conn.GetAllTrain(pageInfoQ).subscribe({
+      next: value => {
+        if (value.status !== 0){
+          this.msg.SendMessage('获取实训信息失败').subscribe()
+        }else{
+          for (const item of value.data) {
+            const trainQ: TrainQ = item as TrainQ;
+            this.trains.set(trainQ.id, trainQ.name);
+          }
+        }
+      },
+      error: err1 => {
+        this.msg.SendMessage('获取项目信息失败。未知错误').subscribe()
+      }
+    })
+  }
+
+  GetProject(id: number){
+    this.conn.GetTrainProject(id).subscribe({
+      next: value => {
+        if (value.status !== 0){
+          this.msg.SendMessage('获取项目信息失败').subscribe()
+        }else{
+          this.projects.clear();
+          for (const item of value.data) {
+            const projectQ: ProjectQ = item as ProjectQ;
+            this.projects.set(projectQ.id, projectQ.name);
+          }
+        }
+      },
+      error: err1 => {
+        this.msg.SendMessage('获取项目信息失败。未知错误').subscribe()
+      }
+    })
+  }
+
+
   SetData(){
     Object.entries(this.controls).forEach(([field, control]) => {
-      control.setValue(this.data[field]);
+      if(field === 'project_id'){
+        control.setValue(this.data.train_project_id);
+      }else{
+        control.setValue(this.data[field]);
+      }
     })
     this.leaderID = this.data.leader_id;
 
@@ -351,21 +449,20 @@ export class TeamDetailComponent implements OnInit {
     const dialogRef = this.dialog.open(ChangeAvatarComponent);
 
     dialogRef.afterClosed().subscribe(result => {
-      // TODO change following code to edit team avatar
-      // this.logger.log('The dialog was closed');
-      // if (result) {
-      //   const observable = result as Observable<Blob>;
-      //   this.conn.UploadAvatar(observable).subscribe({
-      //     next: result => {
-      //       this.logger.log(result)
-      //       this.msg.SendMessage('头像上传成功').subscribe()
-      //     },
-      //     error: error => {
-      //       this.logger.log(error)
-      //       this.msg.SendMessage('头像上传失败').subscribe()
-      //     }
-      //   });
-      // }
+      if (result) {
+        const observable = result as Observable<Blob>;  // 将弹窗获得结果转换成Blob对象
+        this.conn.UploadTeamAvatar(observable,this.data.id).subscribe({
+          next: result => {
+            this.msg.SendMessage('头像上传成功').subscribe()
+          },
+          error: error => {
+            this.msg.SendMessage('头像上传失败').subscribe()
+          },
+          complete: () => {
+            this.GetData();
+          }
+        });
+      }
     });
   }
 
@@ -403,7 +500,32 @@ export class TeamDetailComponent implements OnInit {
   }
 
   saveChange() {
-    // TODO save changes
+    const team: GetTeamQ = {
+      id: this.data.id,
+      name: this.controls.name.value,
+      avatar: this.data.avatar,
+      evaluation: this.controls.evaluation.value,
+      train_id: this.controls.train_id.value,
+      project_id: this.controls.project_id.value,
+      repo_url: this.controls.repo_url.value,
+      team_grade: this.controls.team_grade.value,
+    };
+    console.log(team);
+    this.conn.UpdateTeamInfo(team).subscribe({
+      next: value => {
+        if (value.status !== 0){
+          this.msg.SendMessage('修改信息失败').subscribe();
+        }else{
+          this.msg.SendMessage('修改信息成功').subscribe();
+        }
+      },
+      error: err => {
+        this.msg.SendMessage('修改信息失败。未知错误').subscribe();
+      },
+      complete: () => {
+        this.GetData();
+      }
+    });
   }
 
   getInviteLink() {

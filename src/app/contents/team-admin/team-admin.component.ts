@@ -168,16 +168,13 @@ export class TeamDataSource extends DataSource<Team> {
       page : this.index ,
       offset: this.size
     };
-    console.log(pageInfoQ);
     const list: Team[] = [];
     this.conn.GetAllTeam(pageInfoQ).subscribe({
       next: value => {
-        console.log(value)
         if (value.status !== 0){
           this.msg.SendMessage('获取团队信息失败').subscribe();
           observer.error();
         }else{
-          console.log(value);
           this.length = value.total_rows
           for (const valueElement of value.data) {
             const teamQ: GetTeamQ = valueElement as GetTeamQ;
@@ -189,7 +186,7 @@ export class TeamDataSource extends DataSource<Team> {
               project_name: teamQ.project_name,
               repo_url: teamQ.repo_url,
               team_grade: teamQ.team_grade,
-              train_name: `Train`,
+              train_name: teamQ.train_name,
               train_project_id: teamQ.train_id,
               member_count: teamQ.size,
               leader_id: teamQ.team_master_id,

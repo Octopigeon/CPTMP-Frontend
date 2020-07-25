@@ -287,6 +287,35 @@ export class ConnectionService {
     return result;
   }
 
+  public UploadTeamAvatar(avatar: Observable<Blob>,teamId:number): Observable<Resp> {
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    const url = API.team + '/' + teamId + '/uploadAvatar';
+    avatar.subscribe(blob => {
+      let formData = new FormData();
+      formData.append('file', blob, 'avatar.png');
+      this.post(url, formData).subscribe({
+        next: response => {
+          if (response.status !== 0) {
+            this.logger.log(`Upload avatar failed with status code ${response.status}: ${response.msg}.`);
+            observer.error(response);
+            return;
+          }
+          observer.next(response);
+          setTimeout(() => {
+            observer.complete();
+          }, 1000);
+        },
+        error: error => {
+          this.logger.log(`Upload avatar failed with network error: `, error);
+          observer.error(error);
+        },
+      });
+    });
+
+    return result;
+  }
+
   /***
    * 上传实训材料的连接
    * @param trainId  对应实训的ID
@@ -907,6 +936,29 @@ export class ConnectionService {
     return result;
   }
 
+  public UpdateTeamInfo(getTeamQ: GetTeamQ): Observable<Resp> {
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    this.put(API.team , getTeamQ).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Update team info failed with status code ${response.status}: ${response.msg}.`);
+          observer.error(response);
+        }else{
+          observer.next(response);
+          setTimeout(() => {
+            observer.complete();
+          }, 1000);
+        }
+      },
+      error: error => {
+        this.logger.log(`Update team info failed with network error: `, error);
+        observer.error(error);
+      }
+    });
+    return result;
+  }
+
   /**
    * 分页查询所有用户的连接
    * @param pageInfoQ  分页请求
@@ -1045,6 +1097,81 @@ export class ConnectionService {
     return result;
   }
 
+  public GetTrainProject(trainId): Observable<Resp>{
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    const url = API.train + '/' + trainId + '/project?page=1&offset=100';
+    this.get(url).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Get train project failed with status code ${response.status}: ${response.msg}.`);
+          observer.error(response);
+          return result;
+        }else{
+          observer.next(response);
+          observer.complete();
+        }
+      },
+      error: error => {
+        this.logger.log(`Get train project failed with network error: `, error);
+        observer.error(error);
+      }
+    })
+    return result;
+  }
+
+  public AddTrainProject(projectId: number[], trainId: number): Observable<Resp>{
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    const url = API.train + '/' + trainId + '/project';
+    console.log(url);
+    this.put(url, projectId).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Add train project failed with status code ${response.status}: ${response.msg}.`);
+          observer.error(response);
+          return result;
+        }else{
+          observer.next(response);
+          setTimeout(() => {
+            observer.complete();
+          }, 1000);
+        }
+      },
+      error: error => {
+        this.logger.log(`Add train project failed with network error: `, error);
+        observer.error(error);
+      }
+    });
+    return result;
+  }
+
+
+  public DeleteTrainProject(projectId: number[], trainId: number): Observable<Resp>{
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    const url = API.train + '/' + trainId + '/project?project_id=' + projectId[0];
+    this.delete(url).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Delete train project failed with status code ${response.status}: ${response.msg}.`);
+          observer.error(response);
+          return result;
+        }else{
+          observer.next(response);
+          setTimeout(() => {
+            observer.complete();
+          }, 1000);
+        }
+      },
+      error: error => {
+        this.logger.log(`Delete train project failed with network error: `, error);
+        observer.error(error);
+      }
+    });
+    return result;
+  }
+
   public DeleteRecruitment(id: number): Observable<Resp>{
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
@@ -1130,9 +1257,9 @@ export class ConnectionService {
           const getTeamQ: GetTeamQ = response.data[0] as GetTeamQ;
           this.GetTeamMember(getTeamQ.id).subscribe({
             next: value => {
+              getTeamQ.member = [];
               for (const item of value.data) {
                 const userInfo: UserInfo = item as UserInfo;
-                getTeamQ.member = [];
                 getTeamQ.member.push({
                   avatar: userInfo.avatar,
                   email: userInfo.email,
@@ -1162,10 +1289,13 @@ export class ConnectionService {
     return result;
   }
 
+
+
   public GetTeamInfo(teamId: number): Observable<Resp> {
     let observer: Subscriber<Resp>;
     const result = new Observable<Resp>(o => observer = o);
     const url = API.team + '/' + teamId;
+
     this.get(url).subscribe({
       next: response => {
         if (response.status !== 0) {
@@ -1175,9 +1305,9 @@ export class ConnectionService {
           const getTeamQ: GetTeamQ = response.data as GetTeamQ;
           this.GetTeamMember(getTeamQ.id).subscribe({
             next: value => {
+              getTeamQ.member = [];
               for (const item of value.data) {
                 const userInfo: UserInfo = item as UserInfo;
-                getTeamQ.member = [];
                 getTeamQ.member.push({
                   avatar: userInfo.avatar,
                   email: userInfo.email,
@@ -1299,9 +1429,10 @@ export class ConnectionService {
           teamBox.push(false);
           this.GetTeamMember(teamId[i]).subscribe({
             next: value => {
+              getTeamQList[i].member = [];
               for (const item of value.data) {
                 const userInfo: UserInfo = item as UserInfo;
-                getTeamQList[i].member = [];
+
                 getTeamQList[i].member.push({
                   avatar: userInfo.avatar,
                   email: userInfo.email,
@@ -1439,9 +1570,10 @@ export class ConnectionService {
           teamBox.push(false);
           this.GetTeamMember(teamId[i]).subscribe({
             next: value => {
+              getTeamQList[i].member = [];
               for (const item of value.data) {
                 const userInfo: UserInfo = item as UserInfo;
-                getTeamQList[i].member = [];
+
                 getTeamQList[i].member.push({
                   avatar: userInfo.avatar,
                   email: userInfo.email,
@@ -1510,9 +1642,10 @@ export class ConnectionService {
           teamBox.push(false);
           this.GetTeamMember(teamId[i]).subscribe({
             next: value => {
+              getTeamQList[i].member = [];
               for (const item of value.data) {
                 const userInfo: UserInfo = item as UserInfo;
-                getTeamQList[i].member = [];
+
                 getTeamQList[i].member.push({
                   avatar: userInfo.avatar,
                   email: userInfo.email,

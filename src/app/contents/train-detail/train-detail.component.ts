@@ -153,6 +153,7 @@ export class TrainDetailComponent implements OnInit {
     if (index >= 0) {
       this.selectedProjects.splice(index, 1);
       this.projectIDs.delete(project.project_id);
+      this.deleteProjectUpdate(Number(project.project_id));
     }
   }
 
@@ -176,11 +177,50 @@ export class TrainDetailComponent implements OnInit {
     if (this.selectedProjects.findIndex(u => u.project_id === project.project_id) < 0) {
       this.selectedProjects.push(project);
       this.projectIDs.add(project.project_id);
+      this.addProjectUpdate(Number(project.project_id));
     } else {
       this.msg.SendMessage(`项目「${project.project_id}」已存在于项目列表中`).subscribe();
     }
     this.projectInput.nativeElement.value = '';
     this.projectInputControl.setValue(null);
+  }
+
+  addProjectUpdate(id: number){
+    const project: number[] = [id];
+    this.conn.AddTrainProject(project, this.data.id).subscribe({
+      next: value => {
+        if(value.status!==0){
+          this.msg.SendMessage('添加项目失败').subscribe()
+        }else{
+          this.msg.SendMessage('添加项目成功').subscribe()
+        }
+      },
+      error: err1 => {
+        this.msg.SendMessage('添加项目失败。未知错误').subscribe()
+      },
+      complete: () => {
+        this.GetData();
+      }
+    })
+  }
+
+  deleteProjectUpdate(id: number){
+    const project: number[] = [id];
+    this.conn.DeleteTrainProject(project, this.data.id).subscribe({
+      next: value => {
+        if(value.status!==0){
+          this.msg.SendMessage('删除项目失败').subscribe()
+        }else{
+          this.msg.SendMessage('删除项目成功').subscribe()
+        }
+      },
+      error: err1 => {
+        this.msg.SendMessage('删除项目失败。未知错误').subscribe()
+      },
+      complete: () => {
+        this.GetData();
+      }
+    });
   }
 
   editLoc: boolean = false;
@@ -339,6 +379,7 @@ export class TrainDetailComponent implements OnInit {
                 train.organization = '错误:未查到相关组织';
               }
             });
+            this.GetProject(train.id);
             this.data = train;
             this.SetData();
           } else {
@@ -353,6 +394,29 @@ export class TrainDetailComponent implements OnInit {
       })
     }
   }
+
+  GetProject(id: number){
+    this.conn.GetTrainProject(id).subscribe({
+      next: value => {
+        if (value.status !== 0){
+          this.msg.SendMessage('获取项目信息失败').subscribe()
+        }else{
+          this.selectedProjects = [];
+          for (const item of value.data) {
+            const projectQ: ProjectQ = item as ProjectQ;
+            this.selectedProjects.push({
+              project_id: String(projectQ.id),
+              project_name: projectQ.name,
+            });
+          }
+        }
+      },
+      error: err1 => {
+        this.msg.SendMessage('获取项目信息失败。未知错误').subscribe()
+      }
+    })
+  }
+
 
 
   SetData(){
@@ -437,7 +501,7 @@ export class TrainDetailComponent implements OnInit {
   }
 
 
-  SetProjectData(): Observable<SimplifiedProject[]>{
+  SetProjectData(){
     let observer: Subscriber<SimplifiedProject[]>;
     const result = new Observable<SimplifiedProject[]>(o => observer = o);
     const pageInfoQ: PageInfoQ = {
@@ -464,7 +528,7 @@ export class TrainDetailComponent implements OnInit {
         this.msg.SendMessage('获取项目信息失败').subscribe();
       }
     });
-    return result;
+
   }
 
   jumpToTeamList(){
