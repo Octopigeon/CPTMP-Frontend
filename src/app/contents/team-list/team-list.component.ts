@@ -169,6 +169,7 @@ export class TeamListComponent implements OnInit {
           this.msg.SendMessage('获取队伍信息失败').subscribe();
         }else{
           this.teamList = [];
+          console.log(123);
           for (const item of value.data) {
 
             const getTeamQ: GetTeamQ = item as GetTeamQ;

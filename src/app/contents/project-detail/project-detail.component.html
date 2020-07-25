@@ -76,7 +76,7 @@
     </h2>
     <mat-list *ngIf="!editFile">
       <a *ngFor="let file of data.resource_lib" class="resource-link"
-         [href]="file.file_path" [download]="file.original_name">
+         [href]="file.fileUrl" [download]="file.original_name">
         <mat-list-item class="resource-item" matRipple>
           <mat-icon mat-list-icon>insert_drive_file</mat-icon>
           <div mat-line>{{file.original_name}}</div>

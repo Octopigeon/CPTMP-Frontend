@@ -163,6 +163,7 @@
             (click)="controls.team_grade.switchEdit()">
       <mat-icon>{{controls.team_grade.editing ? 'check' : 'edit'}}</mat-icon>
     </button>
+
   </p>
   <div id="team-eval">
     <h3 class="content-title">
@@ -173,6 +174,7 @@
               (click)="controls.evaluation.switchEdit()">
         <mat-icon>{{controls.evaluation.editing ? 'check' : 'edit'}}</mat-icon>
       </button>
+      <button mat-button color="primary" class="send-button" (click)="OpenGit()">查看git贡献</button>
     </h3>
     <p class="content-wrapper">
       <span *ngIf="!controls.evaluation.editing">

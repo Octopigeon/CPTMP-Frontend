@@ -114,12 +114,7 @@ export class TrainDetailComponent implements OnInit {
 
   me: UserInfo;
 
-  projects = {
-    1: 'Project1dtnhfvnrtyytryvrncty',
-    2: 'Project2tycbtynbtnerrtbvrt',
-    3: 'Project3ybnyujmyumncrtydvgbrgb',
-    4: '123'
-  };
+
 
   projectList: SimplifiedProject[];
 
@@ -129,10 +124,7 @@ export class TrainDetailComponent implements OnInit {
   filteredProjects: SimplifiedProject[];
   // should be sync with users
   projectIDs = new Set(["1"]);
-  selectedProjects: SimplifiedProject[] = [{
-    project_id: "1",
-    project_name: 'Project1dtnhfvnrtyytryvrncty'
-  }];
+  selectedProjects: SimplifiedProject[];
   projectEditing: boolean = false;
 
   projects$: Observable<[string, string][]>;
@@ -238,6 +230,7 @@ export class TrainDetailComponent implements OnInit {
    */
   saveChange() {
     if (this.data.id === null){   //若没有传入实训对象，则为创建新的实训
+      const gps: string = '{\"longitude\":' + this.location.lng + ',\"latitude\":' + this.location.lat + '}';
       const trainQ: CreateTrainQ = {
         name: this.controls.name?.value,
         organization_id: this.controls.organization_id?.value,
@@ -246,7 +239,7 @@ export class TrainDetailComponent implements OnInit {
         content: this.controls.content?.value,
         accept_standard: this.controls.standard?.value,
         resource_library: this.controls.resource_lib?.value,
-        gps_info: '00'
+        gps_info: gps,
       }
       this.conn.CreateTrain(trainQ).subscribe({
         next: resp => {
@@ -351,7 +344,6 @@ export class TrainDetailComponent implements OnInit {
             if(trainQ.id === undefined){
               this.data = this.err;
             }
-            console.log(trainQ.resource_library);
             const object: JsonObject = JSON.parse(trainQ.resource_library);
             const FileList: ResourceFile[] = [];
             // @ts-ignore
@@ -363,6 +355,7 @@ export class TrainDetailComponent implements OnInit {
                 file_path: file.filePath,
                 file_size: file.fileSize,
                 file_type: file.fileType,
+                fileUrl: file.fileUrl,
                 created: file.gmtCreate,
                 original_name: file.originName,
               });
@@ -469,6 +462,9 @@ export class TrainDetailComponent implements OnInit {
         error: error => {
           this.logger.log(error)
           this.msg.SendMessage('文件上传失败').subscribe()
+        },
+        complete: () => {
+          this.GetData();
         }
       })
     })
@@ -550,8 +546,11 @@ export class TrainDetailComponent implements OnInit {
     this.loc.go(['/plat/projectList/', this.data.id]);
   }
 
-  test(file: ResourceFile){
-    console.log(file);
+  down(file: ResourceFile){
+    console.log(123)
+    this.conn.DownFile(file).subscribe(next => {
+      console.log(next);
+    });
   }
 
   OpenGps(){

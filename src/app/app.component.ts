@@ -11,6 +11,7 @@ import {of, ReplaySubject, Subject} from "rxjs";
 import {AccountBulkAddComponent} from "./popups/account-bulk-add/account-bulk-add.component";
 import {MatDialog} from "@angular/material/dialog";
 import {BotChatComponent} from "./popups/bot-chat/bot-chat.component";
+import {Notice, UserInfo} from "./types/types";
 
 @Component({
   selector: 'cptmp-root',
@@ -30,7 +31,11 @@ export class AppComponent implements OnInit {
   windowType = this.env.size$;
   sideNavNodes$ = new ReplaySubject<NavigationNode[]>(1);
 
-  messageCount$ = of(3).pipe(shareReplay(1));
+  message: number;
+
+  messageCount$ = of(0).pipe(shareReplay(1));
+
+  me: UserInfo
 
   constructor(private env: EnvService,
               private loc: LocationService,
@@ -45,6 +50,20 @@ export class AppComponent implements OnInit {
     this.sideNavNodes$.subscribe(nodes => this.nav.updateNavigationView(nodes))
     // TODO change according to user type
     this.sideNavNodes$.next(AdminNodes);
+    this.conn.user.subscribe(user => {
+      this.me = user.info;
+      this.conn.GetReceiverNotice(this.me.user_id).subscribe({
+        next: value => {
+          this.message = 0;
+          for (const item of value.data) {
+            const tnotice: Notice = item as Notice;
+            if(!tnotice.is_read) this.message++;
+          }
+          this.messageCount$ = of(this.message).pipe(shareReplay(1));
+        }
+      })
+    });
+
   }
 
   openChatBot(){

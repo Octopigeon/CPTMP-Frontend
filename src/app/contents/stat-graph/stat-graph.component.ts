@@ -34,7 +34,7 @@ import {ConnectionService} from "../../services/connection.service";
 })
 export class StatGraphComponent implements OnInit {
 
-  contributor: ContributorStat[] = [];
+  contributor: ContributorStat[] = EXAMPLE_STAT;
 
   teamId: number;
 
@@ -178,29 +178,31 @@ export class StatGraphComponent implements OnInit {
     this.route.paramMap.subscribe(param => {
       // set up order change notification
       this.teamId = Number(param.get('id'));
-      this.order$ = new Observable<string[]>(subscriber => {
-        subscriber.next(this.orderNames.map(([field, _]) => field));
-        this.orderSubscriber = subscriber;
-        this.GetData();
+      this.conn.GetGitInfo(Number(this.teamId)).subscribe({
+        next: value => {
+          let list: ContributorStat[] = [];
+          for (const item of value.contributor_dtolist) {
+            const data: ContributorStat = item as ContributorStat;
+            list.push(data);
+          }
+          this.contributor = list;
+          this.setDate();
+        },
+        error: err => {
+          this.setDate();
+        }
       })
-    });
+    })
   }
 
-  GetData(){
-    this.conn.GetGitInfo(this.teamId).subscribe({
-      next: value => {
-        this.contributor = value.contributor_dtolist as ContributorStat[];
-        this.SetData();
-      },
-      error: err => {
 
-      }
+  setDate(){
+    this.order$ = new Observable<string[]>(subscriber => {
+      subscriber.next(this.orderNames.map(([field, _]) => field));
+      this.orderSubscriber = subscriber;
     })
 
     // data should be update upon each new data fetched or data order change
-  }
-
-  SetData(){
     combineLatest([
       // TODO fetch data from backend
       of(this.contributor).pipe(
@@ -269,7 +271,8 @@ export class StatGraphComponent implements OnInit {
         }]
       }
     });
-  }
+  };
+
 }
 
 
