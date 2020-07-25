@@ -524,6 +524,7 @@ export class TeamDetailComponent implements OnInit {
       project_id: this.controls.project_id.value,
       repo_url: this.controls.repo_url.value,
       team_grade: this.controls.team_grade.value,
+      team_master_id: this.data.leader_id,
     };
     console.log(team);
     this.conn.UpdateTeamInfo(team).subscribe({
@@ -546,5 +547,9 @@ export class TeamDetailComponent implements OnInit {
   getInviteLink() {
     // TODO get team invite link
     return 'not implemented'
+  }
+
+  OpenGit(){
+    this.loc.go(['/plat/stat/', this.data.id]);
   }
 }

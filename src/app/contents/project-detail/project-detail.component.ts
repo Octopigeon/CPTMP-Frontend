@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {GetOrgQ, Project, ProjectQ, ResourceFile, Team, Train, TrainQ} from "../../types/types";
+import {FileQ, GetOrgQ, Project, ProjectQ, ResourceFile, Team, Train, TrainQ} from "../../types/types";
 import {StatedFormControl} from "../../shared/stated-form-control";
 import {ActivatedRoute} from "@angular/router";
 import {LocationService} from "../../services/location.service";
@@ -8,6 +8,8 @@ import {SelectFileComponent} from "../../popups/select-file/select-file.componen
 import {MatDialog} from "@angular/material/dialog";
 import {ConnectionService} from "../../services/connection.service";
 import {MessageService} from "../../services/message.service";
+import {JsonObject} from "@angular/compiler-cli/ngcc/src/packages/entry_point";
+import {Logger} from "../../services/logger.service";
 
 @Component({
   selector: 'app-project-detail',
@@ -59,7 +61,8 @@ export class ProjectDetailComponent implements OnInit {
               private loc: LocationService,
               private dialog: MatDialog,
               private conn: ConnectionService,
-              private msg: MessageService,) { }
+              private msg: MessageService,
+              private logger: Logger,) { }
 
   createProject(){
     const projectQ: ProjectQ = {
@@ -118,12 +121,28 @@ export class ProjectDetailComponent implements OnInit {
         next: resp => {
           if (resp.status === 0) {
             const projectQ = resp.data as ProjectQ;
+            const object: JsonObject = JSON.parse(projectQ.resource_library);
+            const FileList: ResourceFile[] = [];
+            // @ts-ignore
+            for (const item of object.resourceLib) {
+              // @ts-ignore
+              const file: FileQ = item as FileQ;
+              FileList.push({
+                file_name: file.fileName,
+                file_path: file.filePath,
+                file_size: file.fileSize,
+                file_type: file.fileType,
+                created: file.gmtCreate,
+                fileUrl: file.fileUrl,
+                original_name: file.originName,
+              });
+            }
             const project: Project = {
               id: projectQ.id,
               name: projectQ.name,
               content: projectQ.content,
               level: projectQ.level,
-              resource_lib: null
+              resource_lib: FileList,
             };
             this.data = project;
             this.SetData();
@@ -156,7 +175,19 @@ export class ProjectDetailComponent implements OnInit {
      * 根据用户上传的文件，将其上传到服务器供其他人进行查阅
      */
     dialogRef.afterClosed().subscribe((value: File[]) => {
-      // TODO post selected file to backend
+      this.conn.UploadProjectFile(this.data.id, value[0]).subscribe({
+        next: result => {
+          this.logger.log(result)
+          this.msg.SendMessage('文件上传成功').subscribe()
+        },
+        error: error => {
+          this.logger.log(error)
+          this.msg.SendMessage('文件上传失败').subscribe()
+        },
+        complete: () => {
+          this.GetData();
+        }
+      })
     })
   }
 
@@ -166,6 +197,14 @@ export class ProjectDetailComponent implements OnInit {
   deleteFile() {
     const files: ResourceFile[] = this.fileSelection.selectedOptions.selected.map(selection => selection.value);
     // TODO handle file delete.
+  }
+
+
+  down(file: ResourceFile){
+    console.log(123)
+    this.conn.DownFile(file).subscribe(next => {
+      console.log(next);
+    });
   }
 
   /***

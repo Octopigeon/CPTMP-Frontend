@@ -203,6 +203,7 @@ export interface ResourceFile {
   file_path: string;
   file_size: number;
   file_type: string;
+  fileUrl?: string;
   created: string | number;
   original_name: string;
 }
@@ -227,7 +228,7 @@ export interface  ProjectQ {
   level: number;
   content: string;
   // like above
-  resource_library?: string | ResourceFile[];
+  resource_library?: string;
 }
 
 export interface GetTeamQ{

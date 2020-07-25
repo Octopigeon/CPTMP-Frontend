@@ -331,15 +331,43 @@ export class ConnectionService {
     this.post(url, formData).subscribe({
       next: response => {
         if (response.status !== 0) {
-          this.logger.log(`Upload avatar failed with status code ${response.status}: ${response.msg}.`);
+          this.logger.log(`Upload train file failed with status code ${response.status}: ${response.msg}.`);
           observer.error(response);
           return;
         }
         observer.next(response);
-        observer.complete();
+        setTimeout(() => {
+          observer.complete();
+        }, 1000);
       },
       error: error => {
-        this.logger.log(`Upload avatar failed with network error: `, error);
+        this.logger.log(`Upload train file failed with network error: `, error);
+        observer.error(error);
+      }
+    });
+    return result;
+  }
+
+  public UploadProjectFile(projectId: number, file: File): Observable<Resp> {
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    let formData = new FormData();
+    formData.append('file', file, file.name);
+    const url = API.train_project + '/' + projectId + '/resource-lib';
+    this.post(url, formData).subscribe({
+      next: response => {
+        if (response.status !== 0) {
+          this.logger.log(`Upload project file failed with status code ${response.status}: ${response.msg}.`);
+          observer.error(response);
+          return;
+        }
+        observer.next(response);
+        setTimeout(() => {
+          observer.complete();
+        }, 1000);
+      },
+      error: error => {
+        this.logger.log(`Upload project file failed with network error: `, error);
         observer.error(error);
       }
     });
@@ -1467,7 +1495,6 @@ export class ConnectionService {
               getTeamQList[i].member = [];
               for (const item of value.data) {
                 const userInfo: UserInfo = item as UserInfo;
-
                 getTeamQList[i].member.push({
                   avatar: userInfo.avatar,
                   email: userInfo.email,
@@ -1576,6 +1603,29 @@ export class ConnectionService {
         },
       error: error => {
         this.logger.log(`Get team info failed with network error: `, error);
+        observer.error(error);
+      }
+    });
+    return result;
+  }
+
+  public DownFile(file: ResourceFile): Observable<Resp>{
+    let observer: Subscriber<Resp>;
+    const result = new Observable<Resp>(o => observer = o);
+    const date = new Date(file.created);
+    const url = API.storage + file.fileUrl;
+    this.get(url).subscribe({
+      next: resp => {
+        if (resp.status !== 0) {
+          this.logger.log(`Down file failed with status code ${resp.status}: ${resp.msg}.`);
+          observer.error(resp);
+        }else {
+          observer.next(resp);
+          observer.complete();
+        }
+      },
+      error: error => {
+        this.logger.log(`Down file info failed with network error: `, error);
         observer.error(error);
       }
     });
