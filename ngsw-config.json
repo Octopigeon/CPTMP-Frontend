@@ -25,5 +25,17 @@
         ]
       }
     }
+  ],
+  "dataGroups": [
+    {
+      "name": "dynamicResources",
+      "urls": [
+        "/storage/**/*"
+      ],
+      "cacheConfig": {
+        "maxSize": 1024,
+        "maxAge": "30d"
+      }
+    }
   ]
 }
