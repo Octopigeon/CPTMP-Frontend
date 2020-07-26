@@ -5,6 +5,7 @@
             [height]="viewWrapper.clientHeight"
             [width]="viewWrapper.clientWidth"
             [switchCamera]="switchCamera"
+            allowCameraSwitch="false"
             [trigger]="trigger"
             (imageCapture)="processShot($event)"
             (initError)="this.errored = true"></webcam>

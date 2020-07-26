@@ -53,7 +53,12 @@ export class AppComponent implements OnInit {
 
 
     this.conn.user.subscribe(user => {
+      if (!user.login) {
+        return;
+      }
+
       this.me = user.info;
+
       switch ( this.me.role_name){
         case 'ROLE_SYSTEM_ADMIN':
           this.sideNavNodes$.next(AdminNodes);
